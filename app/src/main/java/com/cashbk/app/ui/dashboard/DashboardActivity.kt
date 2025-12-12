@@ -3,10 +3,13 @@ package com.cashbk.app.ui.dashboard
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.ContextThemeWrapper
 import android.widget.EditText
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.cashbk.app.R
 import com.cashbk.app.data.model.Business
 import com.cashbk.app.databinding.ActivityDashboardBinding
 import com.cashbk.app.databinding.ItemBusinessBinding
@@ -14,6 +17,8 @@ import com.cashbk.app.fragment.AddBusinessFragment
 import com.cashbk.app.ui.business.BusinessDetailActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.content.ContextCompat
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -41,9 +46,9 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
 
-    // ------------------------------------------
+    // ---------------------------------------------------
     // SETUP RECYCLER VIEW
-    // ------------------------------------------
+    // ---------------------------------------------------
     private fun setupRecyclerView() {
         businessAdapter = BusinessAdapter(
             businessList,
@@ -63,15 +68,14 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
 
-    // ------------------------------------------
-    // FETCH ALL BUSINESSES FOR CURRENT USER
-    // ------------------------------------------
+    // ---------------------------------------------------
+    // FETCH BUSINESS LIST FROM FIREBASE
+    // ---------------------------------------------------
     private fun fetchBusinesses() {
         val userId = auth.currentUser?.uid ?: return
 
         database.orderByChild("ownerId").equalTo(userId)
             .addValueEventListener(object : ValueEventListener {
-
                 override fun onDataChange(snapshot: DataSnapshot) {
                     businessList.clear()
 
@@ -94,9 +98,9 @@ class DashboardActivity : AppCompatActivity() {
             })
     }
 
-    // ------------------------------------------
+    // ---------------------------------------------------
     // RENAME BUSINESS
-    // ------------------------------------------
+    // ---------------------------------------------------
     private fun renameBusiness(business: Business) {
         val editText = EditText(this)
         editText.setText(business.name)
@@ -118,9 +122,9 @@ class DashboardActivity : AppCompatActivity() {
             .show()
     }
 
-    // ------------------------------------------
+    // ---------------------------------------------------
     // DELETE BUSINESS
-    // ------------------------------------------
+    // ---------------------------------------------------
     private fun deleteBusiness(business: Business) {
         AlertDialog.Builder(this)
             .setTitle("Delete Business")
@@ -135,16 +139,17 @@ class DashboardActivity : AppCompatActivity() {
             .show()
     }
 
-    // ------------------------------------------
+    // ---------------------------------------------------
     // MANAGE PARTNER
-    // ------------------------------------------
+    // ---------------------------------------------------
     private fun openPartnerManager(business: Business) {
         Toast.makeText(this, "Manage Partner for: ${business.name}", Toast.LENGTH_SHORT).show()
+        // TODO: open partner screen
     }
 
-    // ========================================================================
-    // BUSINESS ADAPTER (WORKING WITH THREE DOT MENU)
-    // ========================================================================
+    // ===================================================
+    // BUSINESS ADAPTER + GLASS MENU
+    // ===================================================
     inner class BusinessAdapter(
         private val businesses: List<Business>,
         private val onClick: (Business) -> Unit,
@@ -172,36 +177,45 @@ class DashboardActivity : AppCompatActivity() {
 
                 itemBinding.businessName.text = business.name
 
-                // Click open details
+                // Click open business details
                 itemBinding.root.setOnClickListener { onClick(business) }
 
-                // 3 DOT MENU CLICK
-                itemBinding.menuMore.setOnClickListener {
-                    val popup = androidx.appcompat.widget.PopupMenu(this@DashboardActivity, it)
-                    popup.inflate(com.cashbk.app.R.menu.menu_business_options)
+                // Handle menu click
+                itemBinding.menuMore.setOnClickListener { anchorView ->
 
-                    popup.setOnMenuItemClickListener { item ->
-                        when (item.itemId) {
+                    val wrapper = ContextThemeWrapper(itemView.context, R.style.PopupMenuTheme)
+                    val popup = PopupMenu(wrapper, anchorView)
+                    popup.menuInflater.inflate(R.menu.menu_business_options, popup.menu)
 
-                            com.cashbk.app.R.id.action_rename -> {
-                                onRename(business)
-                                true
-                            }
 
-                            com.cashbk.app.R.id.action_delete -> {
-                                onDelete(business)
-                                true
-                            }
+                    try {
+                        val fields = popup.javaClass.getDeclaredField("mPopup")
+                        fields.isAccessible = true
+                        val menuPopupHelper = fields.get(popup)
+                        val classPopupHelper = Class.forName(menuPopupHelper.javaClass.name)
+                        val setForceIcons = classPopupHelper.getMethod(
+                            "setForceShowIcon",
+                            Boolean::class.javaPrimitiveType
+                        )
+                        setForceIcons.invoke(menuPopupHelper, true)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
 
-                            com.cashbk.app.R.id.action_manage_partner -> {
-                                onManagePartner(business)
-                                true
-                            }
-
-                            else -> false
+                    for (i in 0 until popup.menu.size()) {
+                        val item = popup.menu.getItem(i)
+                        item.icon?.let { icon ->
+                            val wrapped = DrawableCompat.wrap(icon)
+                            DrawableCompat.setTint(
+                                wrapped,
+                                ContextCompat.getColor(itemView.context, R.color.text_color)
+                            )
+                            item.icon = wrapped
                         }
                     }
+
                     popup.show()
+
                 }
             }
         }

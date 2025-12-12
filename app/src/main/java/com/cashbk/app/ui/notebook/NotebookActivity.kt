@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,9 +15,11 @@ import com.cashbk.app.R
 import com.cashbk.app.data.model.Transaction
 import com.cashbk.app.databinding.ActivityNotebookBinding
 import com.cashbk.app.databinding.ItemTransactionBinding
-import com.cashbk.app.ui.transaction.AddTransactionDialogFragment // Import the DialogFragment
+import com.cashbk.app.ui.transaction.AddTransactionDialogFragment
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import java.util.Locale
+import android.content.Intent
 
 class NotebookActivity : AppCompatActivity() {
 
@@ -24,6 +28,7 @@ class NotebookActivity : AppCompatActivity() {
     private lateinit var transactionAdapter: TransactionAdapter
     private val transactionList = mutableListOf<Transaction>()
     private var notebookId: String? = null
+    private var currentUserRole: String = "" // "admin", "partner", "writer", "reader"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,29 +48,151 @@ class NotebookActivity : AppCompatActivity() {
 
         setupRecyclerView()
         fetchTransactions()
+        checkUserRole()
 
         binding.addTransactionFab.setOnClickListener {
-            // Show the AddTransactionDialogFragment as a pop-up
             val addTransactionDialog = AddTransactionDialogFragment()
             val args = Bundle()
             args.putString("notebookId", notebookId)
             addTransactionDialog.arguments = args
             addTransactionDialog.show(supportFragmentManager, "AddTransactionDialog")
         }
+
+        binding.btnMenu.setOnClickListener {
+            showMenu(it)
+        }
+    }
+
+    private fun showMenu(view: android.view.View) {
+        val wrapper = android.view.ContextThemeWrapper(this, R.style.PopupMenuTheme)
+        val popup = PopupMenu(wrapper, view)
+        popup.menuInflater.inflate(R.menu.menu_notebook_options, popup.menu)
+
+        // Role check
+        if (currentUserRole != "admin" && currentUserRole != "partner") {
+             // Hide all or show limited? User said "when user clikc not three dots that time open a menu that menu data not visible"
+             // Assuming we just want to fix visibility. Logic remains: only owner/partner can act.
+             // If neither, maybe we shouldn't even show the button (already handled in adapter).
+             // But if we are here, we show options.
+        }
+
+        popup.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_rename -> {
+                    Toast.makeText(this, "Rename clicked", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                R.id.action_delete -> {
+                    Toast.makeText(this, "Delete clicked", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                R.id.action_share -> {
+                    val intent = Intent(this, com.cashbk.app.ui.members.MembersActivity::class.java)
+                    intent.putExtra("entityId", notebookId)
+                    intent.putExtra("entityType", "notebook")
+                    startActivity(intent)
+                    true
+                }
+                else -> false
+            }
+        }
+        popup.show()
+    }
+
+    private fun checkUserRole() {
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+        FirebaseDatabase.getInstance().reference.child("notebooks").child(notebookId!!).get().addOnSuccessListener { notebookSnapshot ->
+            val businessId = notebookSnapshot.child("businessId").value as? String ?: return@addOnSuccessListener
+            
+            // 2. Check if Owner (Admin)
+            FirebaseDatabase.getInstance().reference.child("businesses").child(businessId).get().addOnSuccessListener { businessSnapshot ->
+                val ownerId = businessSnapshot.child("ownerId").value as? String
+                
+                if (ownerId == currentUserId) {
+                    currentUserRole = "admin"
+                    updateUI()
+                } else {
+                    // 3. Check if Partner in business_members
+                    FirebaseDatabase.getInstance().reference.child("business_members").child(businessId).child(currentUserId).get().addOnSuccessListener { partnerSnapshot ->
+                        if (partnerSnapshot.exists() && partnerSnapshot.child("role").value == "partner") {
+                            currentUserRole = "partner"
+                            updateUI()
+                        } else {
+                            // 4. Check if Notebook Member in members/{notebookId}/{uid}
+                            checkNotebookMemberRole(currentUserId)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun checkNotebookMemberRole(uid: String) {
+        FirebaseDatabase.getInstance().reference.child("members").child(notebookId!!).child(uid).get().addOnSuccessListener { snapshot ->
+            if (snapshot.exists()) {
+                val role = snapshot.child("role").value as? String
+                if (role != null) {
+                    currentUserRole = role
+                    updateUI()
+                }
+            }
+        }
+    }
+
+    private fun updateUI() {
+        Log.d("NotebookActivity", "User Role: $currentUserRole")
+        when (currentUserRole) {
+            "admin", "partner" -> {
+                binding.addTransactionFab.visibility = android.view.View.VISIBLE
+                binding.btnMenu.visibility = android.view.View.VISIBLE
+            }
+            "writer" -> {
+                binding.addTransactionFab.visibility = android.view.View.VISIBLE
+                binding.btnMenu.visibility = android.view.View.GONE // Can't manage notebook
+            }
+            "reader" -> {
+                binding.addTransactionFab.visibility = android.view.View.GONE
+                binding.btnMenu.visibility = android.view.View.GONE // Can't manage notebook
+            }
+        }
+        transactionAdapter.notifyDataSetChanged()
     }
 
     private fun setupRecyclerView() {
         transactionAdapter = TransactionAdapter(transactionList) { transaction ->
-            Toast.makeText(
-                this@NotebookActivity,
-                "Clicked: ${transaction.remark} - ${transaction.getAmountAsDouble()}",
-                Toast.LENGTH_SHORT
-            ).show()
+            if (currentUserRole == "reader") {
+                Toast.makeText(this, "View Only: ${transaction.remark}", Toast.LENGTH_SHORT).show()
+            } else {
+                showTransactionOptions(transaction)
+            }
         }
         binding.transactionsRecyclerView.apply {
             layoutManager = LinearLayoutManager(this@NotebookActivity)
             adapter = transactionAdapter
         }
+    }
+
+    private fun showTransactionOptions(transaction: Transaction) {
+        val options = arrayOf("Delete Transaction")
+        AlertDialog.Builder(this)
+            .setTitle("Options")
+            .setItems(options) { _, which ->
+                if (which == 0) {
+                    deleteTransaction(transaction)
+                }
+            }
+            .show()
+    }
+
+    private fun deleteTransaction(transaction: Transaction) {
+        database.child(transaction.id).removeValue()
+            .addOnSuccessListener {
+                Toast.makeText(this, "Transaction deleted", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed to delete", Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun fetchTransactions() {
@@ -80,7 +207,6 @@ class NotebookActivity : AppCompatActivity() {
                             transaction?.let { transactionList.add(it) }
                         } catch (e: DatabaseException) {
                             Log.e("NotebookActivity", "Error converting transaction: ${transactionSnapshot.key}", e)
-                            Toast.makeText(this@NotebookActivity, "Error reading transaction data for key: ${transactionSnapshot.key}", Toast.LENGTH_LONG).show()
                         }
                     }
                 } else {

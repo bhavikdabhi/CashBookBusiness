@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/action_rename" android:title="Rename" />
-    <item android:id="@+id/action_delete" android:title="Delete" />
-    <item android:id="@+id/action_manage_partner" android:title="Manage Partner" />
+
+    <item
+        android:id="@+id/action_rename"
+        android:title="Rename"
+        android:icon="@drawable/ic_action_edit"
+        android:iconTint="@color/primary_color"
+        android:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_delete"
+        android:title="Delete"
+        android:icon="@drawable/ic_action_delete"
+        android:iconTint="@color/danger"
+        android:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_manage_partner"
+        android:title="Manage Partner"
+        android:icon="@drawable/ic_action_group"
+        android:iconTint="@color/success"
+        android:showAsAction="always" />
+
 </menu>

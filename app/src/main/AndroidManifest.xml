@@ -21,5 +21,6 @@
         <activity android:name="com.cashbk.app.ui.dashboard.DashboardActivity" />
         <activity android:name="com.cashbk.app.ui.business.BusinessDetailActivity" />
         <activity android:name="com.cashbk.app.ui.notebook.NotebookActivity" />
+        <activity android:name="com.cashbk.app.ui.members.MembersActivity" />
     </application>
 </manifest>

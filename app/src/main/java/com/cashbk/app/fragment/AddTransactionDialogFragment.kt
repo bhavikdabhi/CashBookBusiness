@@ -167,9 +167,7 @@ class AddTransactionDialogFragment : DialogFragment() {
             }
 
         })
-        binding.addPartyButton.setOnClickListener {
-            AddPartyBottomSheet().show(supportFragmentManager, "AddPartyBottomSheet")
-        }
+
     }
 
     private fun saveTransaction() {

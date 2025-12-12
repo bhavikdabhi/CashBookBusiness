@@ -17,7 +17,8 @@
 
     </style>
 
-    <style name="Theme.CashBookBusiness" parent="Base.Theme.CashBookBusiness" />
-
+    <style name="Theme.CashBookBusiness" parent="Base.Theme.CashBookBusiness">
+        <item name="android:popupMenuStyle">@style/Widget.App.PopupMenu</item>
+    </style>
 
 </resources>
