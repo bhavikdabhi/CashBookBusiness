@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <!-- Primary -->
+    <color name="primary_color">#6366F1</color>
+    <color name="primary_hover">#4F46E5</color>
+
+    <!-- Background & Text -->
+    <color name="bg_color">#0F172A</color>
+    <color name="text_color">#F8FAFC</color>
+
+    <!-- Glass UI -->
+    <color name="glass_bg">#1E293B</color> <!-- use with alpha -->
+    <color name="glass_border">#1AFFFFFF</color>
+
+    <!-- Cards -->
+    <color name="card_bg">#1E293B</color>
+
+    <!-- Status Colors -->
+    <color name="success">#10B981</color>
+    <color name="danger">#EF4444</color>
+    <color name="warning">#F59E0B</color>
+
+</resources>

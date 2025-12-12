@@ -1,0 +1,23 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.CashBookBusiness" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/bg_color</item>
+
+        <!-- App Primary Colors -->
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorPrimaryVariant">@color/primary_hover</item>
+        <item name="colorOnPrimary">@color/text_color</item>
+
+        <!-- Status bar / Nav bar -->
+        <item name="android:statusBarColor">@color/bg_color</item>
+        <item name="android:navigationBarColor">@color/bg_color</item>
+
+        <!-- Default Text Color -->
+        <item name="android:textColor">@color/text_color</item>
+
+    </style>
+
+    <style name="Theme.CashBookBusiness" parent="Base.Theme.CashBookBusiness" />
+
+
+</resources>

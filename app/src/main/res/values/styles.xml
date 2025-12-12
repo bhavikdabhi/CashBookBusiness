@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="GlassCard">
+        <item name="android:background">@drawable/bg_glass_card</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:clipToOutline">true</item>
+    </style>
+
+    <style name="PrimaryButton">
+        <item name="android:backgroundTint">@color/primary_color</item>
+        <item name="android:textColor">@color/text_color</item>
+    </style>
+
+    <style name="DangerButton">
+        <item name="android:backgroundTint">@color/danger</item>
+        <item name="android:textColor">@color/text_color</item>
+    </style>
+
+    <style name="SuccessButton">
+        <item name="android:backgroundTint">@color/success</item>
+        <item name="android:textColor">@color/text_color</item>
+    </style>
+
+    <style name="GlassInput" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundColor">@color/card_bg</item>
+        <item name="boxStrokeColor">@color/glass_border</item>
+        <item name="boxCornerRadiusTopStart">14dp</item>
+        <item name="boxCornerRadiusTopEnd">14dp</item>
+        <item name="boxCornerRadiusBottomStart">14dp</item>
+        <item name="boxCornerRadiusBottomEnd">14dp</item>
+        <item name="hintTextColor">@color/text_color</item>
+        <item name="android:textColor">@color/text_color</item>
+    </style>
+
+
+</resources>

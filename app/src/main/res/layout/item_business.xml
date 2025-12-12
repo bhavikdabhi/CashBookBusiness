@@ -1,0 +1,27 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/GlassCard"
+    android:layout_marginTop="8dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/business_name"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_color"/>.
+
+    <ImageView
+        android:id="@+id/menu_more"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentEnd="true"
+        android:padding="6dp"
+        android:src="@drawable/icon_threedots"
+        app:tint="@color/text_color"
+        />
+
+</RelativeLayout>
