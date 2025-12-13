@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add New Member"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Phone Number (10 digits)"
+        android:layout_marginBottom="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etMemberPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+            android:maxLength="10"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Role"
+        android:layout_marginBottom="8dp"/>
+
+    <RadioGroup
+        android:id="@+id/rgRoles"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/rbPartner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Partner (Full Access, No Delete Business)"
+            android:visibility="gone"/>
+
+        <RadioButton
+            android:id="@+id/rbWriter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Writer (Add/Remove Transactions)"
+            android:visibility="gone"/>
+
+        <RadioButton
+            android:id="@+id/rbReader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reader (View Only)"
+            android:visibility="gone"/>
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/btnAddMember"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Member"
+        android:layout_marginTop="24dp"/>
+
+</LinearLayout>

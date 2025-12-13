@@ -9,6 +9,7 @@
     <!-- Background & Text -->
     <color name="bg_color">#0F172A</color>
     <color name="text_color">#F8FAFC</color>
+    <color name="text_secondary">#F8FAFC</color>
 
     <!-- Glass UI -->
     <color name="glass_bg">#1E293B</color> <!-- use with alpha -->

@@ -21,4 +21,9 @@
         <item name="android:popupMenuStyle">@style/Widget.App.PopupMenu</item>
     </style>
 
+    <style name="Widget.App.PopupMenu" parent="Widget.Material3.PopupMenu">
+        <item name="android:popupMenuStyle">@style/PopupMenuTheme</item>
+    </style>
+
+
 </resources>

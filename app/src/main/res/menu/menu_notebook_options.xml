@@ -5,21 +5,18 @@
         android:id="@+id/action_rename"
         android:title="Rename"
         android:icon="@drawable/ic_action_edit"
-        android:iconTint="@color/primary_color"
-        android:showAsAction="always" />
+        android:iconTint="@color/primary_color" />
 
     <item
         android:id="@+id/action_delete"
         android:title="Delete"
         android:icon="@drawable/ic_action_delete"
-        android:iconTint="@color/danger"
-        android:showAsAction="always" />
+        android:iconTint="@color/danger" />
 
     <item
-        android:id="@+id/action_share_notebook"
-        android:title="Manage Partner"
+        android:id="@+id/action_share"
+        android:title="Manage Members"
         android:icon="@drawable/ic_action_group"
-        android:iconTint="@color/success"
-        android:showAsAction="always" />
+        android:iconTint="@color/success" />
 
 </menu>
