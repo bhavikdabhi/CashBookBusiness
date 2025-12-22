@@ -1,111 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    card_view:cardElevation="4dp"
-    card_view:cardUseCompatPadding="true"
-    card_view:cardCornerRadius="8dp"
-    android:layout_marginVertical="4dp">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-    <LinearLayout
+    <!-- DATE HEADER -->
+    <TextView
+        android:id="@+id/tvDateHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingVertical="8dp"
+        android:text="06 October 2025"
+        android:textColor="@color/text_secondary"
+        android:textSize="12sp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
-
-        <!-- Top Row: Remark + Amount -->
-        <LinearLayout
+        app:cardBackgroundColor="@color/card_bg"
+        android:layout_marginTop="5dp"
+        app:cardCornerRadius="14dp"
+        app:contentPaddingLeft="10dp"
+        app:contentPaddingRight="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/tvDateHeader"
+        app:strokeColor="@color/glass_border"
+        app:strokeWidth="1dp">
+        <!-- TRANSACTION CARD -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cardContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:background="@color/card_bg"
+            android:paddingVertical="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvDateHeader">
+
 
             <TextView
-                android:id="@+id/tvRemark"
+                android:id="@+id/tvParty"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:text="Party"
+                android:textColor="@color/text_color"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                android:textSize="18sp"
-                android:textColor="@android:color/black"
-                android:maxLines="1"
-                android:ellipsize="end"
-                tools:text="Electricity Bill" />
+                app:layout_constraintEnd_toStartOf="@id/tvAmount"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
+            <!-- Amount -->
             <TextView
                 android:id="@+id/tvAmount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
+                android:text="251"
+                android:textColor="@color/success"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                tools:text="-500.00" />
-        </LinearLayout>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvParty" />
 
-        <!-- Date and Time -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp">
-
+            <!-- Balance -->
             <TextView
-                android:id="@+id/tvDate"
+                android:id="@+id/tvBalanceAfter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:textColor="@android:color/darker_gray"
-                tools:text="05-12-2025" />
+                android:layout_marginTop="3dp"
+                android:text="Balance: 2,157"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvAmount" />
 
+            <!-- Remark -->
             <TextView
-                android:id="@+id/tvTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:textSize="14sp"
-                android:textColor="@android:color/darker_gray"
-                tools:text="10:30 AM" />
-        </LinearLayout>
-
-        <!-- Type and Created By -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="4dp">
-
-            <TextView
-                android:id="@+id/tvType"
+                android:id="@+id/tvRemark"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="14sp"
-                android:textColor="@android:color/darker_gray"
-                android:textStyle="italic"
-                tools:text="Type: Cash Out" />
+                android:layout_marginTop="3dp"
+                android:text="Transaction Remark"
+                android:textColor="#a3abbd"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvParty" />
 
-            <TextView
-                android:id="@+id/tvCreatedBy"
+            <!-- Category -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/tvCategoryChip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="13sp"
-                android:textColor="@android:color/darker_gray"
-                tools:text="By: User ID" />
-        </LinearLayout>
+                android:background="@drawable/bg_category_chip"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="3dp"
+                android:text="Category"
+                android:textColor="@color/text_disabled"
+                android:textSize="12sp"
+                app:chipBackgroundColor="@color/card_bg"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvRemark" />
+            <!-- Entry Info -->
 
-        <!-- Balance After (Optional, if you want to display it) -->
-        <!--
-        <TextView
-            android:id="@+id/tvBalanceAfter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="@android:color/darker_gray"
-            android:layout_marginTop="4dp"
-            tools:text="Balance: 1234.56" />
-        -->
+            <View
+                android:id="@+id/ViewLine"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/glass_border"
+                android:layout_marginBottom="2dp"
+                app:layout_constraintTop_toBottomOf="@id/tvCategoryChip"
+                />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tvEntryInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Entry by You at 1:05 pm"
+                android:textColor="@color/text_entryBy"
+                android:textSize="12sp"
+                android:layout_marginTop="3dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ViewLine" />
 
-</androidx.cardview.widget.CardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

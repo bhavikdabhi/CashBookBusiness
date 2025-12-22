@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             tools:text="6 Members . Updated on Oct 06"
             android:textSize="12sp"
-            android:textColor="@color/text_secondary"
+            android:textColor="@color/text_entryBy"
             android:layout_marginTop="2dp"
             android:ellipsize="end"
             android:maxLines="1"/>
@@ -85,7 +85,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/icon_threedots"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:padding="8dp"
+        android:paddingEnd="4dp"
         app:tint="@color/text_secondary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

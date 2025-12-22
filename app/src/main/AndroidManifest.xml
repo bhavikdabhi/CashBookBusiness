@@ -18,7 +18,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.cashbk.app.ui.dashboard.DashboardActivity" />
+
         <activity android:name="com.cashbk.app.ui.business.BusinessDetailActivity" />
         <activity android:name="com.cashbk.app.ui.notebook.NotebookActivity" />
         <activity android:name="com.cashbk.app.ui.members.MembersActivity" />

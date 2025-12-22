@@ -14,7 +14,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.text.SimpleDateFormat
-import java.util.* 
+import java.util.*
 
 class AddTransactionActivity : AppCompatActivity() {
 
@@ -59,7 +59,7 @@ class AddTransactionActivity : AppCompatActivity() {
         }
 
         // Set current date and time
-        val sdfDate = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+        val sdfDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val sdfTime = SimpleDateFormat("hh:mm a", Locale.getDefault())
         binding.dateEditText.setText(sdfDate.format(Date()))
         binding.timeEditText.setText(sdfTime.format(Date()))
@@ -111,11 +111,21 @@ class AddTransactionActivity : AppCompatActivity() {
     }
 
     private fun saveTransaction() {
+
         val amount = binding.amountEditText.text.toString().toDoubleOrNull()
         if (amount == null) {
             Toast.makeText(this, "Please enter a valid amount.", Toast.LENGTH_SHORT).show()
             return
         }
+
+        if (categories.isEmpty() || parties.isEmpty()) {
+            Toast.makeText(this, "Category or Party not loaded yet", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+
+        val selectedCategory = categories[binding.categorySpinner.selectedItemPosition]
+        val selectedParty = parties[binding.partySpinner.selectedItemPosition]
 
         val newTransaction = Transaction(
             type = transactionType,
@@ -124,18 +134,26 @@ class AddTransactionActivity : AppCompatActivity() {
             date = binding.dateEditText.text.toString(),
             time = binding.timeEditText.text.toString(),
             createdBy = auth.currentUser?.uid.orEmpty(),
-            categoryId = categories[binding.categorySpinner.selectedItemPosition].id,
-            partyId = parties[binding.partySpinner.selectedItemPosition].id
+
+            // ✅ STORE ONLY IDS
+            categoryId = selectedCategory.id,
+            partyId = selectedParty.id
         )
 
-        val transactionRef = database.reference.child("transactions").child(notebookId!!).push()
-        transactionRef.setValue(newTransaction).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                Toast.makeText(this, "Transaction saved.", Toast.LENGTH_SHORT).show()
+
+        val transactionRef =
+            database.reference.child("transactions").child(notebookId!!).push()
+
+        newTransaction.id = transactionRef.key ?: ""
+
+        transactionRef.setValue(newTransaction)
+            .addOnSuccessListener {
+                Toast.makeText(this, "Transaction saved", Toast.LENGTH_SHORT).show()
                 finish()
-            } else {
-                Toast.makeText(this, "Failed to save transaction: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
             }
-        }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed: ${it.message}", Toast.LENGTH_SHORT).show()
+            }
     }
+
 }

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.cashbk.app.data.model.Business
 import com.cashbk.app.databinding.DialogSelectBusinessBinding
 import com.cashbk.app.databinding.ItemBusinessSelectionBinding
+import com.cashbk.app.fragment.AddBusinessFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -38,9 +39,8 @@ class BusinessSelectionBottomSheet(
         fetchBusinesses()
 
         binding.btnAddNewBusiness.setOnClickListener {
-            Toast.makeText(requireContext(), "Add Business Clicked", Toast.LENGTH_SHORT).show()
-            dismiss()
-            // Logic to open Add Business Dialog can be added here or via interface
+            val dialog = AddBusinessFragment()
+            dialog.show(parentFragmentManager, "AddBusinessDialog")
         }
     }
 
@@ -67,7 +67,7 @@ class BusinessSelectionBottomSheet(
                         bus?.id = child.key.orEmpty()
                         bus?.let { businessList.add(it) }
                     }
-                    // Fetch shared businesses checking logic omitted for brevity, can be added
+                    // Fetch shared businesses checking logic omitted for brevidty, can be aded
                     adapter.notifyDataSetChanged()
                 }
 

@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     android:background="@color/bg_color">
 
     <LinearLayout
@@ -19,6 +18,26 @@
             android:orientation="vertical"
             android:elevation="6dp"
             android:clipToOutline="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/cancelButton"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:padding="4dp"
+                    android:src="@drawable/ic_close"
+                    android:tint="@color/text_color" />
+            </LinearLayout>
+
 
             <!-- CASH IN / CASH OUT -->
             <com.google.android.material.button.MaterialButtonToggleGroup
@@ -159,6 +178,7 @@
                 android:id="@+id/category_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                style="@style/GlassSpinner"
                 android:background="@drawable/bg_glass_field"
                 android:padding="10dp"
                 android:layout_marginTop="8dp" />
@@ -184,6 +204,7 @@
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_weight="1"
+                    style="@style/GlassSpinner"
                     android:background="@drawable/bg_glass_field"
                     android:padding="10dp" />
 
@@ -198,29 +219,34 @@
                     android:tint="@color/primary_color" />
             </LinearLayout>
 
-
-            <!-- SAVE BUTTON -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/save_button"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="26dp"
-                android:text="Save Transaction"
-                android:textAllCaps="false"
-                android:textColor="@color/text_color"
-                app:backgroundTint="@color/primary_color"
-                style="@style/Widget.MaterialComponents.Button" />
-
-
-            <!-- CANCEL -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/cancel_button"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Cancel"
-                android:textColor="@color/text_color"
-                android:layout_marginTop="8dp"
-                style="@style/Widget.MaterialComponents.Button.TextButton" />
+                android:layout_marginTop="24dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/save_button"
+                    android:layout_width="0dp"
+                    android:layout_height="46dp"
+                    android:layout_weight="1"
+                    android:text="Save"
+                    android:textAllCaps="false"
+                    app:backgroundTint="@color/primary_color" />
+
+                <Space
+                    android:layout_width="12dp"
+                    android:layout_height="1dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/save_add_more_button"
+                    android:layout_width="0dp"
+                    android:layout_height="46dp"
+                    android:layout_weight="1"
+                    android:text="Add More"
+                    android:textAllCaps="false"
+                    app:backgroundTint="@color/success" />
+            </LinearLayout>
 
         </LinearLayout>
 

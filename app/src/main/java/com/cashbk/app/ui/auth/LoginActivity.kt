@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import com.cashbk.app.databinding.ActivityLoginBinding
-import com.cashbk.app.ui.dashboard.DashboardActivity
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
@@ -30,7 +29,7 @@ class LoginActivity : AppCompatActivity() {
 
         // Already logged in
         if (auth.currentUser != null) {
-            startActivity(Intent(this, DashboardActivity::class.java))
+            startActivity(Intent(this, com.cashbk.app.ui.business.BusinessDetailActivity::class.java))
             finish()
             return
         }
@@ -110,7 +109,7 @@ class LoginActivity : AppCompatActivity() {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(applicationContext, "Login successful", Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this, DashboardActivity::class.java))
+                    startActivity(Intent(this, com.cashbk.app.ui.business.BusinessDetailActivity::class.java))
                     finish()
 
                 } else {

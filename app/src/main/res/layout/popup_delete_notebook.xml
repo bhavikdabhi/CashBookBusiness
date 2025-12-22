@@ -1,0 +1,62 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="260dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/bg_popup_menu">
+
+    <!-- Top Row -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delete Notebook"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@color/text_color" />
+
+        <ImageView
+            android:id="@+id/btnClose"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_close"
+            app:tint="@color/text_color" />
+    </RelativeLayout>
+
+    <!-- Notebook Name -->
+    <TextView
+        android:id="@+id/tvNotebookName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Notebook Name"
+        android:textColor="@color/text_disabled"
+        android:textStyle="bold" />
+
+    <!-- Warning -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="This will permanently delete this notebook and its data."
+        android:textColor="@color/text_entryBy"
+        android:layout_marginTop="6dp" />
+
+    <!-- Delete Button -->
+    <Button
+        android:id="@+id/btnDelete"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text="DELETE"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        style="@style/DangerButton"
+        />
+</LinearLayout>

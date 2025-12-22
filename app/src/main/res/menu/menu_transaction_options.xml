@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_edit"
+        android:title="Edit"
+        android:icon="@drawable/ic_action_edit"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_delete"
+        android:title="Delete Transaction"
+        android:icon="@drawable/ic_action_delete"
+        android:titleCondensed="Delete"
+        android:iconTint="@color/danger" />
+
+</menu>

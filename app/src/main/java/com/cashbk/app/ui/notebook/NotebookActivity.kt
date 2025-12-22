@@ -1,91 +1,328 @@
 package com.cashbk.app.ui.notebook
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cashbk.app.R
+import com.cashbk.app.data.model.Notebook
 import com.cashbk.app.data.model.Transaction
 import com.cashbk.app.databinding.ActivityNotebookBinding
 import com.cashbk.app.databinding.ItemTransactionBinding
 import com.cashbk.app.ui.transaction.AddTransactionDialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import java.text.NumberFormat
 import java.util.Locale
-import android.content.Intent
 
 class NotebookActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityNotebookBinding
     private lateinit var database: DatabaseReference
     private lateinit var transactionAdapter: TransactionAdapter
+    
+    // Edit Dialog handling
+    private val EDIT_DIALOG_TAG = "EditTransactionDialog"
+
+    // Data Lists and Maps
     private val transactionList = mutableListOf<Transaction>()
+    private val partyMap = mutableMapOf<String, String>()
+    private val categoryMap = mutableMapOf<String, String>()
+    private val userMap = mutableMapOf<String, String>()
+
     private var notebookId: String? = null
     private var currentUserRole: String = "" // "admin", "partner", "writer", "reader"
+    private var currentNetBalance = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityNotebookBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        try {
+            binding = ActivityNotebookBinding.inflate(layoutInflater)
+            setContentView(binding.root)
 
-        notebookId = intent.getStringExtra("notebookId")
-        Log.d("NotebookActivity", "Received notebookId: $notebookId")
+            notebookId = intent.getStringExtra("notebookId")
+            Log.d("NotebookActivity", "Received notebookId: $notebookId")
 
-        if (notebookId.isNullOrEmpty()) {
-            Toast.makeText(this, "Notebook ID is missing. Cannot load transactions.", Toast.LENGTH_LONG).show()
-            finish()
-            return
-        }
+            if (notebookId.isNullOrEmpty()) {
+                Toast.makeText(this, "Notebook ID is missing.", Toast.LENGTH_LONG).show()
+                finish()
+                return
+            }
 
-        database = FirebaseDatabase.getInstance().reference.child("transactions").child(notebookId!!)
+            // Initialize Firebase Reference
+            database = FirebaseDatabase.getInstance().reference.child("transactions").child(notebookId!!)
 
-        setupRecyclerView()
-        fetchTransactions()
-        checkUserRole()
+            // Setup UI
+            setupRecyclerView()
 
-        binding.addTransactionFab.setOnClickListener {
-            val addTransactionDialog = AddTransactionDialogFragment()
-            val args = Bundle()
-            args.putString("notebookId", notebookId)
-            addTransactionDialog.arguments = args
-            addTransactionDialog.show(supportFragmentManager, "AddTransactionDialog")
-        }
+            // Fetch Data
+            fetchParties()
+            fetchCategories()
+            fetchUsers()
+            fetchTransactions() // Loads transactions real-time
 
-        binding.btnMenu.setOnClickListener {
-            showMenu(it)
+            // Check Access & Notebook Details
+            checkUserRole()
+            fetchNotebookDetails()
+
+            // Click Listeners
+            binding.btnMenu.setOnClickListener { showMenu(it) }
+            binding.btnCashIn.setOnClickListener { showAddTransactionDialog("in") }
+            binding.btnCashOut.setOnClickListener { showAddTransactionDialog("out") }
+          //  binding.ivBack.setOnClickListener { finish() }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+            Log.e("NotebookActivity", "Crash in onCreate", e)
         }
     }
 
-    private fun showMenu(view: android.view.View) {
-        val wrapper = android.view.ContextThemeWrapper(this, R.style.PopupMenuTheme)
+    /**
+     * This function updates the names in the transaction list
+     * using the data currently available in partyMap and categoryMap,
+     * then refreshes the RecyclerView.
+     */
+    private fun refreshTransactionData() {
+        if (transactionList.isEmpty()) return
+
+        transactionList.forEach { t ->
+            // Update Party Name
+            t.partyName = partyMap[t.partyId] ?: ""
+
+            // Update Category Name
+            t.categoryName = categoryMap[t.categoryId] ?: ""
+
+            // Update CreatedBy Name
+            t.createdByName = userMap[t.createdBy] ?: "You"
+        }
+
+        transactionAdapter.notifyDataSetChanged()
+    }
+
+    private fun fetchNotebookDetails() {
+        FirebaseDatabase.getInstance().reference.child("notebooks").child(notebookId!!).get()
+            .addOnSuccessListener { snapshot ->
+                val notebook = snapshot.getValue(Notebook::class.java)
+                binding.tvTitle.text = notebook?.name ?: "Notebook"
+                binding.tvSubtitle.text = "Manage your daily entries"
+            }
+    }
+
+    private fun fetchParties() {
+        FirebaseDatabase.getInstance().reference
+            .child("parties")
+            .child(notebookId!!)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    partyMap.clear()
+                    snapshot.children.forEach {
+                        val id = it.key ?: return@forEach
+                        val name = it.child("name").getValue(String::class.java) ?: ""
+                        partyMap[id] = name
+                    }
+                    // FIX: Refresh list immediately after parties are loaded
+                    refreshTransactionData()
+                }
+
+                override fun onCancelled(error: DatabaseError) {}
+            })
+    }
+
+    private fun fetchCategories() {
+        FirebaseDatabase.getInstance().reference
+            .child("categories")
+            .child(notebookId!!)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    categoryMap.clear()
+                    snapshot.children.forEach {
+                        val id = it.key ?: return@forEach
+                        val name = it.child("name").getValue(String::class.java) ?: ""
+                        categoryMap[id] = name
+                    }
+                    // FIX: Refresh list immediately after categories are loaded
+                    refreshTransactionData()
+                }
+
+                override fun onCancelled(error: DatabaseError) {}
+            })
+    }
+
+    private fun fetchUsers() {
+        FirebaseDatabase.getInstance().reference
+            .child("users")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    userMap.clear()
+                    snapshot.children.forEach {
+                        val uid = it.key ?: return@forEach
+                        val name = it.child("name").getValue(String::class.java) ?: "You"
+                        userMap[uid] = name
+                    }
+                    // FIX: Refresh list immediately after users are loaded
+                    refreshTransactionData()
+                }
+
+                override fun onCancelled(error: DatabaseError) {}
+            })
+    }
+
+    private fun fetchTransactions() {
+        database.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val tempTransactions = mutableListOf<Transaction>()
+                if (snapshot.exists()) {
+                    for (child in snapshot.children) {
+                        try {
+                            val t = child.getValue(Transaction::class.java)
+                            t?.id = child.key.orEmpty()
+                            t?.let { tempTransactions.add(it) }
+                        } catch (e: Exception) { e.printStackTrace() }
+                    }
+                }
+
+                // 1. Sort by CreatedAt ASC to calculate running balance correctly
+                tempTransactions.sortByDescending { getTransactionDateTime(it) }
+
+
+                var balance = 0.0
+                var totalIn = 0.0
+                var totalOut = 0.0
+
+                for (t in tempTransactions) {
+
+                    // Resolve names
+                    t.partyName = partyMap[t.partyId] ?: ""
+                    t.categoryName = categoryMap[t.categoryId] ?: ""
+                    t.createdByName = userMap[t.createdBy] ?: "You"
+
+                    val amount = t.amount   // ✅ IMPORTANT
+
+                    if (t.type == "in") {
+                        balance += amount
+                        totalIn += amount
+                    } else {
+                        balance -= amount
+                        totalOut += amount
+                    }
+
+                    t.runningBalance = balance
+                }
+
+                currentNetBalance = balance
+                updateSummaryUI(balance, totalIn, totalOut, tempTransactions.size)
+
+                // 2. Sort DESC for display (Newest top)
+
+
+                // 3. Update main list
+                transactionList.clear()
+                transactionList.addAll(tempTransactions)
+
+                // 4. Resolve Names (Party/Category) and Update Adapter
+                refreshTransactionData()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@NotebookActivity, "Failed to load: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun updateSummaryUI(balance: Double, totalIn: Double, totalOut: Double, count: Int) {
+        binding.tvNetBalance.text = formatCurrency(balance)
+
+        if (balance >= 0) {
+            binding.tvNetBalance.setTextColor(ContextCompat.getColor(this, R.color.success))
+        } else {
+            binding.tvNetBalance.setTextColor(ContextCompat.getColor(this, R.color.danger))
+        }
+
+        binding.tvTotalIn.text = "+ ${formatCurrency(totalIn)}"
+        binding.tvTotalOut.text = "- ${formatCurrency(totalOut)}"
+        binding.tvEntriesCount.text = "Showing $count entries"
+    }
+
+    private fun showAddTransactionDialog(type: String) {
+        if (currentUserRole == "reader") {
+            Toast.makeText(this, "You have view-only access", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val dialog = AddTransactionDialogFragment()
+        val args = Bundle()
+        args.putString("notebookId", notebookId)
+        args.putString("transactionType", type)
+        dialog.arguments = args
+        dialog.show(supportFragmentManager, "AddTransactionDialog")
+    }
+    
+    private fun showEditTransactionDialog(transaction: Transaction) {
+        if (currentUserRole == "reader") {
+            Toast.makeText(this, "You have view-only access", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val dialog = AddTransactionDialogFragment()
+        val args = Bundle()
+        args.putString("notebookId", notebookId)
+        args.putString("transactionId", transaction.id)
+        args.putDouble("amount", transaction.amount)
+        args.putString("remark", transaction.remark)
+        args.putString("date", transaction.date)
+        args.putString("time", transaction.time)
+        args.putString("type", transaction.type)
+        args.putString("categoryId", transaction.categoryId)
+        args.putString("partyId", transaction.partyId)
+        
+        dialog.arguments = args
+        dialog.show(supportFragmentManager, EDIT_DIALOG_TAG)
+    }
+
+    private fun getTransactionDateTime(transaction: Transaction): Long {
+        return try {
+            val sdf = java.text.SimpleDateFormat(
+                "yyyy-MM-dd hh:mm a",
+                Locale.getDefault()
+            )
+            val dateTime = "${transaction.date} ${transaction.time}"
+            sdf.parse(dateTime)?.time ?: 0L
+        } catch (e: Exception) {
+            0L
+        }
+    }
+
+    private fun setupRecyclerView() {
+        transactionAdapter = TransactionAdapter(transactionList) { transaction ->
+            // Item click (e.g. open details)
+            Log.d("NotebookActivity", "Clicked transaction: ${transaction.id}")
+        }
+
+        binding.transactionsRecyclerView.apply {
+            layoutManager = LinearLayoutManager(this@NotebookActivity)
+            adapter = transactionAdapter
+            setHasFixedSize(true)
+        }
+    }
+
+    private fun showMenu(view: View) {
+        val wrapper = ContextThemeWrapper(this, R.style.PopupMenuTheme)
         val popup = PopupMenu(wrapper, view)
         popup.menuInflater.inflate(R.menu.menu_notebook_options, popup.menu)
 
-        // Role check
-        if (currentUserRole != "admin" && currentUserRole != "partner") {
-             // Hide all or show limited? User said "when user clikc not three dots that time open a menu that menu data not visible"
-             // Assuming we just want to fix visibility. Logic remains: only owner/partner can act.
-             // If neither, maybe we shouldn't even show the button (already handled in adapter).
-             // But if we are here, we show options.
-        }
-
         popup.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.action_rename -> {
-                    Toast.makeText(this, "Rename clicked", Toast.LENGTH_SHORT).show()
-                    true
-                }
-                R.id.action_delete -> {
-                    Toast.makeText(this, "Delete clicked", Toast.LENGTH_SHORT).show()
-                    true
-                }
+                R.id.action_rename -> { Toast.makeText(this, "Rename clicked", Toast.LENGTH_SHORT).show(); true }
+                R.id.action_delete -> { Toast.makeText(this, "Delete clicked", Toast.LENGTH_SHORT).show(); true }
                 R.id.action_share -> {
                     val intent = Intent(this, com.cashbk.app.ui.members.MembersActivity::class.java)
                     intent.putExtra("entityId", notebookId)
@@ -101,127 +338,103 @@ class NotebookActivity : AppCompatActivity() {
 
     private fun checkUserRole() {
         val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        FirebaseDatabase.getInstance().reference.child("notebooks").child(notebookId!!).get()
+            .addOnSuccessListener { notebookSnapshot ->
+                val businessId = notebookSnapshot.child("businessId").value as? String ?: return@addOnSuccessListener
 
-        FirebaseDatabase.getInstance().reference.child("notebooks").child(notebookId!!).get().addOnSuccessListener { notebookSnapshot ->
-            val businessId = notebookSnapshot.child("businessId").value as? String ?: return@addOnSuccessListener
-            
-            // 2. Check if Owner (Admin)
-            FirebaseDatabase.getInstance().reference.child("businesses").child(businessId).get().addOnSuccessListener { businessSnapshot ->
-                val ownerId = businessSnapshot.child("ownerId").value as? String
-                
-                if (ownerId == currentUserId) {
-                    currentUserRole = "admin"
-                    updateUI()
-                } else {
-                    // 3. Check if Partner in business_members
-                    FirebaseDatabase.getInstance().reference.child("business_members").child(businessId).child(currentUserId).get().addOnSuccessListener { partnerSnapshot ->
-                        if (partnerSnapshot.exists() && partnerSnapshot.child("role").value == "partner") {
-                            currentUserRole = "partner"
-                            updateUI()
+                FirebaseDatabase.getInstance().reference.child("businesses").child(businessId).get()
+                    .addOnSuccessListener { businessSnapshot ->
+                        val ownerId = businessSnapshot.child("ownerId").value as? String
+                        if (ownerId == currentUserId) {
+                            currentUserRole = "admin"
+                            updateUIForRole()
                         } else {
-                            // 4. Check if Notebook Member in members/{notebookId}/{uid}
-                            checkNotebookMemberRole(currentUserId)
+                            FirebaseDatabase.getInstance().reference.child("business_members")
+                                .child(businessId).child(currentUserId).get().addOnSuccessListener { pSnap ->
+                                    if (pSnap.exists() && pSnap.child("role").value == "partner") {
+                                        currentUserRole = "partner"
+                                        updateUIForRole()
+                                    } else {
+                                        FirebaseDatabase.getInstance().reference.child("members")
+                                            .child(notebookId!!).child(currentUserId).get().addOnSuccessListener { mSnap ->
+                                                if (mSnap.exists()) {
+                                                    currentUserRole = mSnap.child("role").value as? String ?: ""
+                                                    updateUIForRole()
+                                                }
+                                            }
+                                    }
+                                }
                         }
                     }
-                }
             }
+    }
+
+    private fun updateUIForRole() {
+        if (currentUserRole == "reader") {
+            binding.btnCashIn.alpha = 0.5f
+            binding.btnCashOut.alpha = 0.5f
+        } else {
+            binding.btnCashIn.alpha = 1.0f
+            binding.btnCashOut.alpha = 1.0f
         }
     }
 
-    private fun checkNotebookMemberRole(uid: String) {
-        FirebaseDatabase.getInstance().reference.child("members").child(notebookId!!).child(uid).get().addOnSuccessListener { snapshot ->
-            if (snapshot.exists()) {
-                val role = snapshot.child("role").value as? String
-                if (role != null) {
-                    currentUserRole = role
-                    updateUI()
-                }
-            }
-        }
-    }
+    private fun showTransactionPopupMenu(anchor: View, transaction: Transaction) {
+        val wrapper = ContextThemeWrapper(this, R.style.PopupMenuTheme)
+        val popup = PopupMenu(wrapper, anchor)
+        popup.menuInflater.inflate(R.menu.menu_transaction_options, popup.menu)
 
-    private fun updateUI() {
-        Log.d("NotebookActivity", "User Role: $currentUserRole")
-        when (currentUserRole) {
-            "admin", "partner" -> {
-                binding.addTransactionFab.visibility = android.view.View.VISIBLE
-                binding.btnMenu.visibility = android.view.View.VISIBLE
-            }
-            "writer" -> {
-                binding.addTransactionFab.visibility = android.view.View.VISIBLE
-                binding.btnMenu.visibility = android.view.View.GONE // Can't manage notebook
-            }
-            "reader" -> {
-                binding.addTransactionFab.visibility = android.view.View.GONE
-                binding.btnMenu.visibility = android.view.View.GONE // Can't manage notebook
-            }
-        }
-        transactionAdapter.notifyDataSetChanged()
-    }
+        // Force show icons via reflection
+        try {
+            val field = popup.javaClass.getDeclaredField("mPopup")
+            field.isAccessible = true
+            val helper = field.get(popup)
+            val clazz = Class.forName(helper.javaClass.name)
+            val setForceIcons = clazz.getMethod("setForceShowIcon", Boolean::class.javaPrimitiveType)
+            setForceIcons.invoke(helper, true)
+        } catch (e: Exception) { e.printStackTrace() }
 
-    private fun setupRecyclerView() {
-        transactionAdapter = TransactionAdapter(transactionList) { transaction ->
-            if (currentUserRole == "reader") {
-                Toast.makeText(this, "View Only: ${transaction.remark}", Toast.LENGTH_SHORT).show()
-            } else {
-                showTransactionOptions(transaction)
+        // Tint icons
+        for (i in 0 until popup.menu.size()) {
+            val item = popup.menu.getItem(i)
+            item.icon?.let { icon ->
+                val wrapped = DrawableCompat.wrap(icon).mutate()
+                DrawableCompat.setTint(wrapped, ContextCompat.getColor(this, R.color.text_color))
+                item.icon = wrapped
             }
         }
-        binding.transactionsRecyclerView.apply {
-            layoutManager = LinearLayoutManager(this@NotebookActivity)
-            adapter = transactionAdapter
-        }
-    }
 
-    private fun showTransactionOptions(transaction: Transaction) {
-        val options = arrayOf("Delete Transaction")
-        AlertDialog.Builder(this)
-            .setTitle("Options")
-            .setItems(options) { _, which ->
-                if (which == 0) {
+        popup.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_delete -> {
                     deleteTransaction(transaction)
+                    true
                 }
+                R.id.action_edit -> {
+                    showEditTransactionDialog(transaction)
+                    true
+                }
+                else -> false
             }
-            .show()
+        }
+        popup.show()
     }
 
     private fun deleteTransaction(transaction: Transaction) {
         database.child(transaction.id).removeValue()
-            .addOnSuccessListener {
-                Toast.makeText(this, "Transaction deleted", Toast.LENGTH_SHORT).show()
-            }
-            .addOnFailureListener {
-                Toast.makeText(this, "Failed to delete", Toast.LENGTH_SHORT).show()
-            }
+            .addOnSuccessListener { Toast.makeText(this, "Deleted", Toast.LENGTH_SHORT).show() }
+            .addOnFailureListener { Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show() }
     }
 
-    private fun fetchTransactions() {
-        database.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                transactionList.clear()
-                if (snapshot.exists()) {
-                    for (transactionSnapshot in snapshot.children) {
-                        try {
-                            val transaction = transactionSnapshot.getValue(Transaction::class.java)
-                            transaction?.id = transactionSnapshot.key.orEmpty()
-                            transaction?.let { transactionList.add(it) }
-                        } catch (e: DatabaseException) {
-                            Log.e("NotebookActivity", "Error converting transaction: ${transactionSnapshot.key}", e)
-                        }
-                    }
-                } else {
-                    Toast.makeText(this@NotebookActivity, "No transactions found.", Toast.LENGTH_SHORT).show()
-                }
-                transactionAdapter.notifyDataSetChanged()
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(this@NotebookActivity, "Failed to load transactions: ${error.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
+    private fun formatCurrency(amount: Double): String {
+        return NumberFormat.getNumberInstance(Locale("en", "IN")).format(amount)
     }
 
-    inner class TransactionAdapter(private val transactions: List<Transaction>, private val onClick: (Transaction) -> Unit) : RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder>() {
+    // --- INNER ADAPTER CLASS ---
+    inner class TransactionAdapter(
+        private val transactions: List<Transaction>,
+        private val onClick: (Transaction) -> Unit
+    ) : RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder>() {
 
         inner class TransactionViewHolder(val binding: ItemTransactionBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -232,17 +445,63 @@ class NotebookActivity : AppCompatActivity() {
 
         override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) {
             val transaction = transactions[position]
-            holder.binding.tvRemark.text = transaction.remark
-            holder.binding.tvAmount.text = transaction.getAmountAsDouble().toString()
-            holder.binding.tvDate.text = transaction.date
-            holder.binding.tvTime.text = transaction.time
-            holder.binding.tvType.text = "Type: ${transaction.type.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }}"
-           holder.binding.tvCreatedBy.text = "By: ${transaction.createdBy}"
+            val context = holder.itemView.context
 
-            val colorRes = if (transaction.type == "in") R.color.success else R.color.danger
-            holder.binding.tvAmount.setTextColor(ContextCompat.getColor(holder.itemView.context, colorRes))
+            // DATE HEADER logic
+            val showHeader = position == 0 || transaction.date != transactions[position - 1].date
+            if (showHeader) {
+                holder.binding.tvDateHeader.visibility = View.VISIBLE
+                holder.binding.tvDateHeader.text = transaction.date
+            } else {
+                holder.binding.tvDateHeader.visibility = View.GONE
+            }
 
+            // REMARK
+            holder.binding.tvRemark.text = if (transaction.remark.isNotEmpty()) transaction.remark else "Transaction"
+
+            // PARTY NAME logic (Correctly hiding if empty)
+            if (transaction.partyName.isNotEmpty()) {
+                holder.binding.tvParty.text = transaction.partyName
+                holder.binding.tvParty.visibility = View.VISIBLE
+            } else {
+                // If you want to show "Party" when no name exists, use:
+                // holder.binding.tvParty.text = "Party"
+                // holder.binding.tvParty.visibility = View.VISIBLE
+
+                // OR if you want to hide it completely:
+                holder.binding.tvParty.visibility = View.GONE
+            }
+
+            // CATEGORY CHIP logic
+            if (transaction.categoryName.isNotEmpty()) {
+                holder.binding.tvCategoryChip.text = transaction.categoryName
+                holder.binding.tvCategoryChip.visibility = View.VISIBLE
+            } else {
+                holder.binding.tvCategoryChip.visibility = View.GONE
+            }
+
+            // AMOUNT COLORING
+            val amount = transaction.amount
+            holder.binding.tvAmount.text = formatCurrency(amount)
+            holder.binding.tvAmount.setTextColor(
+                ContextCompat.getColor(context, if (transaction.type == "in") R.color.success else R.color.danger)
+            )
+
+            // RUNNING BALANCE
+            holder.binding.tvBalanceAfter.text = "Balance: ${formatCurrency(transaction.runningBalance)}"
+
+            // ENTRY INFO
+            val entryBy = if (transaction.createdByName.isNotEmpty()) transaction.createdByName else "You"
+            holder.binding.tvEntryInfo.text = "Entry by $entryBy at ${transaction.time}"
+
+            // CLICKS
             holder.itemView.setOnClickListener { onClick(transaction) }
+            holder.itemView.setOnLongClickListener {
+                if (currentUserRole != "reader") {
+                    showTransactionPopupMenu(it, transaction)
+                }
+                true
+            }
         }
 
         override fun getItemCount() = transactions.size
