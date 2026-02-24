@@ -11,10 +11,10 @@
         android:id="@+id/tvDateHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingVertical="8dp"
+        android:paddingVertical="@dimen/_6sdp"
         android:text="06 October 2025"
         android:textColor="@color/text_secondary"
-        android:textSize="12sp"
+        android:textSize="@dimen/_10ssp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -24,20 +24,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardBackgroundColor="@color/card_bg"
-        android:layout_marginTop="5dp"
-        app:cardCornerRadius="14dp"
-        app:contentPaddingLeft="10dp"
-        app:contentPaddingRight="10dp"
+        android:layout_marginTop="@dimen/_4sdp"
+        app:cardCornerRadius="@dimen/_10sdp"
+        app:contentPaddingLeft="@dimen/_8sdp"
+        app:contentPaddingRight="@dimen/_8sdp"
         app:layout_constraintTop_toBottomOf="@+id/tvDateHeader"
         app:strokeColor="@color/glass_border"
-        app:strokeWidth="1dp">
+        app:strokeWidth="@dimen/_1sdp">
         <!-- TRANSACTION CARD -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cardContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/card_bg"
-            android:paddingVertical="8dp"
+            android:paddingVertical="@dimen/_6sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvDateHeader">
@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:text="Party"
                 android:textColor="@color/text_color"
-                android:textSize="16sp"
+                android:textSize="@dimen/_14ssp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toStartOf="@id/tvAmount"
                 app:layout_constraintStart_toStartOf="parent"
@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:text="251"
                 android:textColor="@color/success"
-                android:textSize="16sp"
+                android:textSize="@dimen/_14ssp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tvParty" />
@@ -72,10 +72,10 @@
                 android:id="@+id/tvBalanceAfter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="@dimen/_3sdp"
                 android:text="Balance: 2,157"
                 android:textColor="@color/text_secondary"
-                android:textSize="12sp"
+                android:textSize="@dimen/_10ssp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvAmount" />
 
@@ -84,10 +84,10 @@
                 android:id="@+id/tvRemark"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="@dimen/_3sdp"
                 android:text="Transaction Remark"
                 android:textColor="#a3abbd"
-                android:textSize="12sp"
+                android:textSize="@dimen/_10ssp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvParty" />
@@ -98,11 +98,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_category_chip"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="3dp"
+                android:paddingHorizontal="@dimen/_6sdp"
+                android:paddingVertical="@dimen/_2sdp"
                 android:text="Category"
                 android:textColor="@color/text_disabled"
-                android:textSize="12sp"
+                android:textSize="@dimen/_10ssp"
                 app:chipBackgroundColor="@color/card_bg"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvRemark" />
@@ -113,7 +113,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/glass_border"
-                android:layout_marginBottom="2dp"
+                android:layout_marginBottom="@dimen/_2sdp"
                 app:layout_constraintTop_toBottomOf="@id/tvCategoryChip"
                 />
 
@@ -123,8 +123,8 @@
                 android:layout_height="wrap_content"
                 android:text="Entry by You at 1:05 pm"
                 android:textColor="@color/text_entryBy"
-                android:textSize="12sp"
-                android:layout_marginTop="3dp"
+                android:textSize="@dimen/_10ssp"
+                android:layout_marginTop="@dimen/_3sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ViewLine" />
 

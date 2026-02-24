@@ -13,10 +13,10 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="20dp"
+            android:padding="@dimen/_16sdp"
             android:background="@drawable/bg_glass_card"
             android:orientation="vertical"
-            android:elevation="6dp"
+            android:elevation="@dimen/_4sdp"
             android:clipToOutline="true">
 
             <LinearLayout
@@ -31,9 +31,9 @@
 
                 <ImageView
                     android:id="@+id/cancelButton"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:padding="4dp"
+                    android:layout_width="@dimen/_24sdp"
+                    android:layout_height="@dimen/_24sdp"
+                    android:padding="@dimen/_4sdp"
                     android:src="@drawable/ic_close"
                     android:tint="@color/text_color" />
             </LinearLayout>
@@ -44,14 +44,14 @@
                 android:id="@+id/toggle_button_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="@dimen/_16sdp"
                 app:singleSelection="true"
                 app:selectionRequired="true">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/cash_in_button"
                     android:layout_width="0dp"
-                    android:layout_height="48dp"
+                    android:layout_height="@dimen/_42sdp"
                     android:layout_weight="1"
                     android:text="Cash In"
                     android:textColor="@color/success"
@@ -62,7 +62,7 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/cash_out_button"
                     android:layout_width="0dp"
-                    android:layout_height="48dp"
+                    android:layout_height="@dimen/_42sdp"
                     android:layout_weight="1"
                     android:text="Cash Out"
                     android:textColor="@color/danger"
@@ -97,12 +97,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:focusable="false"
+                        android:clickable="true"
+                        android:cursorVisible="false"
                         android:textColor="@color/text_color" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- SPACE -->
                 <Space
-                    android:layout_width="10dp"
+                    android:layout_width="@dimen/_10sdp"
                     android:layout_height="1dp" />
 
                 <!-- TIME -->
@@ -122,6 +124,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:focusable="false"
+                        android:clickable="true"
+                        android:cursorVisible="false"
                         android:textColor="@color/text_color" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -134,7 +138,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Amount"
                 app:hintTextColor="@color/text_color"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/_12sdp"
                 style="@style/GlassInput">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -152,7 +156,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Remark"
                 app:hintTextColor="@color/text_color"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/_12sdp"
                 style="@style/GlassInput">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -169,19 +173,19 @@
                 android:text="Category"
                 android:textColor="@color/text_color"
                 android:textStyle="bold"
-                android:textSize="14sp"
+                android:textSize="@dimen/_12ssp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp" />
+                android:layout_marginTop="@dimen/_16sdp" />
 
             <Spinner
                 android:id="@+id/category_spinner"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="@dimen/_42sdp"
                 style="@style/GlassSpinner"
                 android:background="@drawable/bg_glass_field"
-                android:padding="10dp"
-                android:layout_marginTop="8dp" />
+                android:padding="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_6sdp" />
 
 
             <!-- PARTY + PLUS BUTTON -->
@@ -189,10 +193,10 @@
                 android:text="Party"
                 android:textColor="@color/text_color"
                 android:textStyle="bold"
-                android:textSize="14sp"
+                android:textSize="@dimen/_12ssp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp" />
+                android:layout_marginTop="@dimen/_16sdp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -202,18 +206,18 @@
                 <Spinner
                     android:id="@+id/party_spinner"
                     android:layout_width="0dp"
-                    android:layout_height="50dp"
+                    android:layout_height="@dimen/_42sdp"
                     android:layout_weight="1"
                     style="@style/GlassSpinner"
                     android:background="@drawable/bg_glass_field"
-                    android:padding="10dp" />
+                    android:padding="@dimen/_8sdp" />
 
                 <ImageView
                     android:id="@+id/add_party_button"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_marginLeft="10dp"
-                    android:padding="10dp"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:padding="@dimen/_8sdp"
                     android:background="@drawable/bg_glass_field"
                     android:src="@drawable/ic_add"
                     android:tint="@color/primary_color" />
@@ -222,26 +226,26 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="@dimen/_20sdp"
                 android:orientation="horizontal">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/save_button"
                     android:layout_width="0dp"
-                    android:layout_height="46dp"
+                    android:layout_height="@dimen/_42sdp"
                     android:layout_weight="1"
                     android:text="Save"
                     android:textAllCaps="false"
                     app:backgroundTint="@color/primary_color" />
 
                 <Space
-                    android:layout_width="12dp"
+                    android:layout_width="@dimen/_10sdp"
                     android:layout_height="1dp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/save_add_more_button"
                     android:layout_width="0dp"
-                    android:layout_height="46dp"
+                    android:layout_height="@dimen/_42sdp"
                     android:layout_weight="1"
                     android:text="Add More"
                     android:textAllCaps="false"

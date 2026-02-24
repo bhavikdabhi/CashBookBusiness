@@ -13,7 +13,7 @@ import androidx.fragment.app.DialogFragment
 import com.cashbk.app.data.model.Category
 import com.cashbk.app.data.model.Party
 import com.cashbk.app.data.model.Transaction
-import com.cashbk.app.databinding.ActivityAddTransactionBinding
+import com.cashbk.app.databinding.DialogAddTransactionBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import java.text.SimpleDateFormat
@@ -21,7 +21,7 @@ import java.util.*
 
 class AddTransactionDialogFragment : DialogFragment() {
 
-    private var _binding: ActivityAddTransactionBinding? = null
+    private var _binding: DialogAddTransactionBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var database: FirebaseDatabase
@@ -45,7 +45,7 @@ class AddTransactionDialogFragment : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = ActivityAddTransactionBinding.inflate(inflater, container, false)
+        _binding = DialogAddTransactionBinding.inflate(inflater, container, false)
         return binding.root
     }
 

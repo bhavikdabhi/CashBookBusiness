@@ -11,6 +11,7 @@ import com.cashbk.app.data.model.Business
 import com.cashbk.app.databinding.ActivityBusinessDetailBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.cashbk.app.fragment.ManagePartnersFragment
 
 class BusinessDetailActivity : AppCompatActivity() {
 
@@ -59,10 +60,11 @@ class BusinessDetailActivity : AppCompatActivity() {
         
         binding.btnAddPartner.setOnClickListener {
              if (!currentBusinessId.isNullOrEmpty()) {
-                 val intent = Intent(this, com.cashbk.app.ui.members.MembersActivity::class.java)
-                 intent.putExtra("entityId", currentBusinessId)
-                 intent.putExtra("entityType", "business")
-                 startActivity(intent)
+                 val fragment = ManagePartnersFragment()
+                 val bundle = Bundle()
+                 bundle.putString("businessId", currentBusinessId)
+                 fragment.arguments = bundle
+                 loadFragment(fragment)
              }
         }
     }

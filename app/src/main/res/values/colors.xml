@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
     <!-- Primary -->
     <color name="primary_color">#6366F1</color>
     <color name="primary_hover">#4F46E5</color>
@@ -12,7 +14,6 @@
     <color name="text_secondary">#F8FAFC</color>
     <color name="text_disabled">#89d87f</color>
     <color name="text_entryBy">#00808b</color>
-
 
     <!-- Glass UI -->
     <color name="glass_bg">#1E293B</color> <!-- use with alpha -->

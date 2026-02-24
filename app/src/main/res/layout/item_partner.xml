@@ -1,26 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="16dp"
+    android:padding="12dp"
     android:gravity="center_vertical"
-    android:background="?attr/selectableItemBackground">
+    android:background="@drawable/bg_glass_card">
 
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:backgroundTint="#E3F2FD"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="0dp">
+        android:id="@+id/icon_card"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="#E3F2FD">
 
         <ImageView
+            android:id="@+id/iv_partner_image"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/ic_book" 
             android:layout_gravity="center"
+            android:src="@drawable/ic_action_group"
             app:tint="@color/primary_color"/>
+
     </com.google.android.material.card.MaterialCardView>
 
     <LinearLayout
@@ -31,29 +35,30 @@
         android:layout_marginStart="16dp">
 
         <TextView
-            android:id="@+id/business_name"
+            android:id="@+id/tv_partner_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Business Name"
+            tools:text="Partner Name"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="@color/text_secondary"/>
+            android:textColor="@android:color/white"/>
 
         <TextView
-            android:id="@+id/business_role"
+            android:id="@+id/tv_partner_role"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Owner . 2 Books"
-            android:textSize="12sp"
-            android:textColor="@color/text_disabled"/>
+            tools:text="Partner"
+            android:textSize="14sp"
+            android:textColor="@android:color/darker_gray"/>
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/selected_check"
+        android:id="@+id/btn_remove_partner"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:src="@drawable/ic_true"
-        app:tint="@color/success"
-        android:visibility="gone"/>
+        android:src="@drawable/ic_action_delete"
+        app:tint="@android:color/holo_red_dark"
+        android:padding="4dp"
+        android:background="?attr/selectableItemBackgroundBorderless"/>
 
 </LinearLayout>

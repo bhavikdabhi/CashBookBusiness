@@ -11,19 +11,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Manage Partners"
-        android:textSize="24sp"
+        android:textSize="@dimen/_20ssp"
         android:textStyle="bold"
-        android:padding="16dp"
+        android:padding="@dimen/_12sdp"
         android:background="?attr/colorPrimary" 
         android:textColor="@android:color/white"
-        android:elevation="4dp"/>
+        android:elevation="@dimen/_3sdp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/partners_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/tv_title"
-        android:padding="8dp"
+        android:padding="@dimen/_6sdp"
         tools:listitem="@layout/item_partner"/>
 
     <TextView
@@ -40,8 +40,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_add"
-        app:tint="@android:color/white"/>
+        android:layout_margin="@dimen/_12sdp"
+        android:backgroundTint="@color/primary_color"
+        android:icon="@drawable/ic_add"
+        android:textColor="@color/white"
+        app:iconTint="@color/white"/>
 
 </RelativeLayout>
