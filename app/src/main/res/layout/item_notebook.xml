@@ -5,16 +5,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="12dp"
-    android:paddingStart="12dp"
+    android:paddingTop="@dimen/_12sdp"
+    android:paddingStart="@dimen/_12sdp"
     android:background="?attr/selectableItemBackground">
 
     <!-- Icon -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/icon_card"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        app:cardCornerRadius="24dp"
+        android:layout_width="@dimen/_48sdp"
+        android:layout_height="@dimen/_48sdp"
+        app:cardCornerRadius="@dimen/_24sdp"
         app:cardElevation="0dp"
         app:cardBackgroundColor="#E3F2FD" 
         app:layout_constraintStart_toStartOf="parent"
@@ -22,8 +22,8 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="@dimen/_24sdp"
+            android:layout_height="@dimen/_24sdp"
             android:layout_gravity="center"
             android:src="@drawable/ic_action_group"
             app:tint="@color/primary_color"/>
@@ -34,8 +34,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginEnd="@dimen/_8sdp"
         app:layout_constraintStart_toEndOf="@id/icon_card"
         app:layout_constraintEnd_toStartOf="@id/tv_balance"
         app:layout_constraintTop_toTopOf="parent"
@@ -46,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="D@Bhi Family"
-            android:textSize="16sp"
+            android:textSize="@dimen/_16ssp"
             android:textStyle="bold"
             android:textColor="@color/text_secondary"
             android:ellipsize="end"
@@ -57,9 +57,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="6 Members . Updated on Oct 06"
-            android:textSize="12sp"
+            android:textSize="@dimen/_12ssp"
             android:textColor="@color/text_entryBy"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="@dimen/_2sdp"
             android:ellipsize="end"
             android:maxLines="1"/>
     </LinearLayout>
@@ -70,10 +70,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="2,157"
-        android:textSize="16sp"
+        android:textSize="@dimen/_16ssp"
         android:textStyle="bold"
         android:textColor="@color/success"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="@dimen/_8sdp"
         app:layout_constraintEnd_toStartOf="@id/btn_notebook_options"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
@@ -85,7 +85,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/icon_threedots"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:paddingEnd="4dp"
+        android:paddingEnd="@dimen/_4sdp"
         app:tint="@color/text_secondary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

@@ -13,7 +13,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/_16sdp"
+            android:padding="@dimen/_12sdp"
             android:background="@drawable/bg_glass_card"
             android:orientation="vertical"
             android:elevation="@dimen/_4sdp"
@@ -26,7 +26,7 @@
 
                 <Space
                     android:layout_width="0dp"
-                    android:layout_height="1dp"
+                    android:layout_height="@dimen/_1sdp"
                     android:layout_weight="1" />
 
                 <ImageView
@@ -54,6 +54,10 @@
                     android:layout_height="@dimen/_42sdp"
                     android:layout_weight="1"
                     android:text="Cash In"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textFontWeight="600"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/_12ssp"
                     android:textColor="@color/success"
                     app:icon="@drawable/ic_date_range"
                     app:iconTint="@color/success"
@@ -65,6 +69,10 @@
                     android:layout_height="@dimen/_42sdp"
                     android:layout_weight="1"
                     android:text="Cash Out"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textFontWeight="600"
+                    android:textSize="@dimen/_12ssp"
+                    android:textAllCaps="false"
                     android:textColor="@color/danger"
                     app:icon="@drawable/ic_date_range"
                     app:iconTint="@color/danger"
@@ -86,7 +94,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:hint="Date"
-                    app:hintTextColor="@color/text_color"
+                    android:textColorHint="@color/gray"
                     style="@style/GlassInput"
                     app:endIconMode="custom"
                     app:endIconDrawable="@drawable/ic_date_range"
@@ -96,16 +104,20 @@
                         android:id="@+id/date_edit_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_regular"
+                        android:textFontWeight="600"
+                        android:textSize="@dimen/_12ssp"
                         android:focusable="false"
                         android:clickable="true"
                         android:cursorVisible="false"
                         android:textColor="@color/text_color" />
+
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- SPACE -->
                 <Space
-                    android:layout_width="@dimen/_10sdp"
-                    android:layout_height="1dp" />
+                    android:layout_width="@dimen/_5sdp"
+                    android:layout_height="@dimen/_1sdp" />
 
                 <!-- TIME -->
                 <com.google.android.material.textfield.TextInputLayout
@@ -113,7 +125,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:hint="Time"
-                    app:hintTextColor="@color/text_color"
+                    android:textColorHint="@color/gray"
                     style="@style/GlassInput"
                     app:endIconMode="custom"
                     app:endIconDrawable="@drawable/ic_time"
@@ -123,6 +135,9 @@
                         android:id="@+id/time_edit_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_regular"
+                        android:textFontWeight="600"
+                        android:textSize="@dimen/_12ssp"
                         android:focusable="false"
                         android:clickable="true"
                         android:cursorVisible="false"
@@ -137,7 +152,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Amount"
-                app:hintTextColor="@color/text_color"
+                android:textColorHint="@color/gray"
                 android:layout_marginTop="@dimen/_12sdp"
                 style="@style/GlassInput">
 
@@ -145,6 +160,9 @@
                     android:id="@+id/amount_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textFontWeight="600"
+                    android:textSize="@dimen/_12ssp"
                     android:inputType="numberDecimal"
                     android:textColor="@color/text_color" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -155,7 +173,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Remark"
-                app:hintTextColor="@color/text_color"
+                android:textColorHint="@color/gray"
                 android:layout_marginTop="@dimen/_12sdp"
                 style="@style/GlassInput">
 
@@ -163,6 +181,9 @@
                     android:id="@+id/remark_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textFontWeight="600"
+                    android:textSize="@dimen/_12ssp"
                     android:textColor="@color/text_color" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -173,19 +194,24 @@
                 android:text="Category"
                 android:textColor="@color/text_color"
                 android:textStyle="bold"
-                android:textSize="@dimen/_12ssp"
+                android:fontFamily="@font/roboto_regular"
+                android:textFontWeight="600"
+                android:textSize="@dimen/_14ssp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_16sdp" />
+                android:layout_marginTop="@dimen/_12sdp" />
 
             <Spinner
                 android:id="@+id/category_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_42sdp"
                 style="@style/GlassSpinner"
+                android:fontFamily="@font/roboto_regular"
+                android:textFontWeight="600"
+                android:textSize="@dimen/_12ssp"
                 android:background="@drawable/bg_glass_field"
                 android:padding="@dimen/_8sdp"
-                android:layout_marginTop="@dimen/_6sdp" />
+                android:layout_marginTop="@dimen/_8sdp" />
 
 
             <!-- PARTY + PLUS BUTTON -->
@@ -193,10 +219,12 @@
                 android:text="Party"
                 android:textColor="@color/text_color"
                 android:textStyle="bold"
-                android:textSize="@dimen/_12ssp"
+                android:fontFamily="@font/roboto_regular"
+                android:textFontWeight="600"
+                android:textSize="@dimen/_14ssp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_16sdp" />
+                android:layout_marginTop="@dimen/_12sdp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -210,7 +238,8 @@
                     android:layout_weight="1"
                     style="@style/GlassSpinner"
                     android:background="@drawable/bg_glass_field"
-                    android:padding="@dimen/_8sdp" />
+                    android:padding="@dimen/_8sdp"
+                    android:layout_marginTop="@dimen/_8sdp"/>
 
                 <ImageView
                     android:id="@+id/add_party_button"
@@ -220,7 +249,9 @@
                     android:padding="@dimen/_8sdp"
                     android:background="@drawable/bg_glass_field"
                     android:src="@drawable/ic_add"
+                    android:layout_marginTop="@dimen/_9sdp"
                     android:tint="@color/primary_color" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -233,6 +264,9 @@
                     android:id="@+id/save_button"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/_42sdp"
+                    android:fontFamily="@font/roboto_bold"
+                    android:textFontWeight="600"
+                    android:textSize="@dimen/_12ssp"
                     android:layout_weight="1"
                     android:text="Save"
                     android:textAllCaps="false"
@@ -240,13 +274,16 @@
 
                 <Space
                     android:layout_width="@dimen/_10sdp"
-                    android:layout_height="1dp" />
+                    android:layout_height="@dimen/_1sdp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/save_add_more_button"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/_42sdp"
                     android:layout_weight="1"
+                    android:fontFamily="@font/roboto_bold"
+                    android:textFontWeight="600"
+                    android:textSize="@dimen/_12ssp"
                     android:text="Add More"
                     android:textAllCaps="false"
                     app:backgroundTint="@color/success" />

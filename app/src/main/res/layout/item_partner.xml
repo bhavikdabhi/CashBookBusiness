@@ -5,22 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="12dp"
+    android:padding="@dimen/_12sdp"
+    android:layout_marginTop="@dimen/_8sdp"
     android:gravity="center_vertical"
     android:background="@drawable/bg_glass_card">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/icon_card"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        app:cardCornerRadius="24dp"
+        android:layout_width="@dimen/_48sdp"
+        android:layout_height="@dimen/_48sdp"
+        app:cardCornerRadius="@dimen/_24sdp"
         app:cardElevation="0dp"
         app:cardBackgroundColor="#E3F2FD">
 
         <ImageView
             android:id="@+id/iv_partner_image"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="@dimen/_24sdp"
+            android:layout_height="@dimen/_24sdp"
             android:layout_gravity="center"
             android:src="@drawable/ic_action_group"
             app:tint="@color/primary_color"/>
@@ -32,14 +33,14 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:layout_marginStart="16dp">
+        android:layout_marginStart="@dimen/_16sdp">
 
         <TextView
             android:id="@+id/tv_partner_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="Partner Name"
-            android:textSize="16sp"
+            android:textSize="@dimen/_16ssp"
             android:textStyle="bold"
             android:textColor="@android:color/white"/>
 
@@ -48,17 +49,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="Partner"
-            android:textSize="14sp"
+            android:textSize="@dimen/_14ssp"
+
             android:textColor="@android:color/darker_gray"/>
     </LinearLayout>
 
     <ImageView
         android:id="@+id/btn_remove_partner"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="@dimen/_24sdp"
+        android:layout_height="@dimen/_24sdp"
         android:src="@drawable/ic_action_delete"
         app:tint="@android:color/holo_red_dark"
-        android:padding="4dp"
+        android:padding="@dimen/_4sdp"
         android:background="?attr/selectableItemBackgroundBorderless"/>
 
 </LinearLayout>

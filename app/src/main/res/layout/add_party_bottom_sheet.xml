@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="20dp"
+    android:padding="@dimen/_20sdp"
     android:background="@drawable/bg_glass_card"
     android:orientation="vertical">
 
@@ -13,25 +13,30 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Add Party"
+        android:fontFamily="@font/roboto_medium"
+        android:textFontWeight="600"
         android:textColor="@color/text_color"
-        android:textSize="18sp"
+        android:textSize="@dimen/_16ssp"
         android:textStyle="bold"
         android:gravity="center"
-        android:paddingBottom="10dp" />
+        android:paddingBottom="@dimen/_10sdp" />
 
     <!-- NAME -->
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Party Name"
         style="@style/GlassInput"
-        app:hintTextColor="@color/text_color">
+        android:hint="Party Name"
+        android:textColorHint="@color/gray">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/party_name_edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/text_color" />
+        android:id="@+id/party_name_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_color"
+        android:textSize="@dimen/_12ssp"
+        android:fontFamily="@font/roboto_regular"
+        android:textFontWeight="600" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -39,16 +44,20 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/_14sdp"
         android:hint="Phone Number"
         style="@style/GlassInput"
-        app:hintTextColor="@color/text_color">
+        android:textColorHint="@color/gray"
+        >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/party_phone_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="phone"
+            android:fontFamily="@font/roboto_regular"
+            android:textFontWeight="600"
+            android:textSize="@dimen/_12ssp"
             android:textColor="@color/text_color" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -57,12 +66,16 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/save_party_button"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="26dp"
+        android:layout_height="@dimen/_48sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:fontFamily="@font/roboto_bold"
+        android:textFontWeight="600"
         android:text="Save"
         android:textAllCaps="false"
+        android:textSize="@dimen/_14ssp"
         android:textColor="@color/text_color"
         app:backgroundTint="@color/primary_color"
+        app:cornerRadius="@dimen/_12sdp"
         style="@style/Widget.MaterialComponents.Button" />
 
     <!-- CANCEL -->
@@ -71,8 +84,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Cancel"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/_10sdp"
         android:textColor="@color/text_color"
+        android:textSize="@dimen/_12ssp"
         style="@style/Widget.MaterialComponents.Button.TextButton" />
 
 </LinearLayout>

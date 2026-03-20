@@ -1,9 +1,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="260dp"
+    android:layout_width="@dimen/_260sdp"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:padding="@dimen/_16sdp"
     android:background="@drawable/bg_popup_menu">
 
     <!-- Top Row -->
@@ -17,13 +17,13 @@
             android:layout_height="wrap_content"
             android:text="Delete Notebook"
             android:textStyle="bold"
-            android:textSize="16sp"
+            android:textSize="@dimen/_16ssp"
             android:textColor="@color/text_color" />
 
         <ImageView
             android:id="@+id/btnClose"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
             android:layout_alignParentEnd="true"
             android:src="@drawable/ic_close"
             app:tint="@color/text_color" />
@@ -34,7 +34,7 @@
         android:id="@+id/tvNotebookName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="@dimen/_12sdp"
         android:text="Notebook Name"
         android:textColor="@color/text_disabled"
         android:textStyle="bold" />
@@ -45,14 +45,14 @@
         android:layout_height="wrap_content"
         android:text="This will permanently delete this notebook and its data."
         android:textColor="@color/text_entryBy"
-        android:layout_marginTop="6dp" />
+        android:layout_marginTop="@dimen/_6sdp" />
 
     <!-- Delete Button -->
     <Button
         android:id="@+id/btnDelete"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginTop="16dp"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_marginTop="@dimen/_16sdp"
         android:gravity="center"
         android:text="DELETE"
         android:textStyle="bold"

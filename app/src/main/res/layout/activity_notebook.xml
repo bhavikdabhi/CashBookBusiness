@@ -27,6 +27,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Notebook Name"
+                android:fontFamily="@font/roboto_medium"
+                android:textFontWeight="600"
                 android:textSize="@dimen/_16ssp"
                 android:textStyle="bold"
                 android:textColor="@color/text_color"/>
@@ -35,9 +37,11 @@
                 android:id="@+id/tvSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_regular"
+                android:textFontWeight="600"
                 android:text="Members"
                 android:textSize="@dimen/_10ssp"
-                android:textColor="@color/text_secondary"/>
+                android:textColor="@color/text_entryBy"/>
         </LinearLayout>
 
         <ImageButton
@@ -81,7 +85,8 @@
             android:layout_height="@dimen/_48sdp"
             android:layout_weight="1"
             android:text="+ CASH IN"
-            android:textStyle="bold"
+            android:fontFamily="@font/roboto_bold"
+            android:textFontWeight="600"
             android:textSize="@dimen/_14ssp"
             app:backgroundTint="@color/success"
             app:cornerRadius="@dimen/_12sdp"
@@ -93,7 +98,8 @@
             android:layout_height="@dimen/_48sdp"
             android:layout_weight="1"
             android:text="- CASH OUT"
-            android:textStyle="bold"
+            android:fontFamily="@font/roboto_bold"
+            android:textFontWeight="600"
             android:textSize="@dimen/_14ssp"
             app:backgroundTint="@color/danger"
             app:cornerRadius="@dimen/_12sdp"
@@ -119,12 +125,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="12dp">
+                android:layout_marginBottom="@dimen/_12sdp">
 
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Filter"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textFontWeight="600"
                     app:chipIcon="@drawable/ic_filter_list"
                     app:chipBackgroundColor="@color/card_bg"
                     app:chipIconTint="@color/text_color"
@@ -134,6 +142,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Select Date"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textFontWeight="600"
                     android:layout_marginStart="@dimen/_8sdp"
                     app:chipBackgroundColor="@color/card_bg"
                     android:textColor="@color/text_color"/>
@@ -169,6 +179,9 @@
                             android:layout_weight="1"
                             android:text="Net Balance"
                             android:textStyle="bold"
+                            android:textSize="@dimen/_14ssp"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textFontWeight="600"
                             android:textColor="@color/text_color"/>
 
                         <TextView
@@ -176,14 +189,16 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/tv_net_balance"
                             android:text="0"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textFontWeight="600"
                             android:textStyle="bold"
-                            android:textSize="@dimen/_16ssp"
+                            android:textSize="@dimen/_14ssp"
                             android:textColor="@color/text_color"/>
                     </LinearLayout>
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
+                        android:layout_height="@dimen/_1sdp"
                         android:background="@color/glass_border"
                         android:layout_marginBottom="@dimen/_12sdp"/>
 
@@ -198,14 +213,20 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:text="Total In (+)"
+                        android:fontFamily="@font/roboto_regular"
+                        android:textFontWeight="600"
                         android:textStyle="bold"
+                        android:textSize="@dimen/_12ssp"
                         android:textColor="@color/text_color"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/tv_total_in"
+                        android:fontFamily="@font/roboto_regular"
+                        android:textFontWeight="600"
                         android:text="Total In: 0"
+                        android:textSize="@dimen/_12ssp"
                         android:textColor="@color/success"/>
 
 
@@ -221,7 +242,10 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:text="Total Out (-)"
+                        android:fontFamily="@font/roboto_regular"
+                        android:textFontWeight="600"
                         android:textStyle="bold"
+                        android:textSize="@dimen/_12ssp"
                         android:textColor="@color/text_color"/>
 
                     <TextView
@@ -229,13 +253,16 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/tv_total_out"
                         android:text="Total Out: 0"
+                        android:fontFamily="@font/roboto_regular"
+                        android:textFontWeight="600"
                         android:textColor="@color/danger"
+                        android:textSize="@dimen/_12ssp"
                         android:layout_marginBottom="@dimen/_12sdp"/>
                 </LinearLayout>
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
+                        android:layout_height="@dimen/_1sdp"
                         android:background="@color/glass_border"
                         android:layout_marginBottom="@dimen/_2sdp"/>
 
@@ -243,6 +270,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="VIEW REPORTS >"
+                        android:fontFamily="@font/roboto_bold"
+                        android:textFontWeight="600"
+                        android:textSize="@dimen/_12ssp"
                         style="@style/Widget.MaterialComponents.Button.TextButton"
                         android:textColor="@color/primary_color"
                         android:layout_gravity="center"/>
@@ -255,6 +285,9 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_entries_count"
                 android:text="Showing 0 entries"
+                android:textSize="@dimen/_10ssp"
+                android:fontFamily="@font/roboto_regular"
+                android:textFontWeight="600"
                 android:textColor="@color/text_secondary"
                 android:gravity="center"
                 android:layout_marginBottom="@dimen/_12sdp"/>

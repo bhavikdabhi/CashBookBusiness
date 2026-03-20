@@ -111,7 +111,7 @@
             <View
                 android:id="@+id/ViewLine"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/_1sdp"
                 android:background="@color/glass_border"
                 android:layout_marginBottom="@dimen/_2sdp"
                 app:layout_constraintTop_toBottomOf="@id/tvCategoryChip"

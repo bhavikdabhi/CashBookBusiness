@@ -22,7 +22,9 @@ class PartnerAdapter(
     override fun onBindViewHolder(holder: PartnerViewHolder, position: Int) {
         val partner = partners[position]
         holder.binding.tvPartnerName.text = partner.name.ifEmpty { "Unknown Partner" }
-        holder.binding.tvPartnerRole.text = partner.phone
+        
+        val displayRole = partner.role.replaceFirstChar { if (it.isLowerCase()) it.titlecase(java.util.Locale.getDefault()) else it.toString() }
+        holder.binding.tvPartnerRole.text = "$displayRole • ${partner.phone}"
         
         holder.binding.btnRemovePartner.setOnClickListener {
             onRemoveClick(partner)

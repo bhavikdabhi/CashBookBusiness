@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    android:layout_margin="@dimen/_8sdp"
+    app:cardCornerRadius="@dimen/_8sdp"
+    app:cardElevation="@dimen/_4sdp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="16dp"
+        android:padding="@dimen/_16sdp"
         android:gravity="center_vertical">
 
         <LinearLayout
@@ -25,7 +25,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Member Name"
-                android:textSize="18sp"
+                android:textSize="@dimen/_18ssp"
                 android:textStyle="bold"
                 android:textColor="@android:color/black"/>
 
@@ -34,18 +34,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="+91 9876543210"
-                android:textSize="14sp"
+                android:textSize="@dimen/_14ssp"
                 android:textColor="@android:color/darker_gray"
-                android:layout_marginTop="4dp"/>
+                android:layout_marginTop="@dimen/_4sdp"/>
 
             <TextView
                 android:id="@+id/tvMemberRole"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Role: Admin"
-                android:textSize="14sp"
+                android:textSize="@dimen/_14ssp"
                 android:textColor="@color/primary_color"
-                android:layout_marginTop="4dp"/>
+                android:layout_marginTop="@dimen/_4sdp"/>
 
         </LinearLayout>
 
@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:src="@android:drawable/ic_menu_delete"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="8dp"
+            android:padding="@dimen/_8sdp"
             app:tint="@android:color/holo_red_dark" />
 
     </LinearLayout>

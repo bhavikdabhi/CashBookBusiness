@@ -3,6 +3,8 @@
     <style name="Base.Theme.CashBookBusiness" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowBackground">@color/bg_color</item>
 
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textFontWeight">600</item>
         <!-- App Primary Colors -->
         <item name="colorPrimary">@color/primary_color</item>
         <item name="colorPrimaryVariant">@color/primary_hover</item>

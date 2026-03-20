@@ -20,7 +20,12 @@
         </activity>
 
         <activity android:name="com.cashbk.app.ui.business.BusinessDetailActivity" />
+        <activity android:name="com.cashbk.app.ui.business.ManagePartnersActivity" />
         <activity android:name="com.cashbk.app.ui.notebook.NotebookActivity" />
         <activity android:name="com.cashbk.app.ui.members.MembersActivity" />
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 </manifest>

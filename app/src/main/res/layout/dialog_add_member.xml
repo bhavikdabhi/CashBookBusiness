@@ -2,8 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="@dimen/_16sdp">
+    android:padding="@dimen/_16sdp"
+    android:background="@drawable/bg_glass_card">
 
     <TextView
         android:id="@+id/tvTitle"
@@ -12,20 +14,29 @@
         android:text="Add New Member"
         android:textSize="@dimen/_16ssp"
         android:textStyle="bold"
+        android:fontFamily="@font/roboto_medium"
+        android:textFontWeight="600"
         android:layout_marginBottom="@dimen/_12sdp"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/GlassInput"
         android:hint="Phone Number (10 digits)"
-        android:layout_marginBottom="@dimen/_12sdp">
+        android:layout_marginBottom="@dimen/_12sdp"
+        android:textColorHint="@color/gray">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etMemberPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/text_color"
+            android:fontFamily="@font/roboto_regular"
+            android:textFontWeight="600"
+            android:textSize="@dimen/_12ssp"
             android:inputType="phone"
             android:maxLength="10"/>
+
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
@@ -33,6 +44,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Select Role"
+        android:fontFamily="@font/roboto_regular"
+        android:textFontWeight="600"
+        android:textSize="@dimen/_13ssp"
         android:layout_marginBottom="@dimen/_6sdp"/>
 
     <RadioGroup
@@ -45,6 +59,9 @@
             android:id="@+id/rbPartner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
+            android:textFontWeight="600"
+            android:textSize="@dimen/_12ssp"
             android:text="Partner (Full Access, No Delete Business)"
             android:visibility="gone"/>
 
@@ -52,6 +69,9 @@
             android:id="@+id/rbWriter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
+            android:textFontWeight="600"
+            android:textSize="@dimen/_12ssp"
             android:text="Writer (Add/Remove Transactions)"
             android:visibility="gone"/>
 
@@ -60,15 +80,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Reader (View Only)"
+            android:fontFamily="@font/roboto_regular"
+            android:textFontWeight="600"
+            android:textSize="@dimen/_12ssp"
             android:visibility="gone"/>
 
     </RadioGroup>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnAddMember"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/_48sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:fontFamily="@font/roboto_bold"
+        android:textFontWeight="600"
         android:text="Add Member"
-        android:layout_marginTop="@dimen/_16sdp"/>
+        android:textAllCaps="false"
+        android:textSize="@dimen/_14ssp"
+        android:textColor="@color/text_color"
+        app:backgroundTint="@color/primary_color"
+        app:cornerRadius="@dimen/_12sdp"
+        style="@style/Widget.MaterialComponents.Button" />
+
 
 </LinearLayout>
