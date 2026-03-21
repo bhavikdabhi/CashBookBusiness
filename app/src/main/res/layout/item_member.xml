@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:layout_margin="@dimen/_16sdp"
+    android:orientation="horizontal"
+    android:padding="@dimen/_12sdp"
+    android:layout_marginTop="@dimen/_8sdp"
+    android:layout_marginHorizontal="@dimen/_6sdp"
+    android:gravity="center_vertical"
     android:background="@drawable/bg_glass_card">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="@dimen/_16sdp"
         android:gravity="center_vertical">
 
         <LinearLayout
@@ -39,7 +41,7 @@
                 android:text="+91 9876543210"
                 android:textSize="@dimen/_12ssp"
                 android:textColor="@color/gray"
-                android:layout_marginTop="@dimen/_4sdp"/>
+                android:layout_marginTop="@dimen/_2sdp"/>
 
             <TextView
                 android:id="@+id/tvMemberRole"
@@ -48,16 +50,16 @@
                 android:text="Role: Admin"
                 android:textSize="@dimen/_10ssp"
                 android:textColor="@color/text_entryBy"
-                android:layout_marginTop="@dimen/_4sdp"/>
+                android:layout_marginTop="@dimen/_2sdp"/>
 
         </LinearLayout>
 
         <ImageButton
             android:layout_marginStart="@dimen/_10sdp"
-            android:layout_gravity="center_horizontal|end"
+            android:layout_gravity="center|end"
             android:id="@+id/btnDeleteMember"
-            android:layout_width="@dimen/_50sdp"
-            android:layout_height="@dimen/_50sdp"
+            android:layout_width="@dimen/_24sdp"
+            android:layout_height="@dimen/_24sdp"
             android:src="@android:drawable/ic_menu_delete"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="@dimen/_8sdp"

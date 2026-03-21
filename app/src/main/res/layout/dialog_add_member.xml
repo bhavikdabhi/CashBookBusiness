@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:padding="@dimen/_16sdp"
-    android:background="@drawable/bg_glass_card">
+    android:background="@color/bg_color">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_20sdp"
+        android:orientation="vertical"
+        android:background="@drawable/bg_glass_card"
+        android:elevation="@dimen/_6sdp"
+        android:clipToOutline="true">
 
     <TextView
         android:id="@+id/tvTitle"
@@ -56,12 +63,24 @@
         android:orientation="vertical">
 
         <RadioButton
+            android:id="@+id/rbAdmin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
+            android:textFontWeight="600"
+            android:textSize="@dimen/_12ssp"
+            android:textColor="@color/text_color"
+            android:text="Admin (Manage All except business)"
+            android:visibility="gone"/>
+
+        <RadioButton
             android:id="@+id/rbPartner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_regular"
             android:textFontWeight="600"
             android:textSize="@dimen/_12ssp"
+            android:textColor="@color/text_color"
             android:text="Partner (Full Access, No Delete Business)"
             android:visibility="gone"/>
 
@@ -72,6 +91,7 @@
             android:fontFamily="@font/roboto_regular"
             android:textFontWeight="600"
             android:textSize="@dimen/_12ssp"
+            android:textColor="@color/text_color"
             android:text="Writer (Add/Remove Transactions)"
             android:visibility="gone"/>
 
@@ -83,6 +103,7 @@
             android:fontFamily="@font/roboto_regular"
             android:textFontWeight="600"
             android:textSize="@dimen/_12ssp"
+            android:textColor="@color/text_color"
             android:visibility="gone"/>
 
     </RadioGroup>
@@ -104,3 +125,4 @@
 
 
 </LinearLayout>
+</FrameLayout>

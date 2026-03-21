@@ -21,7 +21,6 @@
             android:orientation="horizontal"
             android:paddingHorizontal="@dimen/_16sdp"
             android:paddingVertical="@dimen/_10sdp"
-
             android:gravity="center_vertical"
             android:background="@drawable/bg_glass_card"
             android:elevation="@dimen/_6sdp">

@@ -16,10 +16,22 @@
         android:background="@drawable/bg_glass_card"
         android:elevation="@dimen/_6sdp">
 
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_back"
+            android:padding="@dimen/_8sdp"
+            android:layout_centerVertical="true"
+            app:tint="@color/text_color"/>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_toEndOf="@id/btn_back"
+            android:layout_marginStart="@dimen/_8sdp"
             android:layout_centerVertical="true">
 
             <TextView
@@ -45,7 +57,7 @@
         </LinearLayout>
 
         <ImageButton
-            android:id="@+id/btn_menu"
+            android:id="@+id/btn_menu_notebook"
             android:layout_width="@dimen/_32sdp"
             android:layout_height="@dimen/_32sdp"
             android:src="@drawable/icon_threedots"
@@ -61,7 +73,7 @@
             android:layout_height="@dimen/_32sdp"
             android:src="@drawable/ic_book"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:layout_toStartOf="@id/btn_menu"
+            android:layout_toStartOf="@id/btn_menu_notebook"
             android:layout_centerVertical="true"
             android:padding="@dimen/_6sdp"
             app:tint="@color/primary_color"/>
@@ -300,5 +312,15 @@
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <!-- FRAGMENT CONTAINER -->
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="@dimen/_10sdp"
+        android:translationZ="@dimen/_10sdp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

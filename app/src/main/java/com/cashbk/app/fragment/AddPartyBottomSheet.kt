@@ -49,8 +49,11 @@ class AddPartyBottomSheet : BottomSheetDialogFragment() {
                 "ownerId" to userId
             )
 
+            val notebookId = arguments?.getString("notebookId") ?: ""
+
             FirebaseDatabase.getInstance().reference
                 .child("parties")
+                .child(notebookId)
                 .child(id)
                 .setValue(partyData)
 

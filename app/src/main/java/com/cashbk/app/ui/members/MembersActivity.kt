@@ -25,6 +25,7 @@ class MembersActivity : AppCompatActivity() {
     
     private var entityId: String? = null
     private var entityType: String? = null // "business" or "notebook"
+    private var currentUserRole: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +34,7 @@ class MembersActivity : AppCompatActivity() {
 
         entityId = intent.getStringExtra("entityId")
         entityType = intent.getStringExtra("entityType")
+        currentUserRole = intent.getStringExtra("currentUserRole")
 
         if (entityId.isNullOrEmpty() || entityType.isNullOrEmpty()) {
             Toast.makeText(this, "Error: Missing Entity ID or Type", Toast.LENGTH_SHORT).show()
@@ -126,6 +128,9 @@ class MembersActivity : AppCompatActivity() {
             dialogBinding.rbPartner.visibility = android.view.View.VISIBLE
             dialogBinding.rbPartner.isChecked = true
         } else {
+            if (currentUserRole == "owner") {
+                dialogBinding.rbAdmin.visibility = android.view.View.VISIBLE
+            }
             dialogBinding.rbWriter.visibility = android.view.View.VISIBLE
             dialogBinding.rbReader.visibility = android.view.View.VISIBLE
             dialogBinding.rbWriter.isChecked = true
@@ -142,6 +147,7 @@ class MembersActivity : AppCompatActivity() {
 
             val role = when (selectedRoleId) {
                 R.id.rbPartner -> "partner"
+                R.id.rbAdmin -> "admin"
                 R.id.rbWriter -> "writer"
                 R.id.rbReader -> "reader"
                 else -> ""
@@ -149,6 +155,11 @@ class MembersActivity : AppCompatActivity() {
 
             if (role.isEmpty()) {
                 Toast.makeText(this, "Select a role", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            
+            if (role == "admin" && membersList.count { it.role == "admin" } >= 3) {
+                Toast.makeText(this, "You can fully appoint a maximum of 3 Admins per notebook", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
 
@@ -197,6 +208,10 @@ class MembersActivity : AppCompatActivity() {
     }
 
     private fun deleteMember(member: Member) {
+        if (member.role == "admin" && currentUserRole != "owner") {
+            Toast.makeText(this, "Only the business owner can remove an Admin", Toast.LENGTH_SHORT).show()
+            return
+        }
         AlertDialog.Builder(this)
             .setTitle("Remove Member")
             .setMessage("Are you sure you want to remove ${member.name}?")

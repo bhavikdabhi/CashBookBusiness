@@ -8,15 +8,15 @@
 
     <!-- DATE HEADER -->
     <TextView
-        android:layout_marginTop="@dimen/_4sdp"
         android:id="@+id/tvDateHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:fontFamily="@font/roboto_regular"
         android:paddingVertical="@dimen/_5sdp"
         android:text="06 October 2025"
-        android:fontFamily="@font/roboto_regular"
-        android:textFontWeight="600"
         android:textColor="@color/text_secondary"
+        android:textFontWeight="600"
         android:textSize="@dimen/_10ssp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardBackgroundColor="@color/card_bg"
-        android:layout_marginTop="@dimen/_2sdp"
+        android:layout_marginTop="@dimen/_5sdp"
         app:cardCornerRadius="@dimen/_12sdp"
         app:contentPaddingLeft="@dimen/_10sdp"
         app:contentPaddingRight="@dimen/_10sdp"

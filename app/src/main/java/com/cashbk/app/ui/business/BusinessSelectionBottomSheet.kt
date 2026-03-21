@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cashbk.app.data.model.Business
-import com.cashbk.app.databinding.DialogSelectBusinessBinding
+import com.cashbk.app.databinding.BottomFragmentSelectBusinessBinding
 import com.cashbk.app.databinding.ItemBusinessSelectionBinding
 import com.cashbk.app.fragment.AddBusinessFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -22,7 +22,7 @@ class BusinessSelectionBottomSheet(
     private val onBusinessSelected: (Business) -> Unit
 ) : BottomSheetDialogFragment() {
 
-    private lateinit var binding: DialogSelectBusinessBinding
+    private lateinit var binding: BottomFragmentSelectBusinessBinding
     private val businessList = mutableListOf<Business>()
     private lateinit var adapter: BusinessSelectionAdapter
 
@@ -30,7 +30,7 @@ class BusinessSelectionBottomSheet(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DialogSelectBusinessBinding.inflate(inflater, container, false)
+        binding = BottomFragmentSelectBusinessBinding.inflate(inflater, container, false)
         return binding.root
     }
 

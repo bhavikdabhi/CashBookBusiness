@@ -8,6 +8,7 @@
     android:padding="@dimen/_12sdp"
     android:layout_marginTop="@dimen/_8sdp"
     android:gravity="center_vertical"
+    android:layout_marginHorizontal="@dimen/_6sdp"
     android:background="@drawable/bg_glass_card">
 
     <com.google.android.material.card.MaterialCardView

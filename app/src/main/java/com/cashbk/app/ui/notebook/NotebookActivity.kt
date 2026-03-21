@@ -19,7 +19,7 @@ import com.cashbk.app.data.model.Notebook
 import com.cashbk.app.data.model.Transaction
 import com.cashbk.app.databinding.ActivityNotebookBinding
 import com.cashbk.app.databinding.ItemTransactionBinding
-import com.cashbk.app.ui.transaction.AddTransactionDialogFragment
+import com.cashbk.app.ui.transaction.AddTransactionFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import java.text.NumberFormat
@@ -76,10 +76,10 @@ class NotebookActivity : AppCompatActivity() {
             fetchNotebookDetails()
 
             // Click Listeners
-            binding.btnMenu.setOnClickListener { showMenu(it) }
+            binding.btnMenuNotebook.setOnClickListener { showMenuNotebook(it) }
             binding.btnCashIn.setOnClickListener { showAddTransactionDialog("in") }
             binding.btnCashOut.setOnClickListener { showAddTransactionDialog("out") }
-          //  binding.ivBack.setOnClickListener { finish() }
+            binding.btnBack.setOnClickListener { finish() }
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -193,7 +193,7 @@ class NotebookActivity : AppCompatActivity() {
                 }
 
                 // 1. Sort by CreatedAt ASC to calculate running balance correctly
-                tempTransactions.sortByDescending { getTransactionDateTime(it) }
+                tempTransactions.sortBy { getTransactionDateTime(it) }
 
 
                 var balance = 0.0
@@ -224,7 +224,7 @@ class NotebookActivity : AppCompatActivity() {
                 updateSummaryUI(balance, totalIn, totalOut, tempTransactions.size)
 
                 // 2. Sort DESC for display (Newest top)
-
+                tempTransactions.reverse()
 
                 // 3. Update main list
                 transactionList.clear()
@@ -259,12 +259,16 @@ class NotebookActivity : AppCompatActivity() {
             Toast.makeText(this, "You have view-only access", Toast.LENGTH_SHORT).show()
             return
         }
-        val dialog = AddTransactionDialogFragment()
+        val fragment = AddTransactionFragment()
         val args = Bundle()
         args.putString("notebookId", notebookId)
         args.putString("transactionType", type)
-        dialog.arguments = args
-        dialog.show(supportFragmentManager, "AddTransactionDialog")
+        fragment.arguments = args
+        supportFragmentManager.beginTransaction()
+            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
+            .replace(R.id.fragment_container, fragment, "AddTransactionFragment")
+            .addToBackStack(null)
+            .commit()
     }
     
     private fun showEditTransactionDialog(transaction: Transaction) {
@@ -272,7 +276,7 @@ class NotebookActivity : AppCompatActivity() {
             Toast.makeText(this, "You have view-only access", Toast.LENGTH_SHORT).show()
             return
         }
-        val dialog = AddTransactionDialogFragment()
+        val fragment = AddTransactionFragment()
         val args = Bundle()
         args.putString("notebookId", notebookId)
         args.putString("transactionId", transaction.id)
@@ -284,8 +288,12 @@ class NotebookActivity : AppCompatActivity() {
         args.putString("categoryId", transaction.categoryId)
         args.putString("partyId", transaction.partyId)
         
-        dialog.arguments = args
-        dialog.show(supportFragmentManager, EDIT_DIALOG_TAG)
+        fragment.arguments = args
+        supportFragmentManager.beginTransaction()
+            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
+            .replace(R.id.fragment_container, fragment, EDIT_DIALOG_TAG)
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun getTransactionDateTime(transaction: Transaction): Long {
@@ -321,15 +329,74 @@ class NotebookActivity : AppCompatActivity() {
 
         popup.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.action_rename -> { Toast.makeText(this, "Rename clicked", Toast.LENGTH_SHORT).show(); true }
-                R.id.action_delete -> { Toast.makeText(this, "Delete clicked", Toast.LENGTH_SHORT).show(); true }
+                R.id.action_rename -> {
+                     if (currentUserRole == "reader") {
+                         Toast.makeText(this, "You have view-only access", Toast.LENGTH_SHORT).show()
+                     } else {
+                         Toast.makeText(this, "Rename clicked", Toast.LENGTH_SHORT).show()
+                     }
+                     true
+                }
+                R.id.action_delete -> {
+                     if (currentUserRole != "owner") {
+                         Toast.makeText(this, "Only the business owner can delete this notebook", Toast.LENGTH_SHORT).show()
+                     } else {
+                         Toast.makeText(this, "Delete clicked", Toast.LENGTH_SHORT).show()
+                     }
+                     true
+                }
                 R.id.action_share -> {
                     val intent = Intent(this, com.cashbk.app.ui.members.MembersActivity::class.java)
                     intent.putExtra("entityId", notebookId)
                     intent.putExtra("entityType", "notebook")
+                    intent.putExtra("currentUserRole", currentUserRole)
                     startActivity(intent)
                     true
                 }
+                else -> false
+            }
+        }
+        popup.show()
+    }
+
+    private fun showMenuNotebook(view: View) {
+        val wrapper = ContextThemeWrapper(this, R.style.PopupMenuTheme)
+        val popup = PopupMenu(wrapper, view)
+        popup.menuInflater.inflate(R.menu.menu_notebook_more, popup.menu)
+
+        // Force show icons via reflection
+        try {
+            val field = popup.javaClass.getDeclaredField("mPopup")
+            field.isAccessible = true
+            val helper = field.get(popup)
+            val clazz = Class.forName(helper.javaClass.name)
+            val setForceIcons = clazz.getMethod("setForceShowIcon", Boolean::class.javaPrimitiveType)
+            setForceIcons.invoke(helper, true)
+        } catch (e: Exception) { e.printStackTrace() }
+
+        // Tint icons
+        for (i in 0 until popup.menu.size()) {
+            val item = popup.menu.getItem(i)
+            item.icon?.let { icon ->
+                val wrapped = DrawableCompat.wrap(icon).mutate()
+                DrawableCompat.setTint(wrapped, ContextCompat.getColor(this, R.color.text_color))
+                item.icon = wrapped
+            }
+        }
+
+        popup.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_rename -> { Toast.makeText(this, "Rename clicked", Toast.LENGTH_SHORT).show(); true }
+                R.id.action_report -> { Toast.makeText(this, "Report clicked", Toast.LENGTH_SHORT).show(); true }
+                R.id.action_member -> {
+                    val intent = Intent(this, com.cashbk.app.ui.members.MembersActivity::class.java)
+                    intent.putExtra("entityId", notebookId)
+                    intent.putExtra("entityType", "notebook")
+                    intent.putExtra("currentUserRole", currentUserRole)
+                    startActivity(intent)
+                    true
+                }
+                R.id.action_settings -> { Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show(); true }
                 else -> false
             }
         }
@@ -346,7 +413,7 @@ class NotebookActivity : AppCompatActivity() {
                     .addOnSuccessListener { businessSnapshot ->
                         val ownerId = businessSnapshot.child("ownerId").value as? String
                         if (ownerId == currentUserId) {
-                            currentUserRole = "admin"
+                            currentUserRole = "owner"
                             updateUIForRole()
                         } else {
                             FirebaseDatabase.getInstance().reference.child("business_members")
