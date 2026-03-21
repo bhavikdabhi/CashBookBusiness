@@ -12,8 +12,8 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/icon_card"
-        android:layout_width="@dimen/_48sdp"
-        android:layout_height="@dimen/_48sdp"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
         app:cardCornerRadius="@dimen/_24sdp"
         app:cardElevation="0dp"
         app:cardBackgroundColor="#E3F2FD">
@@ -39,19 +39,21 @@
             android:id="@+id/tv_partner_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_medium"
+            android:textFontWeight="600"
             tools:text="Partner Name"
-            android:textSize="@dimen/_16ssp"
-            android:textStyle="bold"
+            android:textSize="@dimen/_14ssp"
             android:textColor="@android:color/white"/>
 
         <TextView
             android:id="@+id/tv_partner_role"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
+            android:textFontWeight="600"
             tools:text="Partner"
-            android:textSize="@dimen/_14ssp"
-
-            android:textColor="@android:color/darker_gray"/>
+            android:textSize="@dimen/_10ssp"
+            android:textColor="@color/text_entryBy"/>
     </LinearLayout>
 
     <ImageView

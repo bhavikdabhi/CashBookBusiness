@@ -4,13 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="@dimen/_16sdp"
+    android:paddingHorizontal="@dimen/_16sdp"
+    android:paddingVertical="@dimen/_10sdp"
     android:gravity="center_vertical"
     android:background="?attr/selectableItemBackground">
 
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="@dimen/_40sdp"
+        android:layout_width="@dimen/_35sdp"
+        android:layout_height="@dimen/_35sdp"
         android:backgroundTint="#E3F2FD"
         app:cardCornerRadius="@dimen/_8sdp"
         app:cardElevation="0dp">
@@ -34,17 +35,20 @@
             android:id="@+id/business_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_medium"
+            android:textFontWeight="600"
             android:text="Business Name"
-            android:textSize="@dimen/_16ssp"
-            android:textStyle="bold"
+            android:textSize="@dimen/_14ssp"
             android:textColor="@color/text_secondary"/>
 
         <TextView
             android:id="@+id/business_role"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
+            android:textFontWeight="600"
             android:text="Owner . 2 Books"
-            android:textSize="@dimen/_12ssp"
+            android:textSize="@dimen/_10ssp"
             android:textColor="@color/text_disabled"/>
     </LinearLayout>
 

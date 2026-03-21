@@ -10,14 +10,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/business_name"
-        android:textSize="@dimen/_18ssp"
-        android:textStyle="bold"
+        android:textSize="@dimen/_14ssp"
+        android:fontFamily="@font/roboto_regular"
+        android:textFontWeight="600"
+        android:text="Demo"
         android:textColor="@color/text_color"/>.
 
     <ImageView
         android:id="@+id/menu_more"
         android:layout_width="@dimen/_24sdp"
         android:layout_height="@dimen/_24sdp"
+        android:padding="@dimen/_3sdp"
         android:layout_alignParentEnd="true"
         android:src="@drawable/icon_threedots"
         app:tint="@color/text_color"

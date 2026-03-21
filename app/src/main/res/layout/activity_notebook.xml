@@ -125,7 +125,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="@dimen/_12sdp">
+                android:layout_marginBottom="@dimen/_5sdp">
 
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
@@ -160,7 +160,7 @@
                 app:contentPaddingRight="@dimen/_16sdp"
                 app:contentPaddingLeft="@dimen/_16sdp"
                 app:contentPaddingTop="@dimen/_12sdp"
-                android:layout_marginBottom="@dimen/_16sdp">
+                android:layout_marginBottom="@dimen/_12sdp">
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -171,7 +171,7 @@
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/_14sdp">
+                        android:layout_marginBottom="@dimen/_8sdp">
 
                         <TextView
                             android:layout_height="wrap_content"
@@ -200,7 +200,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_1sdp"
                         android:background="@color/glass_border"
-                        android:layout_marginBottom="@dimen/_12sdp"/>
+                        android:layout_marginBottom="@dimen/_8sdp"/>
 
                 <LinearLayout
                     android:orientation="horizontal"
@@ -272,7 +272,7 @@
                         android:text="VIEW REPORTS >"
                         android:fontFamily="@font/roboto_bold"
                         android:textFontWeight="600"
-                        android:textSize="@dimen/_12ssp"
+                        android:textSize="@dimen/_10ssp"
                         style="@style/Widget.MaterialComponents.Button.TextButton"
                         android:textColor="@color/primary_color"
                         android:layout_gravity="center"/>
@@ -290,7 +290,7 @@
                 android:textFontWeight="600"
                 android:textColor="@color/text_secondary"
                 android:gravity="center"
-                android:layout_marginBottom="@dimen/_12sdp"/>
+                android:layout_marginBottom="@dimen/_2sdp"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/transactions_recycler_view"

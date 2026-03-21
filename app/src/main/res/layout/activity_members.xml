@@ -26,7 +26,7 @@
         android:src="@android:drawable/ic_input_add"
         android:backgroundTint="@color/primary_color"
         android:icon="@drawable/ic_add"
-        app:iconTint="@color/text_color"
+        app:tint="@color/text_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:contentDescription="Add Member" />

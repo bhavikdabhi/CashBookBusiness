@@ -16,7 +16,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Delete Notebook"
-            android:textStyle="bold"
+            android:fontFamily="@font/roboto_bold"
+            android:textFontWeight="600"
             android:textSize="@dimen/_16ssp"
             android:textColor="@color/text_color" />
 
@@ -34,10 +35,11 @@
         android:id="@+id/tvNotebookName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:fontFamily="@font/roboto_medium"
+        android:textFontWeight="600"
         android:text="Notebook Name"
-        android:textColor="@color/text_disabled"
-        android:textStyle="bold" />
+        android:textColor="@color/text_disabled" />
 
     <!-- Warning -->
     <TextView
@@ -45,18 +47,27 @@
         android:layout_height="wrap_content"
         android:text="This will permanently delete this notebook and its data."
         android:textColor="@color/text_entryBy"
-        android:layout_marginTop="@dimen/_6sdp" />
+        android:fontFamily="@font/roboto_regular"
+        android:textFontWeight="600"
+        android:layout_marginTop="@dimen/_4sdp" />
 
     <!-- Delete Button -->
-    <Button
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnDelete"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_40sdp"
-        android:layout_marginTop="@dimen/_16sdp"
+        android:layout_height="@dimen/_45sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:fontFamily="@font/roboto_bold"
+        android:textFontWeight="600"
+        android:textAllCaps="false"
+        android:textSize="@dimen/_14ssp"
         android:gravity="center"
-        android:text="DELETE"
+        android:text="Delete"
         android:textStyle="bold"
         android:textColor="@color/white"
-        style="@style/DangerButton"
-        />
+        app:backgroundTint="@color/primary_color"
+        app:cornerRadius="@dimen/_12sdp"
+        style="@style/DangerButton"  />
+
 </LinearLayout>
