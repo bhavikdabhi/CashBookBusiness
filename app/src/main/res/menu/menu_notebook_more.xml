@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_rename"
+        android:title="Rename"
+        android:icon="@drawable/ic_action_edit"
+        android:iconTint="@color/primary_color" />
+
+    <item
+        android:id="@+id/action_report"
+        android:title="Report"
+        android:icon="@drawable/ic_book"
+        android:iconTint="@color/text_color" />
+
+    <item
+        android:id="@+id/action_member"
+        android:title="Member"
+        android:icon="@drawable/ic_action_group"
+        android:iconTint="@color/success" />
+
+    <item
+        android:id="@+id/action_settings"
+        android:title="Settings"
+        android:icon="@drawable/ic_settings"
+        android:iconTint="@color/gray" />
+
+</menu>

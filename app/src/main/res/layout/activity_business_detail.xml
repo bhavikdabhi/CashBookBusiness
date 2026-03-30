@@ -97,16 +97,23 @@
     </LinearLayout>
 
 
-    <!-- ============ BOTTOM NAV ============ -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_70sdp"
-        android:layout_gravity="bottom"
-        android:background="@drawable/bg_glass_card"
-        app:itemIconTint="@color/primary_color"
-        app:itemTextColor="@color/text_color"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_50sdp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginHorizontal="@dimen/_16sdp"
+        android:layout_marginBottom="@dimen/_14sdp"
+        android:background="@drawable/bg_bottom_nav_pill"
+        style="@style/Widget.App.BottomNav"
+        app:itemPaddingTop="@dimen/_2sdp"
+        app:itemPaddingBottom="@dimen/_2sdp"
+        app:itemIconTint="@color/nav_item_color"
+        app:itemTextColor="@color/nav_item_color"
+        app:labelVisibilityMode="unlabeled"
+        app:itemBackground="@drawable/bg_bottom_nav_item_selected"
+        app:itemRippleColor="@null"
         app:menu="@menu/bottom_nav_menu"
-        app:elevation="@dimen/_1sdp"/>
+        app:elevation="@dimen/_4sdp"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

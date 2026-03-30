@@ -680,7 +680,6 @@ class NotebookActivity : AppCompatActivity() {
                 true
             }
         }
-
         override fun getItemCount() = transactions.size
     }
 }
