@@ -1,15 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical">
+    android:background="@color/bg_color">
 
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPayments"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/_80sdp"/>
+
+    <LinearLayout
+        android:id="@+id/layoutEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="@dimen/_100sdp"
+            android:src="@drawable/ic_book"
+            android:alpha="0.2"
+            app:tint="@color/text_color"
+            xmlns:app="http://schemas.android.com/apk/res-auto"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:fontFamily="@font/roboto_medium"
+            android:text="No Payments Found"
+            android:textColor="@color/text_color"
+            android:textSize="@dimen/_14ssp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:fontFamily="@font/roboto_regular"
+            android:text="Tap + to add a payment"
+            android:textColor="@color/text_color"
+            android:alpha="0.5"
+            android:textSize="@dimen/_12ssp" />
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddPayment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Payments Screen"
-        android:textSize="@dimen/_20ssp"
-        android:textStyle="bold"/>
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:src="@drawable/ic_add"
+        app:tint="@color/white"
+        android:backgroundTint="@color/primary_color"
+        xmlns:app="http://schemas.android.com/apk/res-auto"/>
 
-</LinearLayout>
+</RelativeLayout>

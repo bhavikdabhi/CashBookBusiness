@@ -76,7 +76,12 @@ class MembersActivity : AppCompatActivity() {
                 
                 if (childrenCount == 0) {
                     membersAdapter.notifyDataSetChanged()
+                    binding.layoutEmpty.visibility = android.view.View.VISIBLE
+                    binding.membersRecyclerView.visibility = android.view.View.GONE
                     return
+                } else {
+                    binding.layoutEmpty.visibility = android.view.View.GONE
+                    binding.membersRecyclerView.visibility = android.view.View.VISIBLE
                 }
 
                 var loadedCount = 0

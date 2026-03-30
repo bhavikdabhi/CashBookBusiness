@@ -140,6 +140,7 @@
                 android:layout_marginBottom="@dimen/_5sdp">
 
                 <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Filter"
@@ -151,6 +152,7 @@
                     android:textColor="@color/text_color"/>
 
                 <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Select Date"
@@ -309,6 +311,43 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"/>
+
+            <!-- EMPTY STATE TRANSACTIONS -->
+            <LinearLayout
+                android:id="@+id/layoutEmptyTransactions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/_40sdp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="@dimen/_60sdp"
+                    android:layout_height="@dimen/_60sdp"
+                    android:src="@drawable/ic_book"
+                    android:alpha="0.2"
+                    app:tint="@color/text_color"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_16sdp"
+                    android:fontFamily="@font/roboto_medium"
+                    android:text="No Transactions Yet"
+                    android:textColor="@color/text_color"
+                    android:textSize="@dimen/_14ssp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Tap CASH IN or CASH OUT to start"
+                    android:textColor="@color/text_color"
+                    android:alpha="0.5"
+                    android:textSize="@dimen/_12ssp" />
+            </LinearLayout>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

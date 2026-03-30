@@ -82,6 +82,13 @@ class CashbooksFragment : Fragment() {
                     }
                     if (isAdded) {
                          notebookAdapter.notifyDataSetChanged()
+                         if (notebookList.isEmpty()) {
+                             binding.layoutEmpty.visibility = View.VISIBLE
+                             binding.notebooksRecyclerView.visibility = View.GONE
+                         } else {
+                             binding.layoutEmpty.visibility = View.GONE
+                             binding.notebooksRecyclerView.visibility = View.VISIBLE
+                         }
                     }
                 }
 
@@ -168,7 +175,12 @@ class CashbooksFragment : Fragment() {
                     true
                 }
                 R.id.action_share -> {
-                    Toast.makeText(requireContext(), "Share book", Toast.LENGTH_SHORT).show()
+                    val sendIntent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_TEXT, "Join my notebook \"${notebook.name}\" on CashBook: https://cashbk.app/join/${notebook.id}")
+                        type = "text/plain"
+                    }
+                    startActivity(Intent.createChooser(sendIntent, "Share Notebook via"))
                     true
                 }
                 else -> false

@@ -98,6 +98,9 @@ class BusinessDetailActivity : AppCompatActivity() {
     
     private fun updateFragmentsBusinessId() {
         cashbooksFragment.updateBusinessId(currentBusinessId)
+        paymentsFragment.updateBusinessId(currentBusinessId)
+        eventsFragment.updateBusinessId(currentBusinessId)
+        settingsFragment.updateBusinessId(currentBusinessId)
     }
 
     private fun fetchFirstBusiness() {

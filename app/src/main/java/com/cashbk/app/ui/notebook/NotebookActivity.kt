@@ -19,10 +19,16 @@ import com.cashbk.app.data.model.Notebook
 import com.cashbk.app.data.model.Transaction
 import com.cashbk.app.databinding.ActivityNotebookBinding
 import com.cashbk.app.databinding.ItemTransactionBinding
-import com.cashbk.app.ui.transaction.AddTransactionFragment
 import com.google.firebase.auth.FirebaseAuth
+import java.util.Date
+import com.cashbk.app.ui.transaction.AddTransactionFragment
 import com.google.firebase.database.*
+import com.cashbk.app.utils.PdfGenerator
+import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import androidx.core.util.Pair
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
 import java.util.Locale
 
 class NotebookActivity : AppCompatActivity() {
@@ -35,14 +41,20 @@ class NotebookActivity : AppCompatActivity() {
     private val EDIT_DIALOG_TAG = "EditTransactionDialog"
 
     // Data Lists and Maps
-    private val transactionList = mutableListOf<Transaction>()
+    private val allTransactionsList = mutableListOf<Transaction>()
+    private val displayedTransactionList = mutableListOf<Transaction>()
     private val partyMap = mutableMapOf<String, String>()
     private val categoryMap = mutableMapOf<String, String>()
     private val userMap = mutableMapOf<String, String>()
 
     private var notebookId: String? = null
-    private var currentUserRole: String = "" // "admin", "partner", "writer", "reader"
+    private var currentUserRole: String = "" // "owner", "partner", "writer", "reader"
     private var currentNetBalance = 0.0
+
+    // Filters
+    private var filterCategoryId: String? = null
+    private var filterStartDate: Long? = null
+    private var filterEndDate: Long? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,9 +89,16 @@ class NotebookActivity : AppCompatActivity() {
 
             // Click Listeners
             binding.btnMenuNotebook.setOnClickListener { showMenuNotebook(it) }
+            binding.btnPdf.setOnClickListener {
+                val nName = binding.tvTitle.text.toString()
+                PdfGenerator.generatePdf(this@NotebookActivity, nName, displayedTransactionList, currentNetBalance)
+            }
             binding.btnCashIn.setOnClickListener { showAddTransactionDialog("in") }
             binding.btnCashOut.setOnClickListener { showAddTransactionDialog("out") }
             binding.btnBack.setOnClickListener { finish() }
+
+            binding.chipDate.setOnClickListener { showDateRangePicker() }
+            binding.chipFilter.setOnClickListener { showCategoryFilterDialog() }
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -94,9 +113,17 @@ class NotebookActivity : AppCompatActivity() {
      * then refreshes the RecyclerView.
      */
     private fun refreshTransactionData() {
-        if (transactionList.isEmpty()) return
+        if (displayedTransactionList.isEmpty()) {
+            binding.layoutEmptyTransactions.visibility = android.view.View.VISIBLE
+            binding.transactionsRecyclerView.visibility = android.view.View.GONE
+            transactionAdapter.notifyDataSetChanged()
+            return
+        } else {
+            binding.layoutEmptyTransactions.visibility = android.view.View.GONE
+            binding.transactionsRecyclerView.visibility = android.view.View.VISIBLE
+        }
 
-        transactionList.forEach { t ->
+        displayedTransactionList.forEach { t ->
             // Update Party Name
             t.partyName = partyMap[t.partyId] ?: ""
 
@@ -221,17 +248,18 @@ class NotebookActivity : AppCompatActivity() {
                 }
 
                 currentNetBalance = balance
-                updateSummaryUI(balance, totalIn, totalOut, tempTransactions.size)
+                // UI summary now updated in applyFilters()
+                // updateSummaryUI(balance, totalIn, totalOut, tempTransactions.size)
 
                 // 2. Sort DESC for display (Newest top)
                 tempTransactions.reverse()
 
                 // 3. Update main list
-                transactionList.clear()
-                transactionList.addAll(tempTransactions)
+                allTransactionsList.clear()
+                allTransactionsList.addAll(tempTransactions)
 
-                // 4. Resolve Names (Party/Category) and Update Adapter
-                refreshTransactionData()
+                // 4. Resolve Names (Party/Category) and Apply Filters
+                applyFilters()
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -252,6 +280,84 @@ class NotebookActivity : AppCompatActivity() {
         binding.tvTotalIn.text = "+ ${formatCurrency(totalIn)}"
         binding.tvTotalOut.text = "- ${formatCurrency(totalOut)}"
         binding.tvEntriesCount.text = "Showing $count entries"
+    }
+
+    private fun applyFilters() {
+        var filteredList = allTransactionsList.toList()
+
+        if (filterStartDate != null && filterEndDate != null) {
+            filteredList = filteredList.filter { t ->
+                val time = getTransactionDateTime(t)
+                time in filterStartDate!!..filterEndDate!!
+            }
+        }
+
+        if (filterCategoryId != null) {
+            filteredList = filteredList.filter { t ->
+                t.categoryId == filterCategoryId
+            }
+        }
+
+        // Calculate filtered summary
+        var fIn = 0.0
+        var fOut = 0.0
+        for (t in filteredList) {
+            if (t.type == "in") fIn += t.amount else fOut += t.amount
+        }
+        val fBalance = fIn - fOut
+        
+        updateSummaryUI(fBalance, fIn, fOut, filteredList.size)
+
+        displayedTransactionList.clear()
+        displayedTransactionList.addAll(filteredList)
+        
+        refreshTransactionData()
+    }
+
+    private fun showDateRangePicker() {
+        val dateRangePicker = MaterialDatePicker.Builder.dateRangePicker()
+            .setTitleText("Select Dates")
+            .build()
+            
+        dateRangePicker.addOnPositiveButtonClickListener { selection ->
+            filterStartDate = selection.first
+            // End of day
+            filterEndDate = selection.second + 86399999L 
+            
+            val sdf = SimpleDateFormat("MMM dd", Locale.getDefault())
+            binding.chipDate.text = "${sdf.format(Date(filterStartDate!!))} - ${sdf.format(Date(filterEndDate!!))}"
+            applyFilters()
+        }
+            
+        dateRangePicker.show(supportFragmentManager, "DateRangePicker")
+    }
+
+    private fun showCategoryFilterDialog() {
+        val categories = categoryMap.values.toTypedArray()
+        val categoryIds = categoryMap.keys.toTypedArray()
+        
+        if (categories.isEmpty()) {
+            Toast.makeText(this, "No categories found", Toast.LENGTH_SHORT).show()
+            return
+        }
+        
+        // Let's add an option to clear filter at index 0
+        val displayOptions = arrayOf("All Categories") + categories
+        
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Filter by Category")
+            .setItems(displayOptions) { _, which ->
+                if (which == 0) {
+                    filterCategoryId = null
+                    binding.chipFilter.text = "Filter"
+                } else {
+                    filterCategoryId = categoryIds[which - 1]
+                    binding.chipFilter.text = categories[which - 1]
+                }
+                applyFilters()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     private fun showAddTransactionDialog(type: String) {
@@ -310,7 +416,7 @@ class NotebookActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        transactionAdapter = TransactionAdapter(transactionList) { transaction ->
+        transactionAdapter = TransactionAdapter(displayedTransactionList) { transaction ->
             // Item click (e.g. open details)
             Log.d("NotebookActivity", "Clicked transaction: ${transaction.id}")
         }
@@ -387,7 +493,11 @@ class NotebookActivity : AppCompatActivity() {
         popup.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_rename -> { Toast.makeText(this, "Rename clicked", Toast.LENGTH_SHORT).show(); true }
-                R.id.action_report -> { Toast.makeText(this, "Report clicked", Toast.LENGTH_SHORT).show(); true }
+                R.id.action_report -> {
+                    val nName = binding.tvTitle.text.toString()
+                    PdfGenerator.generatePdf(this, nName, displayedTransactionList, currentNetBalance)
+                    true
+                }
                 R.id.action_member -> {
                     val intent = Intent(this, com.cashbk.app.ui.members.MembersActivity::class.java)
                     intent.putExtra("entityId", notebookId)
