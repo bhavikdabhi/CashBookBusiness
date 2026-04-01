@@ -4,12 +4,13 @@
         <inset android:insetTop="@dimen/_2sdp" android:insetBottom="@dimen/_2sdp">
             <shape android:shape="rectangle">
                 <corners android:radius="@dimen/_80sdp"/>
-                <gradient 
-                    android:startColor="#BFC1FF" 
+                <gradient
+                    android:startColor="#BFC1FF"
                     android:endColor="#8388FF"
-                    android:angle="270" />
+                    android:angle="315" /> // 270
             </shape>
         </inset>
     </item>
     <item android:drawable="@android:color/transparent" />
+
 </selector>

@@ -1,52 +1,436 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:padding="@dimen/_16sdp"
+    android:fillViewport="true"
     android:background="@color/bg_color">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Business Settings"
-        android:textColor="@color/text_color"
-        android:textSize="@dimen/_18ssp"
-        android:fontFamily="@font/roboto_bold"
-        android:layout_marginBottom="@dimen/_24sdp" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnManageMembers"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Manage Business Members"
-        android:textColor="@color/text_color"
-        app:iconTint="@color/primary_color"
-        app:icon="@drawable/ic_action_group"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_marginBottom="@dimen/_12sdp"/>
+        android:paddingBottom="@dimen/_100sdp">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnLeaveBusiness"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Leave Business"
-        android:textColor="#FF9800"
-        app:iconTint="#FF9800"
-        app:icon="@drawable/ic_close"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_marginBottom="@dimen/_12sdp"/>
+        <!-- Top Header -->
+        <ImageView
+            android:id="@+id/ic_menu"
+            android:layout_width="@dimen/_24sdp"
+            android:layout_height="@dimen/_24sdp"
+            android:src="@android:drawable/ic_menu_sort_by_size"
+            app:tint="@color/white"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginStart="@dimen/_16sdp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnDeleteBusiness"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Delete Business"
-        android:textColor="@color/danger"
-        app:iconTint="@color/danger"
-        app:strokeColor="@color/danger"
-        app:icon="@drawable/ic_action_delete"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+        <TextView
+            android:id="@+id/tv_app_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="The Ledger"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="@dimen/_16ssp"
+            android:textColor="@color/auth_glow_1"
+            android:layout_marginStart="@dimen/_12sdp"
+            app:layout_constraintTop_toTopOf="@id/ic_menu"
+            app:layout_constraintBottom_toBottomOf="@id/ic_menu"
+            app:layout_constraintStart_toEndOf="@id/ic_menu" />
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/ic_avatar"
+            android:layout_width="@dimen/_24sdp"
+            android:layout_height="@dimen/_24sdp"
+            android:src="@android:drawable/ic_menu_myplaces"
+            android:background="@drawable/bg_bottom_nav_pill"
+            android:padding="@dimen/_4sdp"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_16sdp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Title Block -->
+        <TextView
+            android:id="@+id/lbl_role"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ORGANIZATION ADMIN"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="@dimen/_8ssp"
+            android:textColor="@color/gray"
+            android:letterSpacing="0.1"
+            android:layout_marginTop="@dimen/_32sdp"
+            android:layout_marginStart="@dimen/_16sdp"
+            app:layout_constraintTop_toBottomOf="@id/ic_menu"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_page_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Business Settings"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="@dimen/_22ssp"
+            android:textColor="@color/white"
+            app:layout_constraintTop_toBottomOf="@id/lbl_role"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="@dimen/_16sdp" />
+
+        <TextView
+            android:id="@+id/tv_managing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Managing: Nexus Digital Solutions LLC"
+            android:fontFamily="@font/roboto_regular"
+            android:textSize="@dimen/_11ssp"
+            android:textColor="@color/gray"
+            android:layout_marginTop="@dimen/_4sdp"
+            app:layout_constraintTop_toBottomOf="@id/tv_page_title"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="@dimen/_16sdp" />
+
+        <!-- Info Card 1 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/card_nexus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_24sdp"
+            android:background="@drawable/bg_auth_card"
+            android:padding="@dimen/_16sdp"
+            app:layout_constraintTop_toBottomOf="@id/tv_managing">
+
+            <ImageView
+                android:id="@+id/ic_building"
+                android:layout_width="@dimen/_32sdp"
+                android:layout_height="@dimen/_32sdp"
+                android:src="@android:drawable/ic_dialog_map"
+                android:background="@drawable/bg_input_field"
+                android:padding="@dimen/_6sdp"
+                app:tint="@color/auth_glow_1"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_badge_active"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ACTIVE"
+                android:background="@drawable/bg_badge_active"
+                android:textColor="#4DB6AC"
+                android:textSize="@dimen/_8ssp"
+                android:fontFamily="@font/roboto_bold"
+                android:paddingHorizontal="@dimen/_8sdp"
+                android:paddingVertical="@dimen/_2sdp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_biz_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nexus Digital"
+                android:textColor="@color/white"
+                android:fontFamily="@font/roboto_bold"
+                android:textSize="@dimen/_14ssp"
+                android:layout_marginTop="@dimen/_16sdp"
+                app:layout_constraintTop_toBottomOf="@id/ic_building"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_biz_est"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Established Jan 2024"
+                android:textColor="@color/gray"
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="@dimen/_10ssp"
+                app:layout_constraintTop_toBottomOf="@id/tv_biz_name"
+                app:layout_constraintStart_toStartOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Info Card 2 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/card_vault"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:background="@drawable/bg_auth_card"
+            android:padding="@dimen/_16sdp"
+            app:layout_constraintTop_toBottomOf="@id/card_nexus">
+
+            <ImageView
+                android:id="@+id/ic_vault"
+                android:layout_width="@dimen/_32sdp"
+                android:layout_height="@dimen/_32sdp"
+                android:src="@android:drawable/ic_menu_sort_by_size"
+                android:background="@drawable/bg_input_field"
+                android:padding="@dimen/_6sdp"
+                app:tint="#4DB6AC"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_badge_tier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TIER 2"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/_8ssp"
+                android:fontFamily="@font/roboto_bold"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_vault_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Business Vault"
+                android:textColor="@color/white"
+                android:fontFamily="@font/roboto_bold"
+                android:textSize="@dimen/_14ssp"
+                android:layout_marginTop="@dimen/_16sdp"
+                app:layout_constraintTop_toBottomOf="@id/ic_vault"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_vault_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4 Active Notebooks"
+                android:textColor="@color/gray"
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="@dimen/_10ssp"
+                app:layout_constraintTop_toBottomOf="@id/tv_vault_name"
+                app:layout_constraintStart_toStartOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- GOVERNANCE -->
+        <TextView
+            android:id="@+id/lbl_governance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="GOVERNANCE"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="@dimen/_10ssp"
+            android:textColor="@color/gray"
+            android:letterSpacing="0.1"
+            android:layout_marginTop="@dimen/_24sdp"
+            android:layout_marginStart="@dimen/_16sdp"
+            app:layout_constraintTop_toBottomOf="@id/card_vault"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <!-- Manage Business Partner -->
+        <LinearLayout
+            android:id="@+id/btnManageMembers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginHorizontal="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:background="@drawable/bg_governance_item"
+            android:padding="@dimen/_12sdp"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toBottomOf="@id/lbl_governance">
+
+            <ImageView
+                android:layout_width="@dimen/_24sdp"
+                android:layout_height="@dimen/_24sdp"
+                android:src="@android:drawable/ic_menu_myplaces"
+                android:background="@drawable/bg_input_field"
+                android:padding="@dimen/_4sdp"
+                app:tint="@color/auth_glow_1" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="@dimen/_12sdp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MANAGE BUSINESS PARTNER"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/roboto_bold"
+                    android:textSize="@dimen/_11ssp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="8 Members currently active"
+                    android:textColor="@color/gray"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textSize="@dimen/_9ssp"/>
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/ic_media_play"
+                app:tint="@color/gray" />
+        </LinearLayout>
+
+        <!-- Leave Business -->
+        <LinearLayout
+            android:id="@+id/btnLeaveBusiness"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginHorizontal="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:background="@drawable/bg_governance_item"
+            android:padding="@dimen/_12sdp"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toBottomOf="@id/btnManageMembers">
+
+            <ImageView
+                android:layout_width="@dimen/_24sdp"
+                android:layout_height="@dimen/_24sdp"
+                android:src="@android:drawable/ic_menu_revert"
+                android:background="@drawable/bg_input_field"
+                android:padding="@dimen/_4sdp"
+                app:tint="#FF9800" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="@dimen/_12sdp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="LEAVE BUSINESS"
+                    android:textColor="#FF9800"
+                    android:fontFamily="@font/roboto_bold"
+                    android:textSize="@dimen/_11ssp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Transfer ownership first"
+                    android:textColor="@color/gray"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textSize="@dimen/_9ssp"/>
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/ic_media_play"
+                app:tint="@color/gray" />
+        </LinearLayout>
+
+        <!-- LOGOUT -->
+        <LinearLayout
+            android:id="@+id/btnLogout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginHorizontal="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:background="@drawable/bg_governance_item"
+            android:padding="@dimen/_12sdp"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toBottomOf="@id/btnLeaveBusiness">
+
+            <ImageView
+                android:layout_width="@dimen/_24sdp"
+                android:layout_height="@dimen/_24sdp"
+                android:src="@android:drawable/ic_lock_power_off"
+                android:background="@drawable/bg_input_field"
+                android:padding="@dimen/_4sdp"
+                app:tint="#FF9800" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="@dimen/_12sdp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="LOGOUT"
+                    android:textColor="#FF9800"
+                    android:fontFamily="@font/roboto_bold"
+                    android:textSize="@dimen/_11ssp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sign out of your account safely"
+                    android:textColor="@color/gray"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textSize="@dimen/_9ssp"/>
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/ic_media_play"
+                app:tint="@color/gray" />
+        </LinearLayout>
+
+        <!-- Danger Zone -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/card_danger_zone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_24sdp"
+            android:background="@drawable/bg_danger_zone"
+            android:padding="@dimen/_16sdp"
+            app:layout_constraintTop_toBottomOf="@id/btnLogout">
+
+            <ImageView
+                android:id="@+id/ic_danger"
+                android:layout_width="@dimen/_16sdp"
+                android:layout_height="@dimen/_16sdp"
+                android:src="@android:drawable/ic_dialog_alert"
+                app:tint="#FFB3B3"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_danger_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Danger Zone"
+                android:textColor="#FFB3B3"
+                android:fontFamily="@font/roboto_bold"
+                android:textSize="@dimen/_12ssp"
+                android:layout_marginStart="@dimen/_8sdp"
+                app:layout_constraintTop_toTopOf="@id/ic_danger"
+                app:layout_constraintBottom_toBottomOf="@id/ic_danger"
+                app:layout_constraintStart_toEndOf="@id/ic_danger" />
+
+            <TextView
+                android:id="@+id/tv_danger_desc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Deleting this business will permanently remove all ledger history, associated vaults, and member access. This action cannot be undone."
+                android:textColor="@color/gray"
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="@dimen/_10ssp"
+                android:layout_marginTop="@dimen/_8sdp"
+                app:layout_constraintTop_toBottomOf="@id/ic_danger"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDeleteBusiness"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_45sdp"
+                android:text="DELETE BUSINESS"
+                android:textColor="#FFB3B3"
+                android:fontFamily="@font/roboto_bold"
+                android:textSize="@dimen/_11ssp"
+                app:strokeColor="#FFB3B3"
+                app:strokeWidth="1dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_marginTop="@dimen/_16sdp"
+                app:layout_constraintTop_toBottomOf="@id/tv_danger_desc" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

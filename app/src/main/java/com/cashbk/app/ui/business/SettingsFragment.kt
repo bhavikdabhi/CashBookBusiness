@@ -56,6 +56,15 @@ class SettingsFragment : Fragment() {
                 .setNegativeButton("Cancel", null)
                 .show()
         }
+
+        binding.btnLogout.setOnClickListener {
+            FirebaseAuth.getInstance().signOut()
+            Toast.makeText(requireContext(), "Logged out", Toast.LENGTH_SHORT).show()
+            val intent = Intent(requireContext(), com.cashbk.app.ui.auth.AuthActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            requireActivity().finish()
+        }
     }
 
     fun updateBusinessId(businessId: String?) {
