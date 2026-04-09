@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <!-- Glowing Background -->
+    <ImageView
+        android:id="@+id/imgSmoke"
+        android:layout_width="@dimen/_200sdp"
+        android:layout_height="@dimen/_200sdp"
+        android:src="@drawable/smoke_bg_top"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="-90dp"
+        android:layout_marginStart="-90dp" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/_20sdp">
+
+
+        <TextView
+            android:id="@+id/tv_welcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Join the"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="@dimen/_24ssp"
+            android:textColor="@color/auth_accent_light"
+            android:layout_marginTop="@dimen/_24sdp"
+            android:layout_marginStart="@dimen/_16sdp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:fontFamily="@font/roboto_bold"
+            android:text="Cashbook"
+            android:textColor="@color/auth_glow_2"
+            android:textSize="@dimen/_18ssp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_welcome" />
+
+        <TextView
+            android:id="@+id/tv_subtitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:layout_marginHorizontal="@dimen/_16sdp"
+            android:text="Access your architectural asset\nmanagement dashboard."
+            android:fontFamily="@font/roboto_regular"
+            android:textColor="@color/auth_text_light"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintTop_toBottomOf="@id/tv_back"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/auth_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:background="@drawable/bg_auth_card"
+        android:padding="@dimen/_16sdp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/tv_subtitle">
+
+        <!-- EMAIL ADDRESS -->
+        <TextView
+            android:id="@+id/lbl_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email Address"
+            android:fontFamily="@font/roboto_regular"
+            android:textSize="@dimen/_12ssp"
+            android:textColor="@color/auth_text_light"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/et_email"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:background="@drawable/bg_input_field"
+            android:paddingHorizontal="@dimen/_16sdp"
+            android:hint="ledger@ethereal.com"
+            android:textColorHint="@color/dark_gray"
+            android:textColor="@color/white"
+            android:drawableStart="@drawable/ic_auth_email"
+            android:drawablePadding="@dimen/_10sdp"
+            android:drawableTint="@color/auth_text_light"
+            android:inputType="textEmailAddress"
+            android:fontFamily="@font/roboto_regular"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintTop_toBottomOf="@id/lbl_email" />
+
+        <!-- MOBILE NUMBER -->
+        <TextView
+            android:id="@+id/lbl_mobile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/roboto_regular"
+            android:text="Mobile Number"
+            android:textColor="@color/auth_text_light"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintTop_toBottomOf="@id/et_email"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/et_mobile"
+            android:layout_width="match_parent"
+            android:hint="+910123456789"
+            android:drawableStart="@drawable/ic_phone"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:background="@drawable/bg_input_field"
+            android:paddingHorizontal="@dimen/_16sdp"
+            android:textColorHint="@color/dark_gray"
+            android:textColor="@color/white"
+            android:drawablePadding="@dimen/_10sdp"
+            android:drawableTint="@color/auth_text_light"
+            android:inputType="phone"
+            android:fontFamily="@font/roboto_regular"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintTop_toBottomOf="@id/lbl_mobile" />
+
+        <!-- PASSWORD -->
+        <TextView
+            android:id="@+id/lbl_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/roboto_regular"
+            android:text="Password"
+            android:textColor="@color/auth_text_light"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintTop_toBottomOf="@id/et_mobile"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/et_password"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_45sdp"
+            android:background="@drawable/bg_input_field"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:paddingHorizontal="@dimen/_16sdp"
+            android:hint="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"
+            android:textColorHint="@color/dark_gray"
+            android:textColor="@color/white"
+            android:drawableStart="@android:drawable/ic_lock_idle_lock"
+            android:drawableEnd="@android:drawable/ic_menu_view"
+            android:drawablePadding="@dimen/_8sdp"
+            android:inputType="textPassword"
+            android:fontFamily="@font/roboto_regular"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintTop_toBottomOf="@id/lbl_password" />
+
+        <!-- Create Account Button -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_register"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_45sdp"
+            android:background="@drawable/bg_gradient_button"
+            android:text="Create Account"
+            android:paddingEnd="@dimen/_16sdp"
+            android:textColor="@color/auth_bg"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="@dimen/_13ssp"
+            android:textAllCaps="false"
+            android:elevation="@dimen/_16sdp"
+            android:outlineAmbientShadowColor="@color/auth_glow_1"
+            android:outlineSpotShadowColor="@color/auth_glow_1"
+            android:layout_marginTop="@dimen/_16sdp"
+            app:layout_constraintTop_toBottomOf="@id/et_password" />
+
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="#2C365E"
+            android:layout_marginEnd="@dimen/_15sdp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_or"
+            app:layout_constraintEnd_toStartOf="@+id/tv_or"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_or" />
+
+        <TextView
+            android:id="@+id/tv_or"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:fontFamily="@font/roboto_bold"
+            android:text="OR"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/_10ssp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_register"  />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/_15sdp"
+            android:background="#2C365E"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_or"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_or"
+            app:layout_constraintTop_toTopOf="@+id/tv_or" />
+
+
+        <!-- Google Login -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_google_sign_up"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_45sdp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:background="@drawable/bg_input_field"
+            android:drawableStart="@drawable/ic_google"
+            android:drawableTint="@color/auth_ic"
+            android:fontFamily="@font/roboto_medium"
+            android:paddingHorizontal="@dimen/_30sdp"
+            android:text="Sign up with Google"
+            android:textAllCaps="false"
+            android:textColor="@color/auth_accent_light"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintTop_toBottomOf="@id/tv_or" />
+
+        
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_sign_in_link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:padding="@dimen/_4sdp"
+            app:layout_constraintTop_toBottomOf="@id/auth_card"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Already have an account? "
+                android:fontFamily="@font/roboto_regular"
+                android:textColor="@color/auth_text_light"
+                android:textSize="@dimen/_12ssp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sign In"
+                android:textColor="@color/auth_glow_2"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="@dimen/_12ssp" />
+        </LinearLayout>
+
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="BY REGISTERING, YOU AGREE TO OUR TERMS OF SERVICE &amp; PRIVACY POLICY."
+        android:fontFamily="@font/roboto_regular"
+        android:textColor="@color/auth_text_light"
+        android:textSize="@dimen/_8ssp"
+        android:textAlignment="center"
+        android:layout_marginTop="@dimen/_12sdp"
+        app:layout_constraintTop_toBottomOf="@id/layout_sign_in_link"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageView
+            android:id="@+id/imgSmokebottom"
+            android:layout_width="@dimen/_200sdp"
+            android:layout_height="@dimen/_200sdp"
+            android:layout_marginEnd="-70dp"
+            android:layout_marginBottom="-70dp"
+            android:src="@drawable/smoke_bg_bottom"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
