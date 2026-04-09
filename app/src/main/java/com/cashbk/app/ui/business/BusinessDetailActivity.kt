@@ -56,13 +56,13 @@ class BusinessDetailActivity : AppCompatActivity() {
             bottomSheet.show(supportFragmentManager, "BusinessSelectionBottomSheet")
         }
         
-        binding.btnAddPartner.setOnClickListener {
-             if (!currentBusinessId.isNullOrEmpty()) {
-                 val intent = Intent(this, ManagePartnersActivity::class.java)
-                 intent.putExtra("businessId", currentBusinessId)
-                 startActivity(intent)
-             }
-        }
+//        binding.btnAddPartner.setOnClickListener {
+//             if (!currentBusinessId.isNullOrEmpty()) {
+//                 val intent = Intent(this, ManagePartnersActivity::class.java)
+//                 intent.putExtra("businessId", currentBusinessId)
+//                 startActivity(intent)
+//             }
+//        }
     }
 
     private fun setupBottomNavigation() {

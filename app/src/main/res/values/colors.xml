@@ -22,6 +22,9 @@
     <color name="auth_glow_1">#8083FF</color>
     <color name="auth_glow_2">#C0C1FF</color>
     <color name="auth_text">#AEB9D0</color>
+    <color name="auth_text_light">#C7C4D7</color>
+    <color name="auth_ic">#908FA0</color>
+
 
     <!-- Glass UI -->
     <color name="glass_bg">#1E293B</color> <!-- use with alpha -->

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true">
+        <inset
+            android:insetTop="@dimen/_2sdp"
+            android:insetBottom="@dimen/_2sdp"
+            android:insetLeft="@dimen/_4sdp"
+            android:insetRight="@dimen/_4sdp">
+
+            <shape android:shape="rectangle">
+                <corners android:radius="@dimen/_20sdp"/>
+                <gradient
+                    android:startColor="#BFC1FF"
+                    android:endColor="#8388FF"
+                    android:angle="315" />
+            </shape>
+        </inset>
+    </item>
+
+    <item android:drawable="@android:color/transparent" />
+</selector>
