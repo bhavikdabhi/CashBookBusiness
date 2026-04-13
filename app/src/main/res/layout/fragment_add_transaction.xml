@@ -1,296 +1,499 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     android:background="@color/bg_color">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:paddingBottom="@dimen/_100sdp"
+        android:background="@color/auth_bg">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- Toolbar area -->
+        <ImageView
+            android:id="@+id/cancelButton"
+            android:layout_width="@dimen/_24sdp"
+            android:layout_height="@dimen/_24sdp"
+            android:src="@drawable/ic_close"
+            app:tint="@color/text_color"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:padding="@dimen/_4sdp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/_12sdp"
+            android:text="Add Transaction"
+            android:textColor="@color/white"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="@dimen/_14ssp"
+            app:layout_constraintTop_toTopOf="@id/cancelButton"
+            app:layout_constraintBottom_toBottomOf="@id/cancelButton"
+            app:layout_constraintStart_toEndOf="@id/cancelButton"
+            android:layout_marginStart="@dimen/_12sdp"/>
+
+
+        <!-- Toggle Container Background -->
+        <FrameLayout
+            android:id="@+id/toggle_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:layout_marginHorizontal="@dimen/_16sdp"
             android:background="@drawable/bg_glass_card"
-            android:orientation="vertical"
-            android:elevation="@dimen/_4sdp"
-            android:clipToOutline="true">
+            android:padding="@dimen/_6sdp"
+            app:layout_constraintTop_toBottomOf="@id/tv_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
 
             <LinearLayout
+                android:id="@+id/bottom_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/_1sdp"
-                    android:layout_weight="1" />
-
-                <ImageView
-                    android:id="@+id/cancelButton"
-                    android:layout_width="@dimen/_24sdp"
-                    android:layout_height="@dimen/_24sdp"
-                    android:padding="@dimen/_4sdp"
-                    android:src="@drawable/ic_close"
-                    android:tint="@color/text_color" />
-            </LinearLayout>
-
-
-            <!-- CASH IN / CASH OUT -->
-            <com.google.android.material.button.MaterialButtonToggleGroup
-                android:id="@+id/toggle_button_group"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/_16sdp"
-                app:singleSelection="true"
-                app:selectionRequired="true">
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal"
+                android:elevation="@dimen/_8sdp">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/cash_in_button"
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/_42sdp"
+                    android:layout_height="@dimen/_40sdp"
                     android:layout_weight="1"
                     android:text="Cash In"
-                    android:fontFamily="@font/roboto_medium"
+                    android:paddingHorizontal="@dimen/_5sdp"
+                    app:icon="@drawable/ic_trans_plus"
+                    app:iconGravity="textStart"
+                    app:iconTint="@color/white"
+                    android:fontFamily="@font/roboto_bold"
                     android:textFontWeight="600"
-                    android:textAllCaps="false"
                     android:textSize="@dimen/_12ssp"
-                    android:textColor="@color/success"
-                    app:icon="@drawable/ic_date_range"
-                    app:iconTint="@color/success"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+                    app:backgroundTint="@color/success"
+                    app:cornerRadius="@dimen/_12sdp"
+                    android:layout_marginEnd="@dimen/_3sdp"/>
+
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/cash_out_button"
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/_42sdp"
+                    android:layout_height="@dimen/_40sdp"
                     android:layout_weight="1"
                     android:text="Cash Out"
-                    android:fontFamily="@font/roboto_medium"
+                    android:fontFamily="@font/roboto_bold"
                     android:textFontWeight="600"
                     android:textSize="@dimen/_12ssp"
-                    android:textAllCaps="false"
-                    android:textColor="@color/danger"
-                    app:icon="@drawable/ic_date_range"
-                    app:iconTint="@color/danger"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+                    app:icon="@drawable/ic_trans_plus"
+                    app:iconGravity="textStart"
+                    app:iconTint="@color/white"
+                    app:backgroundTint="@color/bg_color"
+                    app:cornerRadius="@dimen/_12sdp"
+                    android:layout_marginStart="@dimen/_8sdp"/>
 
-            </com.google.android.material.button.MaterialButtonToggleGroup>
+            </LinearLayout>
 
 
-            <!-- DATE + TIME ROW -->
+        </FrameLayout>
+
+        <!-- ENTRY AMOUNT BACKGROUND CARD -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/card_amount"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_110sdp"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:layout_marginHorizontal="@dimen/_16sdp"
+            android:background="@drawable/bg_glass_card"
+            app:layout_constraintTop_toBottomOf="@id/toggle_container"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ENTRY AMOUNT"
+                android:textColor="@color/gray"
+                android:fontFamily="@font/roboto_bold"
+                android:textSize="@dimen/_9ssp"
+                android:letterSpacing="0.1"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="@dimen/_16sdp" />
+
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:weightSum="2">
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:gravity="center_vertical">
 
-                <!-- DATE -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="0dp"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:hint="Date"
-                    android:textColorHint="@color/gray"
-                    style="@style/GlassInput"
-                    app:endIconMode="custom"
-                    app:endIconDrawable="@drawable/ic_date_range"
-                    app:endIconTint="@color/text_color">
+                    android:text="₹"
+                    android:textColor="@color/primary_color"
+                    android:fontFamily="@font/roboto_bold"
+                    android:textSize="@dimen/_22ssp"
+                    android:layout_marginEnd="@dimen/_8sdp"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:hintEnabled="false"
+                    app:boxBackgroundMode="none"
+                    app:errorEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/date_edit_text"
+                        android:id="@+id/et_amount"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_regular"
-                        android:textFontWeight="600"
-                        android:textSize="@dimen/_12ssp"
-                        android:focusable="false"
-                        android:clickable="true"
-                        android:cursorVisible="false"
-                        android:textColor="@color/text_color" />
-
+                        android:background="@null"
+                        android:hint="0.00"
+                        android:textColorHint="#40ffffff"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/roboto_bold"
+                        android:textSize="@dimen/_36ssp"
+                        android:inputType="numberDecimal" />
                 </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- SPACE -->
-                <Space
-                    android:layout_width="@dimen/_5sdp"
-                    android:layout_height="@dimen/_1sdp" />
-
-                <!-- TIME -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:hint="Time"
-                    android:textColorHint="@color/gray"
-                    style="@style/GlassInput"
-                    app:endIconMode="custom"
-                    app:endIconDrawable="@drawable/ic_time"
-                    app:endIconTint="@color/text_color">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/time_edit_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_regular"
-                        android:textFontWeight="600"
-                        android:textSize="@dimen/_12ssp"
-                        android:focusable="false"
-                        android:clickable="true"
-                        android:cursorVisible="false"
-                        android:textColor="@color/text_color" />
-                </com.google.android.material.textfield.TextInputLayout>
-
             </LinearLayout>
 
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!-- AMOUNT -->
-            <com.google.android.material.textfield.TextInputLayout
+        <!-- DATE AND TIME ROW -->
+        <TextView
+            android:id="@+id/lbl_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="DATE"
+            android:textColor="@color/gray"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="@dimen/_8ssp"
+            android:letterSpacing="0.1"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginEnd="@dimen/_8sdp"
+            app:layout_constraintTop_toBottomOf="@id/card_amount"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/lbl_time" />
+
+        <TextView
+            android:id="@+id/lbl_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="TIME"
+            android:textColor="@color/gray"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="@dimen/_8ssp"
+            android:letterSpacing="0.1"
+            android:layout_marginEnd="@dimen/_16sdp"
+            app:layout_constraintTop_toTopOf="@id/lbl_date"
+            app:layout_constraintStart_toEndOf="@id/lbl_date"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:layout_marginStart="@dimen/_16sdp"
+            app:hintEnabled="false"
+            app:errorEnabled="true"
+            app:boxBackgroundMode="none"
+            app:layout_constraintTop_toBottomOf="@id/lbl_date"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/til_time">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_date"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Amount"
-                android:textColorHint="@color/gray"
-                android:layout_marginTop="@dimen/_12sdp"
-                style="@style/GlassInput">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/amount_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/roboto_regular"
-                    android:textFontWeight="600"
-                    android:textSize="@dimen/_12ssp"
-                    android:inputType="numberDecimal"
-                    android:textColor="@color/text_color" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-            <!-- REMARK -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Remark"
-                android:textColorHint="@color/gray"
-                android:layout_marginTop="@dimen/_12sdp"
-                style="@style/GlassInput">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/remark_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/roboto_regular"
-                    android:textFontWeight="600"
-                    android:textSize="@dimen/_12ssp"
-                    android:textColor="@color/text_color" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-            <!-- CATEGORY -->
-            <TextView
-                android:text="Category"
-                android:textColor="@color/text_color"
-                android:textStyle="bold"
-                android:fontFamily="@font/roboto_regular"
-                android:textFontWeight="600"
-                android:textSize="@dimen/_14ssp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_12sdp" />
-
-            <Spinner
-                android:id="@+id/category_spinner"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_42sdp"
-                style="@style/GlassSpinner"
-                android:fontFamily="@font/roboto_regular"
-                android:textFontWeight="600"
-                android:textSize="@dimen/_12ssp"
+                android:layout_height="@dimen/_40sdp"
                 android:background="@drawable/bg_glass_field"
-                android:padding="@dimen/_8sdp"
-                android:layout_marginTop="@dimen/_8sdp" />
-
-
-            <!-- PARTY + PLUS BUTTON -->
-            <TextView
-                android:text="Party"
+                android:paddingHorizontal="@dimen/_12sdp"
                 android:textColor="@color/text_color"
-                android:textStyle="bold"
-                android:fontFamily="@font/roboto_regular"
-                android:textFontWeight="600"
-                android:textSize="@dimen/_14ssp"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="@dimen/_11ssp"
+                android:focusable="false"
+                android:clickable="true"
+                android:drawableEnd="@android:drawable/ic_menu_my_calendar"
+                android:drawableTint="@color/gray" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:layout_marginEnd="@dimen/_16sdp"
+            app:hintEnabled="false"
+            app:errorEnabled="true"
+            app:boxBackgroundMode="none"
+            app:layout_constraintTop_toBottomOf="@id/lbl_time"
+            app:layout_constraintStart_toEndOf="@id/til_date"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_time"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                android:background="@drawable/bg_glass_field"
+                android:paddingHorizontal="@dimen/_12sdp"
+                android:textColor="@color/text_color"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="@dimen/_11ssp"
+                android:focusable="false"
+                android:clickable="true"
+                android:drawableEnd="@android:drawable/ic_menu_recent_history"
+                android:drawableTint="@color/gray" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- PARTY / CONTACT -->
+        <TextView
+            android:id="@+id/lbl_party"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PARTY / CONTACT"
+            android:textColor="@color/gray"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="@dimen/_8ssp"
+            android:letterSpacing="0.1"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:layout_marginStart="@dimen/_16sdp"
+            app:layout_constraintTop_toBottomOf="@id/til_date"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <RelativeLayout
+            android:id="@+id/cnt_party"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:layout_marginHorizontal="@dimen/_16sdp"
+            android:background="@drawable/bg_glass_field"
+            app:layout_constraintTop_toBottomOf="@id/lbl_party"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+            
+            <ImageView
+                android:id="@+id/ic_profile"
+                android:layout_width="@dimen/_16sdp"
+                android:layout_height="@dimen/_16sdp"
+                android:src="@drawable/ic_menu_member"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:layout_marginStart="@dimen/_12sdp"
+                app:tint="@color/gray" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_party"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_12sdp" />
+                android:layout_toEndOf="@id/ic_profile"
+                android:layout_toStartOf="@id/add_party_button"
+                app:boxBackgroundMode="none"
+                app:hintEnabled="false">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Spinner
-                    android:id="@+id/party_spinner"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/_42sdp"
-                    android:layout_weight="1"
-                    style="@style/GlassSpinner"
-                    android:background="@drawable/bg_glass_field"
-                    android:padding="@dimen/_8sdp"
-                    android:layout_marginTop="@dimen/_8sdp"/>
-
-                <ImageView
-                    android:id="@+id/add_party_button"
-                    android:layout_width="@dimen/_40sdp"
+                <AutoCompleteTextView
+                    android:id="@+id/et_party"
+                    android:layout_width="match_parent"
                     android:layout_height="@dimen/_40sdp"
-                    android:layout_marginLeft="@dimen/_10sdp"
-                    android:padding="@dimen/_8sdp"
-                    android:background="@drawable/bg_glass_field"
-                    android:src="@drawable/ic_add"
-                    android:layout_marginTop="@dimen/_9sdp"
-                    android:tint="@color/primary_color" />
+                    android:background="@null"
+                    android:inputType="none"
+                    android:hint="Who did you transact with?"
+                    android:textColorHint="@color/gray"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textSize="@dimen/_11ssp"
+                    android:paddingTop="@dimen/_2sdp"
+                    android:paddingBottom="@dimen/_2sdp"
+                    android:paddingStart="@dimen/_10sdp"
+                    android:paddingEnd="@dimen/_10sdp"
+                    android:completionThreshold="1" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            </LinearLayout>
+            <ImageView
+                android:id="@+id/add_party_button"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:src="@drawable/ic_add"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                app:tint="@color/gray" />
+
+        </RelativeLayout>
+
+
+        <!-- CATEGORY -->
+        <TextView
+            android:id="@+id/lbl_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CATEGORY"
+            android:textColor="@color/gray"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="@dimen/_8ssp"
+            android:letterSpacing="0.1"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:layout_marginStart="@dimen/_16sdp"
+            app:layout_constraintTop_toBottomOf="@id/cnt_party"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <HorizontalScrollView
+            android:id="@+id/sv_category"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            android:layout_marginTop="@dimen/_6sdp"
+            app:layout_constraintTop_toBottomOf="@id/lbl_category"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_20sdp"
-                android:orientation="horizontal">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/save_button"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/_42sdp"
-                    android:fontFamily="@font/roboto_bold"
-                    android:textFontWeight="600"
-                    android:textSize="@dimen/_12ssp"
-                    android:layout_weight="1"
-                    android:text="Save"
-                    android:textAllCaps="false"
-                    app:backgroundTint="@color/primary_color" />
-
-                <Space
-                    android:layout_width="@dimen/_10sdp"
-                    android:layout_height="@dimen/_1sdp" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/save_add_more_button"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/_42sdp"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/roboto_bold"
-                    android:textFontWeight="600"
-                    android:textSize="@dimen/_12ssp"
-                    android:text="Add More"
-                    android:textAllCaps="false"
-                    app:backgroundTint="@color/success" />
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/_16sdp"
+                android:paddingVertical="@dimen/_2sdp">
+                
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/category_chip_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:singleSelection="true"
+                    app:singleLine="true" />
+                
             </LinearLayout>
+
+        </HorizontalScrollView>
+
+        <!-- REMARK / DESCRIPTION -->
+        <TextView
+            android:id="@+id/lbl_remark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="REMARK / DESCRIPTION"
+            android:textColor="@color/gray"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="@dimen/_8ssp"
+            android:letterSpacing="0.1"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:layout_marginStart="@dimen/_16sdp"
+            app:layout_constraintTop_toBottomOf="@id/sv_category"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_remark"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:layout_marginHorizontal="@dimen/_16sdp"
+            app:hintEnabled="false"
+            app:errorEnabled="true"
+            app:boxBackgroundMode="none"
+            app:layout_constraintTop_toBottomOf="@id/lbl_remark"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_remark"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_75sdp"
+                android:background="@drawable/bg_glass_field"
+                android:hint="Add some details about this transaction..."
+                android:textColorHint="@color/gray"
+                android:textColor="@color/white"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="@dimen/_11ssp"
+                android:padding="@dimen/_12sdp"
+                android:gravity="top|start" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- ATTACH BILL -->
+
+        <!-- BOTTOM ACTIONS -->
+        <LinearLayout
+            android:id="@+id/btn_attach_bill"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_70sdp"
+            android:layout_marginHorizontal="@dimen/_16sdp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_dashed_border"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.487"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/til_remark">
+
+            <ImageView
+                android:id="@+id/iv_attach_icon"
+                android:layout_width="@dimen/_16sdp"
+                android:layout_height="@dimen/_16sdp"
+                android:src="@android:drawable/ic_menu_camera"
+                app:tint="@color/gray" />
+
+            <TextView
+                android:id="@+id/tv_attach_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:fontFamily="@font/roboto_bold"
+                android:letterSpacing="0.1"
+                android:text="ATTACH BILL / RECEIPT"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/_8ssp" />
 
         </LinearLayout>
 
-    </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/_24sdp"
+            android:layout_marginHorizontal="@dimen/_16sdp"
+            app:layout_constraintTop_toBottomOf="@id/btn_attach_bill"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-</ScrollView>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/save_add_more_button"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_45sdp"
+                android:layout_weight="1.2"
+                android:text="Save &amp; Add\nMore"
+                android:textAllCaps="false"
+                android:textColor="@color/auth_accent_light"
+                android:fontFamily="@font/roboto_bold"
+                android:textSize="@dimen/_10ssp"
+                app:cornerRadius="@dimen/_12sdp"
+                app:backgroundTint="@color/auth_surface_high"
+                android:layout_marginEnd="@dimen/_10sdp"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/save_button"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_45sdp"
+                android:layout_weight="1.2"
+                android:text="Confirm\nTransaction"
+                android:textAllCaps="false"
+                android:textColor="@color/auth_bg"
+                android:fontFamily="@font/roboto_bold"
+                android:textSize="@dimen/_10ssp"
+                android:background="@drawable/bg_gradient_button"
+                android:elevation="@dimen/_16sdp"
+                android:outlineAmbientShadowColor="@color/auth_glow_1"
+                android:outlineSpotShadowColor="@color/auth_glow_1"
+                />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

@@ -10,7 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cashbk.app.R
-import com.cashbk.app.data.model.Member
+import com.cashbk.app.dataclass.Member
+import com.cashbk.app.adapter.MembersAdapter
 import com.cashbk.app.databinding.ActivityMembersBinding
 import com.cashbk.app.databinding.DialogAddMemberBinding
 import com.cashbk.app.databinding.ItemMemberBinding
@@ -129,32 +130,51 @@ class MembersActivity : AppCompatActivity() {
             .create()
 
         // Configure roles based on entity type
+        val roles = mutableListOf<String>()
         if (entityType == "business") {
-            dialogBinding.rbPartner.visibility = android.view.View.VISIBLE
-            dialogBinding.rbPartner.isChecked = true
+            roles.add("partner")
         } else {
             if (currentUserRole == "owner") {
-                dialogBinding.rbAdmin.visibility = android.view.View.VISIBLE
+                roles.add("admin")
             }
-            dialogBinding.rbWriter.visibility = android.view.View.VISIBLE
-            dialogBinding.rbReader.visibility = android.view.View.VISIBLE
-            dialogBinding.rbWriter.isChecked = true
+            roles.add("writer")
+            roles.add("reader")
+        }
+        
+        val roleDisplayNames = roles.map {
+            when(it) {
+                "partner" -> "Partner (Full Access, No Delete Business)"
+                "admin" -> "Admin (Manage All except business)"
+                "writer" -> "Writer (Add/Remove Transactions)"
+                "reader" -> "Reader (View Only)"
+                else -> it
+            }
+        }
+        val adapter = android.widget.ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, roleDisplayNames)
+        dialogBinding.actvRole.setAdapter(adapter)
+
+        // Select default
+        if (roleDisplayNames.isNotEmpty()) {
+            val defaultIndex = if (entityType != "business" && currentUserRole == "owner") 1 else 0
+            dialogBinding.actvRole.setText(roleDisplayNames[defaultIndex], false)
         }
 
         dialogBinding.btnAddMember.setOnClickListener {
             val phone = dialogBinding.etMemberPhone.text.toString().trim()
-            val selectedRoleId = dialogBinding.rgRoles.checkedRadioButtonId
+            val roleDisplay = dialogBinding.actvRole.text.toString()
             
             if (phone.length != 10) {
-                Toast.makeText(this, "Enter valid 10-digit phone", Toast.LENGTH_SHORT).show()
+                dialogBinding.etMemberPhone.error = "Enter valid 10-digit phone"
                 return@setOnClickListener
+            } else {
+                dialogBinding.etMemberPhone.error = null
             }
 
-            val role = when (selectedRoleId) {
-                R.id.rbPartner -> "partner"
-                R.id.rbAdmin -> "admin"
-                R.id.rbWriter -> "writer"
-                R.id.rbReader -> "reader"
+            val role = when {
+                roleDisplay.startsWith("Partner") -> "partner"
+                roleDisplay.startsWith("Admin") -> "admin"
+                roleDisplay.startsWith("Writer") -> "writer"
+                roleDisplay.startsWith("Reader") -> "reader"
                 else -> ""
             }
 
@@ -227,27 +247,5 @@ class MembersActivity : AppCompatActivity() {
             .show()
     }
 
-    inner class MembersAdapter(
-        private val members: List<Member>,
-        private val onDeleteClick: (Member) -> Unit
-    ) : RecyclerView.Adapter<MembersAdapter.MemberViewHolder>() {
 
-        inner class MemberViewHolder(val binding: ItemMemberBinding) : RecyclerView.ViewHolder(binding.root)
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MemberViewHolder {
-            val binding = ItemMemberBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            return MemberViewHolder(binding)
-        }
-
-        override fun onBindViewHolder(holder: MemberViewHolder, position: Int) {
-            val member = members[position]
-            holder.binding.tvMemberName.text = member.name.ifEmpty { "User" }
-            holder.binding.tvMemberPhone.text = member.phone
-            holder.binding.tvMemberRole.text = "Role: ${member.role.replaceFirstChar { it.uppercase() }}"
-            
-            holder.binding.btnDeleteMember.setOnClickListener { onDeleteClick(member) }
-        }
-
-        override fun getItemCount() = members.size
-    }
 }

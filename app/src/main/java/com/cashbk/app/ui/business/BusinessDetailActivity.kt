@@ -7,7 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.cashbk.app.R
-import com.cashbk.app.data.model.Business
+import com.cashbk.app.dataclass.Business
 import com.cashbk.app.databinding.ActivityBusinessDetailBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*

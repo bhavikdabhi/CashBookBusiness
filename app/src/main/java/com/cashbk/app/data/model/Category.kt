@@ -1,3 +1,2 @@
-package com.cashbk.app.data.model
-
-data class Category(var id: String = "", val name: String = "")
+// Empty/Moved
+// Please delete this file and the folder manually!

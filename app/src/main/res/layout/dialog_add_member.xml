@@ -46,67 +46,30 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <TextView
-        android:id="@+id/tvRoleLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Select Role"
-        android:fontFamily="@font/roboto_regular"
-        android:textFontWeight="600"
-        android:textSize="@dimen/_13ssp"
-        android:layout_marginBottom="@dimen/_6sdp"/>
-
-    <RadioGroup
-        android:id="@+id/rgRoles"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilRole"
+        style="@style/GlassInput"
+        app:boxCornerRadiusTopStart="12dp"
+        app:boxCornerRadiusTopEnd="12dp"
+        app:boxCornerRadiusBottomStart="12dp"
+        app:boxCornerRadiusBottomEnd="12dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:hint="Select Role"
+        android:layout_marginBottom="@dimen/_12sdp"
+        android:textColorHint="@color/gray">
 
-        <RadioButton
-            android:id="@+id/rbAdmin"
-            android:layout_width="wrap_content"
+        <AutoCompleteTextView
+            android:id="@+id/actvRole"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/text_color"
             android:fontFamily="@font/roboto_regular"
             android:textFontWeight="600"
             android:textSize="@dimen/_12ssp"
-            android:textColor="@color/text_color"
-            android:text="Admin (Manage All except business)"
-            android:visibility="gone"/>
+            android:inputType="none"/>
 
-        <RadioButton
-            android:id="@+id/rbPartner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_regular"
-            android:textFontWeight="600"
-            android:textSize="@dimen/_12ssp"
-            android:textColor="@color/text_color"
-            android:text="Partner (Full Access, No Delete Business)"
-            android:visibility="gone"/>
-
-        <RadioButton
-            android:id="@+id/rbWriter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_regular"
-            android:textFontWeight="600"
-            android:textSize="@dimen/_12ssp"
-            android:textColor="@color/text_color"
-            android:text="Writer (Add/Remove Transactions)"
-            android:visibility="gone"/>
-
-        <RadioButton
-            android:id="@+id/rbReader"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Reader (View Only)"
-            android:fontFamily="@font/roboto_regular"
-            android:textFontWeight="600"
-            android:textSize="@dimen/_12ssp"
-            android:textColor="@color/text_color"
-            android:visibility="gone"/>
-
-    </RadioGroup>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnAddMember"

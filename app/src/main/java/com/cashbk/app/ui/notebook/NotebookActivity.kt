@@ -15,8 +15,9 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cashbk.app.R
-import com.cashbk.app.data.model.Notebook
-import com.cashbk.app.data.model.Transaction
+import com.cashbk.app.dataclass.Notebook
+import com.cashbk.app.dataclass.Transaction
+import com.cashbk.app.adapter.TransactionAdapter
 import com.cashbk.app.databinding.ActivityNotebookBinding
 import com.cashbk.app.databinding.ItemTransactionBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -416,10 +417,17 @@ class NotebookActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        transactionAdapter = TransactionAdapter(displayedTransactionList) { transaction ->
-            // Item click (e.g. open details)
-            Log.d("NotebookActivity", "Clicked transaction: ${transaction.id}")
-        }
+        transactionAdapter = TransactionAdapter(displayedTransactionList, 
+            onClick = { transaction ->
+                // Item click (e.g. open details)
+                Log.d("NotebookActivity", "Clicked transaction: ${transaction.id}")
+            },
+            onLongClick = { view, transaction ->
+                if (currentUserRole != "reader") {
+                    showTransactionPopupMenu(view, transaction)
+                }
+            }
+        )
 
         binding.transactionsRecyclerView.apply {
             layoutManager = LinearLayoutManager(this@NotebookActivity)
@@ -429,87 +437,54 @@ class NotebookActivity : AppCompatActivity() {
     }
 
     private fun showMenu(view: View) {
-        val wrapper = ContextThemeWrapper(this, R.style.PopupMenuTheme)
-        val popup = PopupMenu(wrapper, view)
-        popup.menuInflater.inflate(R.menu.menu_notebook_options, popup.menu)
-
-        popup.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.action_rename -> {
-                     if (currentUserRole == "reader") {
-                         Toast.makeText(this, "You have view-only access", Toast.LENGTH_SHORT).show()
-                     } else {
-                         Toast.makeText(this, "Rename clicked", Toast.LENGTH_SHORT).show()
-                     }
-                     true
-                }
-                R.id.action_delete -> {
-                     if (currentUserRole != "owner") {
-                         Toast.makeText(this, "Only the business owner can delete this notebook", Toast.LENGTH_SHORT).show()
-                     } else {
-                         Toast.makeText(this, "Delete clicked", Toast.LENGTH_SHORT).show()
-                     }
-                     true
-                }
-                R.id.action_share -> {
-                    val intent = Intent(this, com.cashbk.app.ui.members.MembersActivity::class.java)
-                    intent.putExtra("entityId", notebookId)
-                    intent.putExtra("entityType", "notebook")
-                    intent.putExtra("currentUserRole", currentUserRole)
-                    startActivity(intent)
-                    true
-                }
-                else -> false
+        val popup = com.cashbk.app.utils.CustomOptionsMenu(this, view)
+        
+        popup.setOnRenameClickListener {
+            if (currentUserRole == "reader") {
+                Toast.makeText(this, "You have view-only access", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Rename clicked", Toast.LENGTH_SHORT).show()
             }
         }
+        popup.setOnDeleteClickListener {
+            if (currentUserRole != "owner") {
+                Toast.makeText(this, "Only the business owner can delete this notebook", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Delete clicked", Toast.LENGTH_SHORT).show()
+            }
+        }
+        popup.setOnMemberClickListener {
+            val intent = Intent(this, com.cashbk.app.ui.members.MembersActivity::class.java)
+            intent.putExtra("entityId", notebookId)
+            intent.putExtra("entityType", "notebook")
+            intent.putExtra("currentUserRole", currentUserRole)
+            startActivity(intent)
+        }
+        
         popup.show()
     }
 
     private fun showMenuNotebook(view: View) {
-        val wrapper = ContextThemeWrapper(this, R.style.PopupMenuTheme)
-        val popup = PopupMenu(wrapper, view)
-        popup.menuInflater.inflate(R.menu.menu_notebook_more, popup.menu)
-
-        // Force show icons via reflection
-        try {
-            val field = popup.javaClass.getDeclaredField("mPopup")
-            field.isAccessible = true
-            val helper = field.get(popup)
-            val clazz = Class.forName(helper.javaClass.name)
-            val setForceIcons = clazz.getMethod("setForceShowIcon", Boolean::class.javaPrimitiveType)
-            setForceIcons.invoke(helper, true)
-        } catch (e: Exception) { e.printStackTrace() }
-
-        // Tint icons
-        for (i in 0 until popup.menu.size()) {
-            val item = popup.menu.getItem(i)
-            item.icon?.let { icon ->
-                val wrapped = DrawableCompat.wrap(icon).mutate()
-                DrawableCompat.setTint(wrapped, ContextCompat.getColor(this, R.color.text_color))
-                item.icon = wrapped
-            }
+        val popup = com.cashbk.app.utils.CustomOptionsMenu(this, view)
+        
+        popup.setOnRenameClickListener {
+            Toast.makeText(this, "Rename clicked", Toast.LENGTH_SHORT).show()
         }
-
-        popup.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.action_rename -> { Toast.makeText(this, "Rename clicked", Toast.LENGTH_SHORT).show(); true }
-                R.id.action_report -> {
-                    val nName = binding.tvTitle.text.toString()
-                    PdfGenerator.generatePdf(this, nName, displayedTransactionList, currentNetBalance)
-                    true
-                }
-                R.id.action_member -> {
-                    val intent = Intent(this, com.cashbk.app.ui.members.MembersActivity::class.java)
-                    intent.putExtra("entityId", notebookId)
-                    intent.putExtra("entityType", "notebook")
-                    intent.putExtra("currentUserRole", currentUserRole)
-                    startActivity(intent)
-                    true
-                }
-                R.id.action_settings -> { Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show(); true }
-                else -> false
-            }
+        popup.setOnReportClickListener {
+            val nName = binding.tvTitle.text.toString()
+            PdfGenerator.generatePdf(this, nName, displayedTransactionList, currentNetBalance)
         }
+        popup.setOnMemberClickListener {
+            val intent = Intent(this, com.cashbk.app.ui.members.MembersActivity::class.java)
+            intent.putExtra("entityId", notebookId)
+            intent.putExtra("entityType", "notebook")
+            intent.putExtra("currentUserRole", currentUserRole)
+            startActivity(intent)
+        }
+        popup.setOnSettingsClickListener {
+            Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show()
+        }
+        
         popup.show()
     }
 
@@ -557,43 +532,15 @@ class NotebookActivity : AppCompatActivity() {
     }
 
     private fun showTransactionPopupMenu(anchor: View, transaction: Transaction) {
-        val wrapper = ContextThemeWrapper(this, R.style.PopupMenuTheme)
-        val popup = PopupMenu(wrapper, anchor)
-        popup.menuInflater.inflate(R.menu.menu_transaction_options, popup.menu)
-
-        // Force show icons via reflection
-        try {
-            val field = popup.javaClass.getDeclaredField("mPopup")
-            field.isAccessible = true
-            val helper = field.get(popup)
-            val clazz = Class.forName(helper.javaClass.name)
-            val setForceIcons = clazz.getMethod("setForceShowIcon", Boolean::class.javaPrimitiveType)
-            setForceIcons.invoke(helper, true)
-        } catch (e: Exception) { e.printStackTrace() }
-
-        // Tint icons
-        for (i in 0 until popup.menu.size()) {
-            val item = popup.menu.getItem(i)
-            item.icon?.let { icon ->
-                val wrapped = DrawableCompat.wrap(icon).mutate()
-                DrawableCompat.setTint(wrapped, ContextCompat.getColor(this, R.color.text_color))
-                item.icon = wrapped
-            }
+        val popup = com.cashbk.app.utils.CustomOptionsMenu(this, anchor)
+        
+        popup.setOnRenameClickListener {
+            showEditTransactionDialog(transaction)
         }
-
-        popup.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.action_delete -> {
-                    deleteTransaction(transaction)
-                    true
-                }
-                R.id.action_edit -> {
-                    showEditTransactionDialog(transaction)
-                    true
-                }
-                else -> false
-            }
+        popup.setOnDeleteClickListener {
+            deleteTransaction(transaction)
         }
+        
         popup.show()
     }
 
@@ -607,79 +554,5 @@ class NotebookActivity : AppCompatActivity() {
         return NumberFormat.getNumberInstance(Locale("en", "IN")).format(amount)
     }
 
-    // --- INNER ADAPTER CLASS ---
-    inner class TransactionAdapter(
-        private val transactions: List<Transaction>,
-        private val onClick: (Transaction) -> Unit
-    ) : RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder>() {
 
-        inner class TransactionViewHolder(val binding: ItemTransactionBinding) : RecyclerView.ViewHolder(binding.root)
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
-            val binding = ItemTransactionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            return TransactionViewHolder(binding)
-        }
-
-        override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) {
-            val transaction = transactions[position]
-            val context = holder.itemView.context
-
-            // DATE HEADER logic
-            val showHeader = position == 0 || transaction.date != transactions[position - 1].date
-            if (showHeader) {
-                holder.binding.tvDateHeader.visibility = View.VISIBLE
-                holder.binding.tvDateHeader.text = transaction.date
-            } else {
-                holder.binding.tvDateHeader.visibility = View.GONE
-            }
-
-            // REMARK
-            holder.binding.tvRemark.text = if (transaction.remark.isNotEmpty()) transaction.remark else "Transaction"
-
-            // PARTY NAME logic (Correctly hiding if empty)
-            if (transaction.partyName.isNotEmpty()) {
-                holder.binding.tvParty.text = transaction.partyName
-                holder.binding.tvParty.visibility = View.VISIBLE
-            } else {
-                // If you want to show "Party" when no name exists, use:
-                // holder.binding.tvParty.text = "Party"
-                // holder.binding.tvParty.visibility = View.VISIBLE
-
-                // OR if you want to hide it completely:
-                holder.binding.tvParty.visibility = View.GONE
-            }
-
-            // CATEGORY CHIP logic
-            if (transaction.categoryName.isNotEmpty()) {
-                holder.binding.tvCategoryChip.text = transaction.categoryName
-                holder.binding.tvCategoryChip.visibility = View.VISIBLE
-            } else {
-                holder.binding.tvCategoryChip.visibility = View.GONE
-            }
-
-            // AMOUNT COLORING
-            val amount = transaction.amount
-            holder.binding.tvAmount.text = formatCurrency(amount)
-            holder.binding.tvAmount.setTextColor(
-                ContextCompat.getColor(context, if (transaction.type == "in") R.color.success else R.color.danger)
-            )
-
-            // RUNNING BALANCE
-            holder.binding.tvBalanceAfter.text = "Balance: ${formatCurrency(transaction.runningBalance)}"
-
-            // ENTRY INFO
-            val entryBy = if (transaction.createdByName.isNotEmpty()) transaction.createdByName else "You"
-            holder.binding.tvEntryInfo.text = "Entry by $entryBy at ${transaction.time}"
-
-            // CLICKS
-            holder.itemView.setOnClickListener { onClick(transaction) }
-            holder.itemView.setOnLongClickListener {
-                if (currentUserRole != "reader") {
-                    showTransactionPopupMenu(it, transaction)
-                }
-                true
-            }
-        }
-        override fun getItemCount() = transactions.size
-    }
 }

@@ -23,6 +23,7 @@
     <color name="auth_glow_2">#C0C1FF</color>
     <color name="auth_text">#AEB9D0</color>
     <color name="auth_text_light">#C7C4D7</color>
+    <color name="auth_surface_high">#2D3449</color>
     <color name="auth_ic">#908FA0</color>
 
 

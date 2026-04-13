@@ -136,10 +136,7 @@ class ManagePartnersActivity : AppCompatActivity() {
             .setView(dialogBinding.root)
             .create()
 
-        dialogBinding.rbPartner.visibility = View.GONE
-        dialogBinding.rbWriter.visibility = View.GONE
-        dialogBinding.rbReader.visibility = View.GONE
-        dialogBinding.rgRoles.visibility = View.GONE
+        dialogBinding.tilRole.visibility = View.GONE
         dialogBinding.tvTitle.text = "Add Partner"
 
         dialogBinding.btnAddMember.setOnClickListener {

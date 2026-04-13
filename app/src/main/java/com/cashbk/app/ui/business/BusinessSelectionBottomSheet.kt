@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.cashbk.app.data.model.Business
+import com.cashbk.app.dataclass.Business
+import com.cashbk.app.adapter.BusinessSelectionAdapter
 import com.cashbk.app.databinding.BottomFragmentSelectBusinessBinding
 import com.cashbk.app.databinding.ItemBusinessSelectionBinding
 import com.cashbk.app.fragment.AddBusinessFragment
@@ -25,6 +25,9 @@ class BusinessSelectionBottomSheet(
     private lateinit var binding: BottomFragmentSelectBusinessBinding
     private val businessList = mutableListOf<Business>()
     private lateinit var adapter: BusinessSelectionAdapter
+    
+    private var ownedQuery: Query? = null
+    private var ownedListener: ValueEventListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,27 +62,28 @@ class BusinessSelectionBottomSheet(
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val db = FirebaseDatabase.getInstance().reference
 
-        businessList.clear()
-
-        // 1️⃣ Fetch OWNED businesses
-        db.child("businesses")
+        ownedQuery = db.child("businesses")
             .orderByChild("ownerId")
             .equalTo(userId)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
+            
+        ownedListener = ownedQuery?.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                businessList.clear()
 
-                    for (child in snapshot.children) {
-                        val business = child.getValue(Business::class.java)
-                        business?.id = child.key.orEmpty()
-                        business?.let { businessList.add(it) }
-                    }
-
-                    // 2️⃣ Fetch SHARED businesses after owned loaded
-                    fetchSharedBusinesses(userId)
+                for (child in snapshot.children) {
+                    val business = child.getValue(Business::class.java)
+                    business?.id = child.key.orEmpty()
+                    business?.let { businessList.add(it) }
                 }
+                
+                adapter.notifyDataSetChanged()
 
-                override fun onCancelled(error: DatabaseError) {}
-            })
+                // 2️⃣ Fetch SHARED businesses after owned loaded
+                fetchSharedBusinesses(userId)
+            }
+
+            override fun onCancelled(error: DatabaseError) {}
+        })
     }
 
     private fun fetchSharedBusinesses(userId: String) {
@@ -129,40 +133,8 @@ class BusinessSelectionBottomSheet(
             })
     }
 
-    inner class BusinessSelectionAdapter(
-        private val list: List<Business>,
-        private val selectedId: String?,
-        private val onClick: (Business) -> Unit
-    ) : RecyclerView.Adapter<BusinessSelectionAdapter.ViewHolder>() {
-
-        inner class ViewHolder(val binding: ItemBusinessSelectionBinding) : RecyclerView.ViewHolder(binding.root)
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val binding = ItemBusinessSelectionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            return ViewHolder(binding)
-        }
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            val item = list[position]
-
-            holder.binding.businessName.text = item.name
-
-            val isOwner = item.ownerId == FirebaseAuth.getInstance().currentUser?.uid
-
-            holder.binding.businessRole.text =
-                if (isOwner) "Owner" else "Partner"
-
-            holder.binding.businessRole.setTextColor(
-                        ContextCompat.getColor(requireContext(), if (isOwner) R.color.text_entryBy else R.color.text_disabled)
-            )
-
-
-            holder.binding.selectedCheck.visibility =
-                if (item.id == selectedId) View.VISIBLE else View.GONE
-
-            holder.itemView.setOnClickListener { onClick(item) }
-        }
-
-        override fun getItemCount() = list.size
+    override fun onDestroyView() {
+        super.onDestroyView()
+        ownedListener?.let { ownedQuery?.removeEventListener(it) }
     }
 }

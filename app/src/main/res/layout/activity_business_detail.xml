@@ -79,15 +79,13 @@
             <!-- Partner Icon -->
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/btn_profile"
-                android:layout_width="@dimen/_40sdp"
-                android:layout_height="@dimen/_40sdp"
+                android:layout_width="@dimen/_35sdp"
+                android:layout_height="@dimen/_35sdp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@android:drawable/ic_menu_myplaces"
+                android:src="@drawable/ic_default_avtar"
                 android:padding="@dimen/_4sdp"
                 android:scaleType="centerCrop"
                 app:shapeAppearanceOverlay="@style/CircleImageView"
-                app:strokeColor="@color/primary_color"
-                app:strokeWidth="1.5dp"
                 app:tint="@color/primary_color" />
                 
         </LinearLayout>

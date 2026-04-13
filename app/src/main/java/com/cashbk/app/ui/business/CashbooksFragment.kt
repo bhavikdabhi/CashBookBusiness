@@ -15,7 +15,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cashbk.app.R
-import com.cashbk.app.data.model.Notebook
+import com.cashbk.app.dataclass.Notebook
+import com.cashbk.app.adapter.NotebookAdapter
 import com.cashbk.app.databinding.FragmentCashbooksBinding
 import com.cashbk.app.databinding.ItemNotebookBinding
 import com.cashbk.app.ui.notebook.NotebookActivity
@@ -130,63 +131,23 @@ class CashbooksFragment : Fragment() {
     }
 
     private fun showNotebookMenu(notebook: Notebook, view: View) {
-
-        val wrapper = ContextThemeWrapper(requireContext(), R.style.PopupMenuTheme)
-        val popup = PopupMenu(wrapper, view)
-
-        popup.menuInflater.inflate(R.menu.menu_notebook_options, popup.menu)
-
-        // ---- Force show icons ----
-        try {
-            val fields = popup.javaClass.getDeclaredField("mPopup")
-            fields.isAccessible = true
-            val menuPopupHelper = fields.get(popup)
-            val helperClass = Class.forName(menuPopupHelper.javaClass.name)
-            val setForceIcons = helperClass.getMethod(
-                "setForceShowIcon",
-                Boolean::class.javaPrimitiveType
-            )
-            setForceIcons.invoke(menuPopupHelper, true)
-        } catch (e: Exception) {
-            e.printStackTrace()
+        val popup = com.cashbk.app.utils.CustomOptionsMenu(requireContext(), view)
+        
+        popup.setOnRenameClickListener {
+            showRenameNotebookDialog(notebook)
         }
-
-        // ---- Tint icons (API 21+ safe) ----
-        for (i in 0 until popup.menu.size()) {
-            val item = popup.menu.getItem(i)
-            item.icon?.let { icon ->
-                val wrapped = DrawableCompat.wrap(icon).mutate()
-                DrawableCompat.setTint(
-                    wrapped,
-                    ContextCompat.getColor(requireContext(), R.color.text_color)
-                )
-                item.icon = wrapped
+        popup.setOnMemberClickListener {
+            val sendIntent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, "Join my notebook \"${notebook.name}\" on CashBook: https://cashbk.app/join/${notebook.id}")
+                type = "text/plain"
             }
+            startActivity(Intent.createChooser(sendIntent, "Share Notebook via"))
         }
-
-        popup.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.action_rename -> {
-                    showRenameNotebookDialog(notebook)
-                    true
-                }
-                R.id.action_delete -> {
-                    showDeletePopup(view, notebook)
-                    true
-                }
-                R.id.action_share -> {
-                    val sendIntent = Intent().apply {
-                        action = Intent.ACTION_SEND
-                        putExtra(Intent.EXTRA_TEXT, "Join my notebook \"${notebook.name}\" on CashBook: https://cashbk.app/join/${notebook.id}")
-                        type = "text/plain"
-                    }
-                    startActivity(Intent.createChooser(sendIntent, "Share Notebook via"))
-                    true
-                }
-                else -> false
-            }
+        popup.setOnDeleteClickListener {
+            showDeletePopup(view, notebook)
         }
-
+        
         popup.show()
     }
 
@@ -286,83 +247,5 @@ class CashbooksFragment : Fragment() {
 
 
 
-    inner class NotebookAdapter(
-        private val notebooks: List<Notebook>,
-        private val onClick: (Notebook) -> Unit,
-        private val onMenuClick: (Notebook, View) -> Unit
-    ) : RecyclerView.Adapter<NotebookAdapter.NotebookViewHolder>() {
 
-        inner class NotebookViewHolder(val binding: ItemNotebookBinding) :
-            RecyclerView.ViewHolder(binding.root) {
-                fun bind(notebook: Notebook) {
-                    binding.notebookName.text = notebook.name
-                    
-                    val calendar = Calendar.getInstance(Locale.getDefault())
-                    calendar.timeInMillis = notebook.createdAt
-                    val dateStr = DateFormat.format("MMM dd yyyy", calendar).toString()
-
-                    // Fetch Member Count
-                    FirebaseDatabase.getInstance().reference.child("members").child(notebook.id)
-                        .addListenerForSingleValueEvent(object: ValueEventListener {
-                             override fun onDataChange(snapshot: DataSnapshot) {
-                                 val count = snapshot.childrenCount
-                                 // Add 1 for the owner/creator if not in list? stored separately? 
-                                 // Usually members list contains added members. Owner might be implicit.
-                                 // Let's assume count is accurate enough for now. 
-                                 binding.notebookDetails.text = "$count Members . Updated on $dateStr"
-                             }
-                             override fun onCancelled(error: DatabaseError) {
-                                 binding.notebookDetails.text = "- Members . Updated on $dateStr"
-                             }
-                        })
-
-                    // Fetch Balance
-                    FirebaseDatabase.getInstance().reference.child("transactions").child(notebook.id)
-                        .addValueEventListener(object : ValueEventListener {
-                            override fun onDataChange(snapshot: DataSnapshot) {
-                                var totalBalance = 0.0
-                                for (child in snapshot.children) {
-                                    val type = child.child("type").value as? String ?: ""
-                                    // Handle amount which can be Double, Long, or String
-                                    val amountObj = child.child("amount").value
-                                    val amount = when (amountObj) {
-                                        is Long -> amountObj.toDouble()
-                                        is Double -> amountObj
-                                        is String -> amountObj.toDoubleOrNull() ?: 0.0
-                                        else -> 0.0
-                                    }
-                                    
-                                    if (type == "in") {
-                                        totalBalance += amount
-                                    } else if (type == "out") {
-                                        totalBalance -= amount
-                                    }
-                                }
-                                
-                                binding.tvBalance.text = "₹ $totalBalance"
-                                val color = if (totalBalance >= 0) R.color.success else R.color.danger
-                                binding.tvBalance.setTextColor(androidx.core.content.ContextCompat.getColor(itemView.context, color))
-                            }
-
-                            override fun onCancelled(error: DatabaseError) {
-                                binding.tvBalance.text = "Error"
-                            }
-                        })
-                }
-            }
-
-        override fun onCreateViewHolder(parent: android.view.ViewGroup, viewType: Int): NotebookViewHolder {
-            val itemBinding = ItemNotebookBinding.inflate(layoutInflater, parent, false)
-            return NotebookViewHolder(itemBinding)
-        }
-
-        override fun onBindViewHolder(holder: NotebookViewHolder, position: Int) {
-            val notebook = notebooks[position]
-            holder.bind(notebook)
-            holder.itemView.setOnClickListener { onClick(notebook) }
-            holder.binding.btnNotebookOptions.setOnClickListener { onMenuClick(notebook, it) }
-        }
-
-        override fun getItemCount() = notebooks.size
-    }
 }
