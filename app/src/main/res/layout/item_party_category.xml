@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="@dimen/_12sdp"
+    android:layout_marginTop="@dimen/_8sdp"
+    android:layout_marginHorizontal="@dimen/_12sdp"
+    android:gravity="center_vertical"
+    android:background="@drawable/bg_glass_card">
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:fontFamily="@font/roboto_regular"
+        android:text="Entity Name"
+        android:textSize="@dimen/_14ssp"
+        android:textColor="@color/text_color"
+        android:layout_marginStart="@dimen/_4sdp"/>
+
+    <ImageButton
+        android:id="@+id/btnDelete"
+        android:layout_width="@dimen/_32sdp"
+        android:layout_height="@dimen/_32sdp"
+        android:src="@android:drawable/ic_menu_delete"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:padding="@dimen/_6sdp"
+        app:tint="@color/danger"
+        android:contentDescription="Delete" />
+
+</LinearLayout>

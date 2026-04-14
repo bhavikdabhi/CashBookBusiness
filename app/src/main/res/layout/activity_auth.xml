@@ -60,7 +60,7 @@
         android:paddingBottom="@dimen/_20sdp"
         android:background="@drawable/bg_bottom_nav_pill_20"
         style="@style/Widget.App.BottomNav"
-        app:itemBackground="@drawable/bg_bottom_nav_item_selected"
+        app:itemBackground="@drawable/bg_bottom_nav_item_selected_20"
         app:menu="@menu/bottom_auth_menu"
         app:labelVisibilityMode="labeled"
         app:itemIconTint="@color/nav_item_color"

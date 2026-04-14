@@ -296,7 +296,7 @@ class AddTransactionFragment : Fragment() {
         database.reference
             .child("parties")
             .child(notebookId!!)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
+            .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     parties.clear()
                     snapshot.children.forEach {
@@ -305,22 +305,15 @@ class AddTransactionFragment : Fragment() {
                         party?.let { parties.add(it) }
                     }
 
-                    val partyAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, parties.map { it.name })
-                    binding.etParty.setAdapter(partyAdapter)
-                    
-                    binding.etParty.setOnClickListener {
-                        binding.etParty.showDropDown()
-                    }
-                    binding.etParty.setOnFocusChangeListener { _, hasFocus ->
-                        if (hasFocus) binding.etParty.showDropDown()
-                    }
+                    val partyAdapter = ArrayAdapter(requireContext(), com.cashbk.app.R.layout.item_dropdown_text, parties.map { it.name })
+                    binding.partySpinner.adapter = partyAdapter
                     
                     // Set selection if editing
                     val targetId = arguments?.getString("partyId")
                     if (targetId != null) {
-                        val partyStr = parties.find { it.id == targetId }?.name
-                        if (partyStr != null) {
-                            binding.etParty.setText(partyStr, false)
+                        val index = parties.indexOfFirst { it.id == targetId }
+                        if (index >= 0) {
+                            binding.partySpinner.setSelection(index)
                         }
                     }
                 }
@@ -344,12 +337,10 @@ class AddTransactionFragment : Fragment() {
             binding.tilAmount.error = null
         }
         
-        val partyNameStr = binding.etParty.text.toString().trim()
+        val partyNameStr = binding.partySpinner.selectedItem?.toString()?.trim() ?: ""
         if (partyNameStr.isEmpty()) {
-            binding.tilParty.error = "Select a party"
+            Toast.makeText(requireContext(), "Select a party", Toast.LENGTH_SHORT).show()
             return
-        } else {
-            binding.tilParty.error = null
         }
 
         if (receiptUri != null) {
@@ -426,7 +417,7 @@ class AddTransactionFragment : Fragment() {
         val selectedChip = binding.categoryChipGroup.findViewById<com.google.android.material.chip.Chip>(selectedChipId)
         val selectedCategoryId = selectedChip?.tag as? String ?: "-"
 
-        val partyNameStr = binding.etParty.text.toString().trim()
+        val partyNameStr = binding.partySpinner.selectedItem?.toString()?.trim() ?: ""
         val selectedParty = parties.find { it.name.equals(partyNameStr, ignoreCase = true) }
         val partyId = selectedParty?.id ?: "-"
         
@@ -480,7 +471,9 @@ class AddTransactionFragment : Fragment() {
              val firstChip = binding.categoryChipGroup.getChildAt(0) as? com.google.android.material.chip.Chip
              binding.categoryChipGroup.check(firstChip?.id ?: View.NO_ID)
         }
-        binding.etParty.text?.clear()
+        if (parties.isNotEmpty()) {
+            binding.partySpinner.setSelection(0)
+        }
         
         // Reset Receipt
         receiptUri = null

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/stitch_background"
+    android:clickable="true"
+    android:focusable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/_12sdp"
+            android:paddingVertical="@dimen/_16sdp"
+            android:gravity="center_vertical"
+            android:background="@color/stitch_surface"
+            android:elevation="@dimen/_4sdp">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="@dimen/_32sdp"
+                android:layout_height="@dimen/_32sdp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_back"
+                app:tint="@color/stitch_primary"
+                android:padding="@dimen/_6sdp" />
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Manage Categories"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="@dimen/_18ssp"
+                android:textColor="@color/stitch_primary"
+                android:layout_marginStart="@dimen/_12sdp" />
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvCategories"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/_80sdp"
+            android:clipToPadding="false"
+            tools:listitem="@layout/item_party_category" />
+            
+    </LinearLayout>
+
+    <!-- Empty State -->
+    <LinearLayout
+        android:id="@+id/layoutEmpty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <ImageView
+            android:layout_width="@dimen/_80sdp"
+            android:layout_height="@dimen/_80sdp"
+            android:src="@drawable/ic_book"
+            app:tint="@color/stitch_outline_variant"
+            android:alpha="0.3" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No Categories Yet"
+            android:textColor="@color/stitch_on_surface_variant"
+            android:layout_marginTop="@dimen/_12sdp" />
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/_20sdp"
+        android:src="@drawable/ic_add"
+        app:tint="@color/stitch_surface"
+        app:backgroundTint="@color/stitch_primary"
+        app:elevation="@dimen/_6sdp"
+        android:contentDescription="Add Category" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

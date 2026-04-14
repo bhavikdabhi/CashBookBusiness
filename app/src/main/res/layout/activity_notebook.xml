@@ -81,43 +81,26 @@
     </RelativeLayout>
 
     <!-- BOTTOM BAR -->
-    <LinearLayout
-        android:id="@+id/bottom_bar"
+
+
+
+    <!-- NAVIGATION BAR -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_nav"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/_70sdp"
+        android:paddingBottom="@dimen/_5sdp"
+        android:background="@drawable/bg_bottom_nav_pill_20"
+        style="@style/Widget.App.BottomNav"
+        app:itemBackground="@drawable/bg_bottom_nav_item_selected_20"
+        app:itemRippleColor="@null"
+        app:elevation="@dimen/_4sdp"
+        app:labelVisibilityMode="labeled"
+        app:itemIconTint="@color/nav_item_color"
+        app:itemTextColor="@color/nav_item_color"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:padding="@dimen/_10sdp"
-        android:background="@drawable/bg_glass_card"
-        android:elevation="@dimen/_8sdp">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_cash_in"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/_48sdp"
-            android:layout_weight="1"
-            android:text="+ CASH IN"
-            android:fontFamily="@font/roboto_bold"
-            android:textFontWeight="600"
-            android:textSize="@dimen/_14ssp"
-            app:backgroundTint="@color/success"
-            app:cornerRadius="@dimen/_12sdp"
-            android:layout_marginEnd="@dimen/_8sdp"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_cash_out"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/_48sdp"
-            android:layout_weight="1"
-            android:text="- CASH OUT"
-            android:fontFamily="@font/roboto_bold"
-            android:textFontWeight="600"
-            android:textSize="@dimen/_14ssp"
-            app:backgroundTint="@color/danger"
-            app:cornerRadius="@dimen/_12sdp"
-            android:layout_marginStart="@dimen/_8sdp"/>
-
-    </LinearLayout>
+        app:menu="@menu/notebook_bottom_nav"
+         />
 
     <!-- CONTENT -->
     <androidx.core.widget.NestedScrollView
@@ -351,6 +334,46 @@
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <!-- BOTTOM BAR -->
+    <LinearLayout
+        android:id="@+id/bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bottom_nav"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/_10sdp"
+        android:paddingBottom="@dimen/_5sdp"
+        android:background="@android:color/transparent"
+        android:elevation="@dimen/_8sdp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_cash_in"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_48sdp"
+            android:layout_weight="1"
+            android:text="+ CASH IN"
+            android:fontFamily="@font/roboto_bold"
+            android:textFontWeight="600"
+            android:textSize="@dimen/_14ssp"
+            app:backgroundTint="@color/success"
+            app:cornerRadius="@dimen/_12sdp"
+            android:layout_marginEnd="@dimen/_8sdp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_cash_out"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_48sdp"
+            android:layout_weight="1"
+            android:text="- CASH OUT"
+            android:fontFamily="@font/roboto_bold"
+            android:textFontWeight="600"
+            android:textSize="@dimen/_14ssp"
+            app:backgroundTint="@color/danger"
+            app:cornerRadius="@dimen/_12sdp"
+            android:layout_marginStart="@dimen/_8sdp"/>
+
+    </LinearLayout>
 
     <!-- FRAGMENT CONTAINER -->
     <FrameLayout

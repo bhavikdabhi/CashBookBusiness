@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/_100sdp"
+        android:paddingBottom="@dimen/_60sdp"
         android:background="@color/auth_bg">
 
         <!-- Toolbar area -->
@@ -68,15 +68,13 @@
                     android:layout_height="@dimen/_40sdp"
                     android:layout_weight="1"
                     android:text="Cash In"
-                    android:paddingHorizontal="@dimen/_5sdp"
                     app:icon="@drawable/ic_trans_plus"
-                    app:iconGravity="textStart"
                     app:iconTint="@color/white"
                     android:fontFamily="@font/roboto_bold"
                     android:textFontWeight="600"
                     android:textSize="@dimen/_12ssp"
                     app:backgroundTint="@color/success"
-                    app:cornerRadius="@dimen/_12sdp"
+                    app:cornerRadius="@dimen/_10sdp"
                     android:layout_marginEnd="@dimen/_3sdp"/>
 
 
@@ -89,12 +87,11 @@
                     android:fontFamily="@font/roboto_bold"
                     android:textFontWeight="600"
                     android:textSize="@dimen/_12ssp"
-                    app:icon="@drawable/ic_trans_plus"
-                    app:iconGravity="textStart"
+                    app:icon="@drawable/ic_trans_minus"
                     app:iconTint="@color/white"
-                    app:backgroundTint="@color/bg_color"
-                    app:cornerRadius="@dimen/_12sdp"
-                    android:layout_marginStart="@dimen/_8sdp"/>
+                    app:backgroundTint="@color/danger"
+                    app:cornerRadius="@dimen/_10sdp"
+                    android:layout_marginStart="@dimen/_3sdp"/>
 
             </LinearLayout>
 
@@ -225,7 +222,7 @@
                 android:textSize="@dimen/_11ssp"
                 android:focusable="false"
                 android:clickable="true"
-                android:drawableEnd="@android:drawable/ic_menu_my_calendar"
+                android:drawableEnd="@drawable/ic_date_range"
                 android:drawableTint="@color/gray" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -253,7 +250,7 @@
                 android:textSize="@dimen/_11ssp"
                 android:focusable="false"
                 android:clickable="true"
-                android:drawableEnd="@android:drawable/ic_menu_recent_history"
+                android:drawableEnd="@drawable/ic_time"
                 android:drawableTint="@color/gray" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -267,69 +264,44 @@
             android:fontFamily="@font/roboto_bold"
             android:textSize="@dimen/_8ssp"
             android:letterSpacing="0.1"
-            android:layout_marginTop="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_3sdp"
             android:layout_marginStart="@dimen/_16sdp"
             app:layout_constraintTop_toBottomOf="@id/til_date"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/cnt_party"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_6sdp"
+            android:layout_marginTop="@dimen/_3sdp"
             android:layout_marginHorizontal="@dimen/_16sdp"
-            android:background="@drawable/bg_glass_field"
             app:layout_constraintTop_toBottomOf="@id/lbl_party"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-            
-            <ImageView
-                android:id="@+id/ic_profile"
-                android:layout_width="@dimen/_16sdp"
-                android:layout_height="@dimen/_16sdp"
-                android:src="@drawable/ic_menu_member"
-                android:layout_marginTop="@dimen/_12sdp"
-                android:layout_marginStart="@dimen/_12sdp"
-                app:tint="@color/gray" />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:orientation="horizontal">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_party"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/ic_profile"
-                android:layout_toStartOf="@id/add_party_button"
-                app:boxBackgroundMode="none"
-                app:hintEnabled="false">
-
-                <AutoCompleteTextView
-                    android:id="@+id/et_party"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_40sdp"
-                    android:background="@null"
-                    android:inputType="none"
-                    android:hint="Who did you transact with?"
-                    android:textColorHint="@color/gray"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/roboto_medium"
-                    android:textSize="@dimen/_11ssp"
-                    android:paddingTop="@dimen/_2sdp"
-                    android:paddingBottom="@dimen/_2sdp"
-                    android:paddingStart="@dimen/_10sdp"
-                    android:paddingEnd="@dimen/_10sdp"
-                    android:completionThreshold="1" />
-            </com.google.android.material.textfield.TextInputLayout>
+            <Spinner
+                android:id="@+id/party_spinner"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_42sdp"
+                android:layout_weight="1"
+                style="@style/GlassSpinner"
+                android:background="@drawable/bg_glass_field"
+                android:padding="@dimen/_2sdp"
+                android:layout_marginTop="@dimen/_8sdp"/>
 
             <ImageView
                 android:id="@+id/add_party_button"
-                android:layout_width="@dimen/_20sdp"
-                android:layout_height="@dimen/_20sdp"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:padding="@dimen/_8sdp"
+                android:background="@drawable/bg_glass_field"
                 android:src="@drawable/ic_add"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_12sdp"
-                app:tint="@color/gray" />
+                android:layout_marginTop="@dimen/_9sdp"
+                app:tint="@color/primary_color" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
 
         <!-- CATEGORY -->
@@ -352,7 +324,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:scrollbars="none"
-            android:layout_marginTop="@dimen/_6sdp"
+            android:layout_marginTop="@dimen/_3sdp"
             app:layout_constraintTop_toBottomOf="@id/lbl_category"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
@@ -385,7 +357,7 @@
             android:fontFamily="@font/roboto_bold"
             android:textSize="@dimen/_8ssp"
             android:letterSpacing="0.1"
-            android:layout_marginTop="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_8sdp"
             android:layout_marginStart="@dimen/_16sdp"
             app:layout_constraintTop_toBottomOf="@id/sv_category"
             app:layout_constraintStart_toStartOf="parent" />
@@ -394,7 +366,7 @@
             android:id="@+id/til_remark"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_6sdp"
+            android:layout_marginTop="@dimen/_4sdp"
             android:layout_marginHorizontal="@dimen/_16sdp"
             app:hintEnabled="false"
             app:errorEnabled="true"
@@ -425,7 +397,7 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/_70sdp"
             android:layout_marginHorizontal="@dimen/_16sdp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/_8sdp"
             android:background="@drawable/bg_dashed_border"
             android:gravity="center"
             android:orientation="vertical"

@@ -14,7 +14,18 @@
     <color name="text_disabled">#89d87f</color>
     <color name="text_entryBy">#00808b</color>
 
-    <!-- Auth Colors -->
+    <!-- Ethereal Ledger Design System Tokens -->
+    <color name="stitch_primary">#C0C1FF</color>
+    <color name="stitch_primary_container">#8083FF</color>
+    <color name="stitch_background">#0B1326</color>
+    <color name="stitch_surface">#0B1326</color>
+    <color name="stitch_surface_container_low">#131B2E</color>
+    <color name="stitch_surface_container_high">#222A3D</color>
+    <color name="stitch_surface_container_highest">#2D3449</color>
+    <color name="stitch_outline_variant">#464554</color>
+    <color name="stitch_on_surface_variant">#C7C4D7</color>
+    <color name="stitch_tertiary">#77D5E0</color>
+
     <color name="auth_bg">#0B1326</color>
     <color name="auth_input_bg">#131B2F</color>
     <color name="auth_input_border">#2C365E</color>
@@ -25,7 +36,6 @@
     <color name="auth_text_light">#C7C4D7</color>
     <color name="auth_surface_high">#2D3449</color>
     <color name="auth_ic">#908FA0</color>
-
 
     <!-- Glass UI -->
     <color name="glass_bg">#1E293B</color> <!-- use with alpha -->

@@ -101,6 +101,44 @@ class NotebookActivity : AppCompatActivity() {
             binding.chipDate.setOnClickListener { showDateRangePicker() }
             binding.chipFilter.setOnClickListener { showCategoryFilterDialog() }
 
+            binding.bottomNav.setOnItemSelectedListener { item ->
+                when (item.itemId) {
+                    R.id.nav_transactions -> {
+                        Toast.makeText(this, "Transactions", Toast.LENGTH_SHORT).show()
+                        true
+                    }
+                    R.id.nav_parties -> {
+                        val fragment = ManagePartiesFragment()
+                        val args = Bundle()
+                        args.putString("notebookId", notebookId)
+                        fragment.arguments = args
+                        supportFragmentManager.beginTransaction()
+                            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
+                            .replace(R.id.fragment_container, fragment)
+                            .addToBackStack(null)
+                            .commit()
+                        true
+                    }
+                    R.id.nav_categories -> {
+                        val fragment = ManageCategoriesFragment()
+                        val args = Bundle()
+                        args.putString("notebookId", notebookId)
+                        fragment.arguments = args
+                        supportFragmentManager.beginTransaction()
+                            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
+                            .replace(R.id.fragment_container, fragment)
+                            .addToBackStack(null)
+                            .commit()
+                        true
+                    }
+                    R.id.nav_settings -> {
+                        Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show()
+                        true
+                    }
+                    else -> false
+                }
+            }
+
         } catch (e: Exception) {
             e.printStackTrace()
             Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_LONG).show()

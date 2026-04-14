@@ -52,6 +52,10 @@ class MembersActivity : AppCompatActivity() {
         setupRecyclerView()
         fetchMembers()
 
+        binding.btnBack.setOnClickListener {
+            finish()
+        }
+
         binding.addMemberFab.setOnClickListener {
             showAddMemberDialog()
         }
