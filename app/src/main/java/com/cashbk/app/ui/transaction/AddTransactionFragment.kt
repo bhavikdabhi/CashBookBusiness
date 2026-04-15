@@ -249,12 +249,27 @@ class AddTransactionFragment : Fragment() {
                         val chip = com.google.android.material.chip.Chip(requireContext())
                         chip.text = cat.name
                         chip.isCheckable = true
-                        chip.chipBackgroundColor = android.content.res.ColorStateList.valueOf(androidx.core.content.ContextCompat.getColor(requireContext(), com.cashbk.app.R.color.auth_surface_high))
+                        chip.chipBackgroundColor = android.content.res.ColorStateList.valueOf(
+                            androidx.core.content.ContextCompat.getColor(requireContext(), com.cashbk.app.R.color.auth_surface_high)
+                        )
                         chip.setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), com.cashbk.app.R.color.white))
-                        chip.checkedIconTint = android.content.res.ColorStateList.valueOf(androidx.core.content.ContextCompat.getColor(requireContext(), com.cashbk.app.R.color.white))
+                        chip.checkedIconTint = android.content.res.ColorStateList.valueOf(
+                            androidx.core.content.ContextCompat.getColor(requireContext(), com.cashbk.app.R.color.white)
+                        )
+                        // Show border only when selected, transparent when unselected
+                        val primaryColor = androidx.core.content.ContextCompat.getColor(requireContext(), com.cashbk.app.R.color.stitch_primary)
+                        chip.chipStrokeColor = android.content.res.ColorStateList(
+                            arrayOf(
+                                intArrayOf(android.R.attr.state_checked),
+                                intArrayOf()
+                            ),
+                            intArrayOf(primaryColor, android.graphics.Color.TRANSPARENT)
+                        )
+                        chip.chipStrokeWidth = 2f * resources.displayMetrics.density // 2dp stroke
                         chip.tag = cat.id
                         binding.categoryChipGroup.addView(chip)
                     }
+
 
                     // Add a mock + chip
                    /* val addChip = com.google.android.material.chip.Chip(requireContext())
@@ -305,15 +320,19 @@ class AddTransactionFragment : Fragment() {
                         party?.let { parties.add(it) }
                     }
 
-                    val partyAdapter = ArrayAdapter(requireContext(), com.cashbk.app.R.layout.item_dropdown_text, parties.map { it.name })
+                    // Prepend a placeholder "--Select--" entry
+                    val spinnerItems = mutableListOf("-- Select Party --") + parties.map { it.name }
+                    val partyAdapter = ArrayAdapter(requireContext(), com.cashbk.app.R.layout.item_dropdown_text, spinnerItems)
                     binding.partySpinner.adapter = partyAdapter
+                    // Default to the placeholder (index 0)
+                    binding.partySpinner.setSelection(0)
                     
-                    // Set selection if editing
+                    // Set selection if editing (offset by 1 because of placeholder)
                     val targetId = arguments?.getString("partyId")
                     if (targetId != null) {
                         val index = parties.indexOfFirst { it.id == targetId }
                         if (index >= 0) {
-                            binding.partySpinner.setSelection(index)
+                            binding.partySpinner.setSelection(index + 1)
                         }
                     }
                 }
@@ -337,11 +356,9 @@ class AddTransactionFragment : Fragment() {
             binding.tilAmount.error = null
         }
         
+        // Party is optional — skip validation if placeholder is selected
         val partyNameStr = binding.partySpinner.selectedItem?.toString()?.trim() ?: ""
-        if (partyNameStr.isEmpty()) {
-            Toast.makeText(requireContext(), "Select a party", Toast.LENGTH_SHORT).show()
-            return
-        }
+        val isNoPartySelected = partyNameStr.isEmpty() || partyNameStr == "-- Select Party --"
 
         if (receiptUri != null) {
             // Trigger Google Drive Upload Flow
@@ -416,10 +433,14 @@ class AddTransactionFragment : Fragment() {
         val selectedChipId = binding.categoryChipGroup.checkedChipId
         val selectedChip = binding.categoryChipGroup.findViewById<com.google.android.material.chip.Chip>(selectedChipId)
         val selectedCategoryId = selectedChip?.tag as? String ?: "-"
+        // Resolve the category name from our loaded list so it's stored in the DB
+        val selectedCategoryName = categories.find { it.id == selectedCategoryId }?.name ?: ""
 
         val partyNameStr = binding.partySpinner.selectedItem?.toString()?.trim() ?: ""
-        val selectedParty = parties.find { it.name.equals(partyNameStr, ignoreCase = true) }
-        val partyId = selectedParty?.id ?: "-"
+        val isPlaceholder = partyNameStr.isEmpty() || partyNameStr == "-- Select Party --"
+        val selectedParty = if (isPlaceholder) null else parties.find { it.name.equals(partyNameStr, ignoreCase = true) }
+        val partyId = selectedParty?.id ?: ""
+        val selectedPartyName = selectedParty?.name ?: ""
         
         val remarkText = binding.etRemark.text.toString().takeIf { it.isNotBlank() } ?: "-"
 
@@ -444,7 +465,9 @@ class AddTransactionFragment : Fragment() {
             time = binding.etTime.text.toString(),
             createdBy = auth.currentUser?.uid.orEmpty(),
             categoryId = selectedCategoryId,
+            categoryName = selectedCategoryName,
             partyId = partyId,
+            partyName = selectedPartyName,
             receiptUrl = finalReceiptUrl
         )
 

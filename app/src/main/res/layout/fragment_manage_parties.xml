@@ -13,69 +13,164 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- Header -->
-        <LinearLayout
+        <!-- Toolbar -->
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingHorizontal="@dimen/_12sdp"
-            android:paddingVertical="@dimen/_16sdp"
-            android:gravity="center_vertical"
-            android:background="@color/stitch_surface"
-            android:elevation="@dimen/_4sdp">
+            android:layout_height="@dimen/_56sdp"
+            android:paddingHorizontal="@dimen/_12sdp">
 
             <ImageButton
                 android:id="@+id/btnBack"
-                android:layout_width="@dimen/_32sdp"
-                android:layout_height="@dimen/_32sdp"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_gravity="center_vertical"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_back"
                 app:tint="@color/stitch_primary"
-                android:padding="@dimen/_6sdp" />
+                android:padding="@dimen/_8sdp" />
 
             <TextView
-                android:id="@+id/tvTitle"
+                android:id="@+id/tvToolbarTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Manage Parties"
+                android:layout_gravity="center"
+                android:text="Parties"
                 android:fontFamily="@font/roboto_medium"
-                android:textSize="@dimen/_18ssp"
-                android:textColor="@color/stitch_primary"
-                android:layout_marginStart="@dimen/_12sdp" />
-
-        </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvParties"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingBottom="@dimen/_80sdp"
-            android:clipToPadding="false"
-            tools:listitem="@layout/item_party_category" />
+                android:textSize="@dimen/_14ssp"
+                android:textColor="@android:color/white" />
             
-    </LinearLayout>
+            <ImageButton
+                android:id="@+id/btnAddToolbar"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_gravity="center_vertical|end"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_add"
+                app:tint="@android:color/white"
+                android:padding="@dimen/_8sdp" />
+        </FrameLayout>
 
-    <!-- Empty State -->
-    <LinearLayout
-        android:id="@+id/layoutEmpty"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
-        <ImageView
-            android:layout_width="@dimen/_80sdp"
-            android:layout_height="@dimen/_80sdp"
-            android:src="@drawable/ic_action_group"
-            app:tint="@color/stitch_outline_variant"
-            android:alpha="0.3" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No Parties Yet"
-            android:textColor="@color/stitch_on_surface_variant"
-            android:layout_marginTop="@dimen/_12sdp" />
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/_60sdp">
+
+                <!-- Narrative Header -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_16sdp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Manage Parties"
+                        android:fontFamily="@font/roboto_bold"
+                        android:textSize="@dimen/_28ssp"
+                        android:textColor="@android:color/white" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Organize your business network, track vendor relationships, and manage client profiles from a centralized glass-architectural interface."
+                        android:fontFamily="@font/roboto_regular"
+                        android:textSize="@dimen/_12ssp"
+                        android:textColor="@color/stitch_on_surface_variant"
+                        android:layout_marginTop="@dimen/_12sdp"
+                        android:lineSpacingExtra="2dp" />
+
+                    <!-- Pill Search Bar -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_48sdp"
+                        android:background="@drawable/bg_input_field"
+                        android:layout_marginTop="@dimen/_24sdp"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="@dimen/_16sdp">
+                        
+                        <ImageView
+                            android:layout_width="@dimen/_20sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:src="@drawable/ic_search"
+                            app:tint="@color/stitch_on_surface_variant" />
+
+                        <EditText
+                            android:id="@+id/etSearch"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@null"
+                            android:hint="Search partners, vendors or clients..."
+                            android:textColorHint="@color/stitch_on_surface_variant"
+                            android:textColor="@android:color/white"
+                            android:textSize="@dimen/_12ssp"
+                            android:layout_marginStart="@dimen/_12sdp"
+                            android:inputType="text" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- List Content -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvParties"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    tools:listitem="@layout/item_party_premium" />
+
+                <!-- Add Placeholder -->
+                <FrameLayout
+                    android:id="@+id/btnAddPlaceholder"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_80sdp"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_16sdp"
+                    android:background="@drawable/bg_dashed_border"
+                    android:clickable="true"
+                    android:focusable="true">
+                    
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_gravity="center"
+                        android:gravity="center">
+                        <ImageView
+                            android:layout_width="@dimen/_24sdp"
+                            android:layout_height="@dimen/_24sdp"
+                            android:src="@drawable/ic_add"
+                            app:tint="@color/stitch_on_surface_variant" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Add New Partner"
+                            android:fontFamily="@font/roboto_medium"
+                            android:textColor="@color/stitch_on_surface_variant"
+                            android:layout_marginTop="@dimen/_8sdp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Connect a new entity to your ledger"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textColor="@color/stitch_on_surface_variant"
+                            android:textSize="@dimen/_8ssp"
+                            android:alpha="0.7" />
+                    </LinearLayout>
+                </FrameLayout>
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <!-- Floating UI over Scroll -->
+
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -83,11 +178,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/_20sdp"
+        android:layout_margin="@dimen/_24sdp"
         android:src="@drawable/ic_add"
         app:tint="@color/stitch_surface"
         app:backgroundTint="@color/stitch_primary"
         app:elevation="@dimen/_6sdp"
-        android:contentDescription="Add Party" />
+        android:contentDescription="Add Partner" />
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

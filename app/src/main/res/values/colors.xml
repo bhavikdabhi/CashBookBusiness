@@ -14,7 +14,7 @@
     <color name="text_disabled">#89d87f</color>
     <color name="text_entryBy">#00808b</color>
 
-    <!-- Ethereal Ledger Design System Tokens -->
+    <!-- Ethereal Ledger Design System Tokens (The Architectural Glasshouse) -->
     <color name="stitch_primary">#C0C1FF</color>
     <color name="stitch_primary_container">#8083FF</color>
     <color name="stitch_background">#0B1326</color>
@@ -25,6 +25,11 @@
     <color name="stitch_outline_variant">#464554</color>
     <color name="stitch_on_surface_variant">#C7C4D7</color>
     <color name="stitch_tertiary">#77D5E0</color>
+    
+    <color name="glass_white_10">#1AFFFFFF</color>
+    <color name="glass_white_20">#33FFFFFF</color>
+    <color name="glass_white_5">#0DFFFFFF</color>
+
 
     <color name="auth_bg">#0B1326</color>
     <color name="auth_input_bg">#131B2F</color>

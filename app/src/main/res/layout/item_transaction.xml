@@ -130,6 +130,72 @@
                 android:background="@color/glass_border"
                 app:layout_constraintTop_toBottomOf="@id/tvCategoryChip" />
 
+            <!-- ── RECEIPT ATTACHMENT ROW ── -->
+            <LinearLayout
+                android:id="@+id/receiptRow"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_receipt_row"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="8dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="4dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/ViewLine"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <!-- Receipt thumbnail — Glide loads the real image here -->
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/ivReceiptThumb"
+                    android:layout_width="52dp"
+                    android:layout_height="56dp"
+                    android:layout_marginEnd="10dp"
+                    android:scaleType="centerCrop"
+                    app:shapeAppearanceOverlay="@style/RoundedReceiptThumb" />
+
+                <!-- File name + hint -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvReceiptName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="RECEIPT.PDF"
+                        android:fontFamily="@font/roboto_bold"
+                        android:textSize="12sp"
+                        android:textColor="@color/white"
+                        android:singleLine="true"
+                        android:ellipsize="middle" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tap to preview document"
+                        android:fontFamily="@font/roboto_regular"
+                        android:textSize="10sp"
+                        android:textColor="@color/gray"
+                        android:layout_marginTop="2dp" />
+                </LinearLayout>
+
+                <!-- Open arrow icon -->
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginStart="6dp"
+                    android:src="@drawable/ic_arrow_right"
+                    app:tint="@color/stitch_primary" />
+
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/tvEntryInfo"
                 android:layout_width="wrap_content"
@@ -143,7 +209,7 @@
                 android:textSize="@dimen/_10ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ViewLine" />
+                app:layout_constraintTop_toBottomOf="@id/receiptRow" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

@@ -23,6 +23,25 @@
         <item name="android:popupMenuStyle">@style/Widget.App.PopupMenu</item>
     </style>
 
+    <!-- Glassmorphism Styles -->
+    <style name="Widget.App.GlassCard" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">@color/stitch_surface_container_high</item>
+        <item name="cardCornerRadius">@dimen/_12sdp</item>
+        <item name="strokeColor">@color/glass_white_10</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="cardElevation">0dp</item>
+    </style>
+
+    <style name="Widget.App.Button.Gradient" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="android:background">@drawable/bg_primary_gradient</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="cornerRadius">@dimen/_24sdp</item>
+        <item name="android:fontFamily">@font/roboto_bold</item>
+        <item name="android:textSize">@dimen/_14ssp</item>
+    </style>
+
     <style name="Widget.App.PopupMenu" parent="Widget.Material3.PopupMenu">
         <item name="android:popupMenuStyle">@style/PopupMenuTheme</item>
     </style>
@@ -40,6 +59,11 @@
     <style name="CircleImageView" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="RoundedReceiptThumb" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
     </style>
 
 </resources>

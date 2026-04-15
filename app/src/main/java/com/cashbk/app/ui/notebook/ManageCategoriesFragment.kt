@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.cashbk.app.R
 import com.cashbk.app.adapter.CategoryAdapter
 import com.cashbk.app.databinding.DialogAddEntityBinding
 import com.cashbk.app.databinding.FragmentManageCategoriesBinding
@@ -23,6 +24,8 @@ class ManageCategoriesFragment : Fragment() {
     private val categoriesList = mutableListOf<Category>()
     
     private var notebookId: String? = null
+
+    private val originalCategoriesList = mutableListOf<Category>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,9 +54,30 @@ class ManageCategoriesFragment : Fragment() {
             parentFragmentManager.popBackStack()
         }
 
-        binding.fabAdd.setOnClickListener {
-            showAddCategoryDialog()
-        }
+        binding.btnToolbarAdd.setOnClickListener { navigateToAddCategory() }
+        binding.btnCreateCategory.setOnClickListener { navigateToAddCategory() }
+        binding.btnAddPlaceholder.setOnClickListener { navigateToAddCategory() }
+
+        binding.etSearch.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                filterCategories(s.toString())
+            }
+            override fun afterTextChanged(s: android.text.Editable?) {}
+        })
+    }
+
+    private fun navigateToAddCategory() {
+        val fragment = AddCategoryFragment()
+        val args = Bundle()
+        args.putString("notebookId", notebookId)
+        fragment.arguments = args
+
+        parentFragmentManager.beginTransaction()
+            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun setupRecyclerView() {
@@ -70,51 +94,50 @@ class ManageCategoriesFragment : Fragment() {
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 categoriesList.clear()
+                originalCategoriesList.clear()
                 for (child in snapshot.children) {
                     val category = child.getValue(Category::class.java)
                     category?.id = child.key ?: ""
-                    category?.let { categoriesList.add(it) }
+                    category?.let { 
+                        categoriesList.add(it)
+                        originalCategoriesList.add(it)
+                    }
                 }
 
-                if (categoriesList.isEmpty()) {
-                    binding.layoutEmpty.visibility = View.VISIBLE
-                    binding.rvCategories.visibility = View.GONE
-                } else {
-                    binding.layoutEmpty.visibility = View.GONE
-                    binding.rvCategories.visibility = View.VISIBLE
-                }
+                updateEmptyState()
                 categoryAdapter.updateData(categoriesList)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+                if (_binding != null) {
+                    Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+                }
             }
         })
     }
 
-    private fun showAddCategoryDialog() {
-        val dialogBinding = DialogAddEntityBinding.inflate(layoutInflater)
-        val dialog = AlertDialog.Builder(requireContext(), com.google.android.material.R.style.Theme_Material3_Dark_Dialog_Alert)
-            .setView(dialogBinding.root)
-            .create()
-
-        dialogBinding.tvTitle.text = "Add New Category"
-        
-        dialogBinding.btnSave.setOnClickListener {
-            val name = dialogBinding.etName.text.toString().trim()
-            if (name.isNotEmpty()) {
-                val categoryId = database.push().key ?: ""
-                val category = Category(id = categoryId, name = name)
-                database.child(categoryId).setValue(category)
-                    .addOnSuccessListener {
-                        Toast.makeText(requireContext(), "Category Added", Toast.LENGTH_SHORT).show()
-                        dialog.dismiss()
-                    }
-            } else {
-                Toast.makeText(requireContext(), "Please enter a name", Toast.LENGTH_SHORT).show()
+    private fun filterCategories(query: String) {
+        val filtered = if (query.isEmpty()) {
+            originalCategoriesList
+        } else {
+            originalCategoriesList.filter { 
+                it.name.contains(query, ignoreCase = true)
             }
         }
-        dialog.show()
+        categoriesList.clear()
+        categoriesList.addAll(filtered)
+        categoryAdapter.updateData(categoriesList)
+        updateEmptyState()
+    }
+
+    private fun updateEmptyState() {
+        if (categoriesList.isEmpty()) {
+            binding.btnAddPlaceholder.visibility = View.VISIBLE
+            binding.rvCategories.visibility = View.GONE
+        } else {
+            binding.btnAddPlaceholder.visibility = View.VISIBLE // Always show as per design, or adjust if needed
+            binding.rvCategories.visibility = View.VISIBLE
+        }
     }
 
     private fun showDeleteConfirmation(category: Category) {

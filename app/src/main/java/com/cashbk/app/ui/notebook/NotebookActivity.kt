@@ -3,59 +3,27 @@ package com.cashbk.app.ui.notebook
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.ContextThemeWrapper
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.Fragment
 import com.cashbk.app.R
+import com.cashbk.app.databinding.ActivityNotebookBinding
 import com.cashbk.app.dataclass.Notebook
 import com.cashbk.app.dataclass.Transaction
-import com.cashbk.app.adapter.TransactionAdapter
-import com.cashbk.app.databinding.ActivityNotebookBinding
-import com.cashbk.app.databinding.ItemTransactionBinding
-import com.google.firebase.auth.FirebaseAuth
-import java.util.Date
+import com.cashbk.app.ui.notebook.SettingsFragment
 import com.cashbk.app.ui.transaction.AddTransactionFragment
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.cashbk.app.utils.PdfGenerator
-import com.google.android.material.datepicker.MaterialDatePicker
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import androidx.core.util.Pair
-import java.text.NumberFormat
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class NotebookActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityNotebookBinding
     private lateinit var database: DatabaseReference
-    private lateinit var transactionAdapter: TransactionAdapter
     
-    // Edit Dialog handling
-    private val EDIT_DIALOG_TAG = "EditTransactionDialog"
-
-    // Data Lists and Maps
-    private val allTransactionsList = mutableListOf<Transaction>()
-    private val displayedTransactionList = mutableListOf<Transaction>()
-    private val partyMap = mutableMapOf<String, String>()
-    private val categoryMap = mutableMapOf<String, String>()
-    private val userMap = mutableMapOf<String, String>()
-
     private var notebookId: String? = null
-    private var currentUserRole: String = "" // "owner", "partner", "writer", "reader"
-    private var currentNetBalance = 0.0
-
-    // Filters
-    private var filterCategoryId: String? = null
-    private var filterStartDate: Long? = null
-    private var filterEndDate: Long? = null
+    private var currentUserRole: String = ""
+    private val EDIT_DIALOG_TAG = "EditTransactionDialog"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,363 +32,102 @@ class NotebookActivity : AppCompatActivity() {
             setContentView(binding.root)
 
             notebookId = intent.getStringExtra("notebookId")
-            Log.d("NotebookActivity", "Received notebookId: $notebookId")
-
             if (notebookId.isNullOrEmpty()) {
                 Toast.makeText(this, "Notebook ID is missing.", Toast.LENGTH_LONG).show()
                 finish()
                 return
             }
 
-            // Initialize Firebase Reference
             database = FirebaseDatabase.getInstance().reference.child("transactions").child(notebookId!!)
 
-            // Setup UI
-            setupRecyclerView()
+            // Setup Navigation
+            setupNavigation()
 
-            // Fetch Data
-            fetchParties()
-            fetchCategories()
-            fetchUsers()
-            fetchTransactions() // Loads transactions real-time
-
-            // Check Access & Notebook Details
+            // Fetch Details & Role (Async)
             checkUserRole()
-            fetchNotebookDetails()
+            // Listeners
+            // Moved to fragments
 
-            // Click Listeners
-            binding.btnMenuNotebook.setOnClickListener { showMenuNotebook(it) }
-            binding.btnPdf.setOnClickListener {
-                val nName = binding.tvTitle.text.toString()
-                PdfGenerator.generatePdf(this@NotebookActivity, nName, displayedTransactionList, currentNetBalance)
-            }
-            binding.btnCashIn.setOnClickListener { showAddTransactionDialog("in") }
-            binding.btnCashOut.setOnClickListener { showAddTransactionDialog("out") }
-            binding.btnBack.setOnClickListener { finish() }
-
-            binding.chipDate.setOnClickListener { showDateRangePicker() }
-            binding.chipFilter.setOnClickListener { showCategoryFilterDialog() }
-
-            binding.bottomNav.setOnItemSelectedListener { item ->
-                when (item.itemId) {
-                    R.id.nav_transactions -> {
-                        Toast.makeText(this, "Transactions", Toast.LENGTH_SHORT).show()
-                        true
-                    }
-                    R.id.nav_parties -> {
-                        val fragment = ManagePartiesFragment()
-                        val args = Bundle()
-                        args.putString("notebookId", notebookId)
-                        fragment.arguments = args
-                        supportFragmentManager.beginTransaction()
-                            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
-                            .replace(R.id.fragment_container, fragment)
-                            .addToBackStack(null)
-                            .commit()
-                        true
-                    }
-                    R.id.nav_categories -> {
-                        val fragment = ManageCategoriesFragment()
-                        val args = Bundle()
-                        args.putString("notebookId", notebookId)
-                        fragment.arguments = args
-                        supportFragmentManager.beginTransaction()
-                            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
-                            .replace(R.id.fragment_container, fragment)
-                            .addToBackStack(null)
-                            .commit()
-                        true
-                    }
-                    R.id.nav_settings -> {
-                        Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show()
-                        true
-                    }
-                    else -> false
-                }
+            // Load Default Fragment once on start
+            if (savedInstanceState == null) {
+                replaceFragment(NotebookHomeFragment(), "Transactions")
             }
 
         } catch (e: Exception) {
             e.printStackTrace()
             Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_LONG).show()
-            Log.e("NotebookActivity", "Crash in onCreate", e)
         }
     }
 
-    /**
-     * This function updates the names in the transaction list
-     * using the data currently available in partyMap and categoryMap,
-     * then refreshes the RecyclerView.
-     */
-    private fun refreshTransactionData() {
-        if (displayedTransactionList.isEmpty()) {
-            binding.layoutEmptyTransactions.visibility = android.view.View.VISIBLE
-            binding.transactionsRecyclerView.visibility = android.view.View.GONE
-            transactionAdapter.notifyDataSetChanged()
-            return
-        } else {
-            binding.layoutEmptyTransactions.visibility = android.view.View.GONE
-            binding.transactionsRecyclerView.visibility = android.view.View.VISIBLE
-        }
-
-        displayedTransactionList.forEach { t ->
-            // Update Party Name
-            t.partyName = partyMap[t.partyId] ?: ""
-
-            // Update Category Name
-            t.categoryName = categoryMap[t.categoryId] ?: ""
-
-            // Update CreatedBy Name
-            t.createdByName = userMap[t.createdBy] ?: "You"
-        }
-
-        transactionAdapter.notifyDataSetChanged()
-    }
-
-    private fun fetchNotebookDetails() {
-        FirebaseDatabase.getInstance().reference.child("notebooks").child(notebookId!!).get()
-            .addOnSuccessListener { snapshot ->
-                val notebook = snapshot.getValue(Notebook::class.java)
-                binding.tvTitle.text = notebook?.name ?: "Notebook"
-                binding.tvSubtitle.text = "Manage your daily entries"
-            }
-    }
-
-    private fun fetchParties() {
-        FirebaseDatabase.getInstance().reference
-            .child("parties")
-            .child(notebookId!!)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    partyMap.clear()
-                    snapshot.children.forEach {
-                        val id = it.key ?: return@forEach
-                        val name = it.child("name").getValue(String::class.java) ?: ""
-                        partyMap[id] = name
-                    }
-                    // FIX: Refresh list immediately after parties are loaded
-                    refreshTransactionData()
+    private fun setupNavigation() {
+        binding.bottomNav.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_transactions -> {
+                    replaceFragment(NotebookHomeFragment(), "Transactions")
+                    true
                 }
-
-                override fun onCancelled(error: DatabaseError) {}
-            })
-    }
-
-    private fun fetchCategories() {
-        FirebaseDatabase.getInstance().reference
-            .child("categories")
-            .child(notebookId!!)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    categoryMap.clear()
-                    snapshot.children.forEach {
-                        val id = it.key ?: return@forEach
-                        val name = it.child("name").getValue(String::class.java) ?: ""
-                        categoryMap[id] = name
-                    }
-                    // FIX: Refresh list immediately after categories are loaded
-                    refreshTransactionData()
+                R.id.nav_parties -> {
+                    replaceFragment(ManagePartiesFragment(), "Parties")
+                    true
                 }
-
-                override fun onCancelled(error: DatabaseError) {}
-            })
-    }
-
-    private fun fetchUsers() {
-        FirebaseDatabase.getInstance().reference
-            .child("users")
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    userMap.clear()
-                    snapshot.children.forEach {
-                        val uid = it.key ?: return@forEach
-                        val name = it.child("name").getValue(String::class.java) ?: "You"
-                        userMap[uid] = name
-                    }
-                    // FIX: Refresh list immediately after users are loaded
-                    refreshTransactionData()
+                R.id.nav_categories -> {
+                    replaceFragment(ManageCategoriesFragment(), "Categories")
+                    true
                 }
-
-                override fun onCancelled(error: DatabaseError) {}
-            })
-    }
-
-    private fun fetchTransactions() {
-        database.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val tempTransactions = mutableListOf<Transaction>()
-                if (snapshot.exists()) {
-                    for (child in snapshot.children) {
-                        try {
-                            val t = child.getValue(Transaction::class.java)
-                            t?.id = child.key.orEmpty()
-                            t?.let { tempTransactions.add(it) }
-                        } catch (e: Exception) { e.printStackTrace() }
-                    }
+                R.id.nav_settings -> {
+                    replaceFragment(SettingsFragment(), "Settings")
+                    true
                 }
-
-                // 1. Sort by CreatedAt ASC to calculate running balance correctly
-                tempTransactions.sortBy { getTransactionDateTime(it) }
-
-
-                var balance = 0.0
-                var totalIn = 0.0
-                var totalOut = 0.0
-
-                for (t in tempTransactions) {
-
-                    // Resolve names
-                    t.partyName = partyMap[t.partyId] ?: ""
-                    t.categoryName = categoryMap[t.categoryId] ?: ""
-                    t.createdByName = userMap[t.createdBy] ?: "You"
-
-                    val amount = t.amount   // ✅ IMPORTANT
-
-                    if (t.type == "in") {
-                        balance += amount
-                        totalIn += amount
-                    } else {
-                        balance -= amount
-                        totalOut += amount
-                    }
-
-                    t.runningBalance = balance
-                }
-
-                currentNetBalance = balance
-                // UI summary now updated in applyFilters()
-                // updateSummaryUI(balance, totalIn, totalOut, tempTransactions.size)
-
-                // 2. Sort DESC for display (Newest top)
-                tempTransactions.reverse()
-
-                // 3. Update main list
-                allTransactionsList.clear()
-                allTransactionsList.addAll(tempTransactions)
-
-                // 4. Resolve Names (Party/Category) and Apply Filters
-                applyFilters()
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(this@NotebookActivity, "Failed to load: ${error.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
-    }
-
-    private fun updateSummaryUI(balance: Double, totalIn: Double, totalOut: Double, count: Int) {
-        binding.tvNetBalance.text = formatCurrency(balance)
-
-        if (balance >= 0) {
-            binding.tvNetBalance.setTextColor(ContextCompat.getColor(this, R.color.success))
-        } else {
-            binding.tvNetBalance.setTextColor(ContextCompat.getColor(this, R.color.danger))
-        }
-
-        binding.tvTotalIn.text = "+ ${formatCurrency(totalIn)}"
-        binding.tvTotalOut.text = "- ${formatCurrency(totalOut)}"
-        binding.tvEntriesCount.text = "Showing $count entries"
-    }
-
-    private fun applyFilters() {
-        var filteredList = allTransactionsList.toList()
-
-        if (filterStartDate != null && filterEndDate != null) {
-            filteredList = filteredList.filter { t ->
-                val time = getTransactionDateTime(t)
-                time in filterStartDate!!..filterEndDate!!
+                else -> false
             }
         }
-
-        if (filterCategoryId != null) {
-            filteredList = filteredList.filter { t ->
-                t.categoryId == filterCategoryId
-            }
-        }
-
-        // Calculate filtered summary
-        var fIn = 0.0
-        var fOut = 0.0
-        for (t in filteredList) {
-            if (t.type == "in") fIn += t.amount else fOut += t.amount
-        }
-        val fBalance = fIn - fOut
-        
-        updateSummaryUI(fBalance, fIn, fOut, filteredList.size)
-
-        displayedTransactionList.clear()
-        displayedTransactionList.addAll(filteredList)
-        
-        refreshTransactionData()
     }
 
-    private fun showDateRangePicker() {
-        val dateRangePicker = MaterialDatePicker.Builder.dateRangePicker()
-            .setTitleText("Select Dates")
-            .build()
-            
-        dateRangePicker.addOnPositiveButtonClickListener { selection ->
-            filterStartDate = selection.first
-            // End of day
-            filterEndDate = selection.second + 86399999L 
-            
-            val sdf = SimpleDateFormat("MMM dd", Locale.getDefault())
-            binding.chipDate.text = "${sdf.format(Date(filterStartDate!!))} - ${sdf.format(Date(filterEndDate!!))}"
-            applyFilters()
-        }
-            
-        dateRangePicker.show(supportFragmentManager, "DateRangePicker")
-    }
-
-    private fun showCategoryFilterDialog() {
-        val categories = categoryMap.values.toTypedArray()
-        val categoryIds = categoryMap.keys.toTypedArray()
-        
-        if (categories.isEmpty()) {
-            Toast.makeText(this, "No categories found", Toast.LENGTH_SHORT).show()
-            return
-        }
-        
-        // Let's add an option to clear filter at index 0
-        val displayOptions = arrayOf("All Categories") + categories
-        
-        MaterialAlertDialogBuilder(this)
-            .setTitle("Filter by Category")
-            .setItems(displayOptions) { _, which ->
-                if (which == 0) {
-                    filterCategoryId = null
-                    binding.chipFilter.text = "Filter"
-                } else {
-                    filterCategoryId = categoryIds[which - 1]
-                    binding.chipFilter.text = categories[which - 1]
-                }
-                applyFilters()
-            }
-            .setNegativeButton("Cancel", null)
-            .show()
-    }
-
-    private fun showAddTransactionDialog(type: String) {
-        if (currentUserRole == "reader") {
-            Toast.makeText(this, "You have view-only access", Toast.LENGTH_SHORT).show()
-            return
-        }
-        val fragment = AddTransactionFragment()
+    private fun replaceFragment(fragment: Fragment, tag: String) {
         val args = Bundle()
         args.putString("notebookId", notebookId)
-        args.putString("transactionType", type)
+        args.putString("currentUserRole", currentUserRole)
         fragment.arguments = args
+
         supportFragmentManager.beginTransaction()
             .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
-            .replace(R.id.fragment_container, fragment, "AddTransactionFragment")
-            .addToBackStack(null)
+            .replace(R.id.fragment_container, fragment, tag)
             .commit()
     }
-    
+
+    private fun checkUserRole() {
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        FirebaseDatabase.getInstance().reference.child("notebooks").child(notebookId!!).get()
+            .addOnSuccessListener { notebookSnapshot ->
+                val businessId = notebookSnapshot.child("businessId").value as? String ?: return@addOnSuccessListener
+                
+                FirebaseDatabase.getInstance().reference.child("businesses").child(businessId).get()
+                    .addOnSuccessListener { businessSnapshot ->
+                        val ownerId = businessSnapshot.child("ownerId").value as? String
+                        if (ownerId == currentUserId) {
+                            currentUserRole = "owner"
+                        } else {
+                            currentUserRole = "partner" // Defaulting to partner if not owner for now
+                        }
+                    }
+            }
+    }
+
+    fun getUserRole(): String = currentUserRole
+
+    fun showTransactionPopupMenu(anchor: View, transaction: Transaction) {
+        val popup = com.cashbk.app.utils.CustomOptionsMenu(this, anchor)
+        popup.setOnRenameClickListener { showEditTransactionDialog(transaction) }
+        popup.setOnDeleteClickListener { deleteTransaction(transaction) }
+        popup.show()
+    }
+
+    private fun deleteTransaction(transaction: Transaction) {
+        database.child(transaction.id).removeValue()
+            .addOnSuccessListener { Toast.makeText(this, "Deleted", Toast.LENGTH_SHORT).show() }
+    }
+
     private fun showEditTransactionDialog(transaction: Transaction) {
-        if (currentUserRole == "reader") {
-            Toast.makeText(this, "You have view-only access", Toast.LENGTH_SHORT).show()
-            return
-        }
         val fragment = AddTransactionFragment()
         val args = Bundle()
         args.putString("notebookId", notebookId)
@@ -440,157 +147,4 @@ class NotebookActivity : AppCompatActivity() {
             .addToBackStack(null)
             .commit()
     }
-
-    private fun getTransactionDateTime(transaction: Transaction): Long {
-        return try {
-            val sdf = java.text.SimpleDateFormat(
-                "yyyy-MM-dd hh:mm a",
-                Locale.getDefault()
-            )
-            val dateTime = "${transaction.date} ${transaction.time}"
-            sdf.parse(dateTime)?.time ?: 0L
-        } catch (e: Exception) {
-            0L
-        }
-    }
-
-    private fun setupRecyclerView() {
-        transactionAdapter = TransactionAdapter(displayedTransactionList, 
-            onClick = { transaction ->
-                // Item click (e.g. open details)
-                Log.d("NotebookActivity", "Clicked transaction: ${transaction.id}")
-            },
-            onLongClick = { view, transaction ->
-                if (currentUserRole != "reader") {
-                    showTransactionPopupMenu(view, transaction)
-                }
-            }
-        )
-
-        binding.transactionsRecyclerView.apply {
-            layoutManager = LinearLayoutManager(this@NotebookActivity)
-            adapter = transactionAdapter
-            setHasFixedSize(true)
-        }
-    }
-
-    private fun showMenu(view: View) {
-        val popup = com.cashbk.app.utils.CustomOptionsMenu(this, view)
-        
-        popup.setOnRenameClickListener {
-            if (currentUserRole == "reader") {
-                Toast.makeText(this, "You have view-only access", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Rename clicked", Toast.LENGTH_SHORT).show()
-            }
-        }
-        popup.setOnDeleteClickListener {
-            if (currentUserRole != "owner") {
-                Toast.makeText(this, "Only the business owner can delete this notebook", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Delete clicked", Toast.LENGTH_SHORT).show()
-            }
-        }
-        popup.setOnMemberClickListener {
-            val intent = Intent(this, com.cashbk.app.ui.members.MembersActivity::class.java)
-            intent.putExtra("entityId", notebookId)
-            intent.putExtra("entityType", "notebook")
-            intent.putExtra("currentUserRole", currentUserRole)
-            startActivity(intent)
-        }
-        
-        popup.show()
-    }
-
-    private fun showMenuNotebook(view: View) {
-        val popup = com.cashbk.app.utils.CustomOptionsMenu(this, view)
-        
-        popup.setOnRenameClickListener {
-            Toast.makeText(this, "Rename clicked", Toast.LENGTH_SHORT).show()
-        }
-        popup.setOnReportClickListener {
-            val nName = binding.tvTitle.text.toString()
-            PdfGenerator.generatePdf(this, nName, displayedTransactionList, currentNetBalance)
-        }
-        popup.setOnMemberClickListener {
-            val intent = Intent(this, com.cashbk.app.ui.members.MembersActivity::class.java)
-            intent.putExtra("entityId", notebookId)
-            intent.putExtra("entityType", "notebook")
-            intent.putExtra("currentUserRole", currentUserRole)
-            startActivity(intent)
-        }
-        popup.setOnSettingsClickListener {
-            Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show()
-        }
-        
-        popup.show()
-    }
-
-    private fun checkUserRole() {
-        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-        FirebaseDatabase.getInstance().reference.child("notebooks").child(notebookId!!).get()
-            .addOnSuccessListener { notebookSnapshot ->
-                val businessId = notebookSnapshot.child("businessId").value as? String ?: return@addOnSuccessListener
-
-                FirebaseDatabase.getInstance().reference.child("businesses").child(businessId).get()
-                    .addOnSuccessListener { businessSnapshot ->
-                        val ownerId = businessSnapshot.child("ownerId").value as? String
-                        if (ownerId == currentUserId) {
-                            currentUserRole = "owner"
-                            updateUIForRole()
-                        } else {
-                            FirebaseDatabase.getInstance().reference.child("business_members")
-                                .child(businessId).child(currentUserId).get().addOnSuccessListener { pSnap ->
-                                    if (pSnap.exists() && pSnap.child("role").value == "partner") {
-                                        currentUserRole = "partner"
-                                        updateUIForRole()
-                                    } else {
-                                        FirebaseDatabase.getInstance().reference.child("members")
-                                            .child(notebookId!!).child(currentUserId).get().addOnSuccessListener { mSnap ->
-                                                if (mSnap.exists()) {
-                                                    currentUserRole = mSnap.child("role").value as? String ?: ""
-                                                    updateUIForRole()
-                                                }
-                                            }
-                                    }
-                                }
-                        }
-                    }
-            }
-    }
-
-    private fun updateUIForRole() {
-        if (currentUserRole == "reader") {
-            binding.btnCashIn.alpha = 0.5f
-            binding.btnCashOut.alpha = 0.5f
-        } else {
-            binding.btnCashIn.alpha = 1.0f
-            binding.btnCashOut.alpha = 1.0f
-        }
-    }
-
-    private fun showTransactionPopupMenu(anchor: View, transaction: Transaction) {
-        val popup = com.cashbk.app.utils.CustomOptionsMenu(this, anchor)
-        
-        popup.setOnRenameClickListener {
-            showEditTransactionDialog(transaction)
-        }
-        popup.setOnDeleteClickListener {
-            deleteTransaction(transaction)
-        }
-        
-        popup.show()
-    }
-
-    private fun deleteTransaction(transaction: Transaction) {
-        database.child(transaction.id).removeValue()
-            .addOnSuccessListener { Toast.makeText(this, "Deleted", Toast.LENGTH_SHORT).show() }
-            .addOnFailureListener { Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show() }
-    }
-
-    private fun formatCurrency(amount: Double): String {
-        return NumberFormat.getNumberInstance(Locale("en", "IN")).format(amount)
-    }
-
-
 }

@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.cashbk.app.R
 import com.cashbk.app.adapter.PartyAdapter
 import com.cashbk.app.databinding.DialogAddEntityBinding
 import com.cashbk.app.databinding.FragmentManagePartiesBinding
@@ -23,6 +24,8 @@ class ManagePartiesFragment : Fragment() {
     private val partiesList = mutableListOf<Party>()
     
     private var notebookId: String? = null
+
+    private val originalPartiesList = mutableListOf<Party>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,9 +54,30 @@ class ManagePartiesFragment : Fragment() {
             parentFragmentManager.popBackStack()
         }
 
-        binding.fabAdd.setOnClickListener {
-            showAddPartyDialog()
-        }
+        binding.btnAddToolbar.setOnClickListener { navigateToAddParty() }
+        binding.btnAddPlaceholder.setOnClickListener { navigateToAddParty() }
+        binding.fabAdd.setOnClickListener { navigateToAddParty() }
+
+        binding.etSearch.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                filterParties(s.toString())
+            }
+            override fun afterTextChanged(s: android.text.Editable?) {}
+        })
+    }
+
+    private fun navigateToAddParty() {
+        val fragment = AddPartyFragment()
+        val args = Bundle()
+        args.putString("notebookId", notebookId)
+        fragment.arguments = args
+
+        parentFragmentManager.beginTransaction()
+            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun setupRecyclerView() {
@@ -70,51 +94,38 @@ class ManagePartiesFragment : Fragment() {
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 partiesList.clear()
+                originalPartiesList.clear()
                 for (child in snapshot.children) {
                     val party = child.getValue(Party::class.java)
                     party?.id = child.key ?: ""
-                    party?.let { partiesList.add(it) }
+                    party?.let { 
+                        partiesList.add(it)
+                        originalPartiesList.add(it)
+                    }
                 }
 
-                if (partiesList.isEmpty()) {
-                    binding.layoutEmpty.visibility = View.VISIBLE
-                    binding.rvParties.visibility = View.GONE
-                } else {
-                    binding.layoutEmpty.visibility = View.GONE
-                    binding.rvParties.visibility = View.VISIBLE
-                }
                 partyAdapter.updateData(partiesList)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+                if (_binding != null) {
+                    Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+                }
             }
         })
     }
 
-    private fun showAddPartyDialog() {
-        val dialogBinding = DialogAddEntityBinding.inflate(layoutInflater)
-        val dialog = AlertDialog.Builder(requireContext(), com.google.android.material.R.style.Theme_Material3_Dark_Dialog_Alert)
-            .setView(dialogBinding.root)
-            .create()
-
-        dialogBinding.tvTitle.text = "Add New Party"
-        
-        dialogBinding.btnSave.setOnClickListener {
-            val name = dialogBinding.etName.text.toString().trim()
-            if (name.isNotEmpty()) {
-                val partyId = database.push().key ?: ""
-                val party = Party(id = partyId, name = name)
-                database.child(partyId).setValue(party)
-                    .addOnSuccessListener {
-                        Toast.makeText(requireContext(), "Party Added", Toast.LENGTH_SHORT).show()
-                        dialog.dismiss()
-                    }
-            } else {
-                Toast.makeText(requireContext(), "Please enter a name", Toast.LENGTH_SHORT).show()
+    private fun filterParties(query: String) {
+        val filtered = if (query.isEmpty()) {
+            originalPartiesList
+        } else {
+            originalPartiesList.filter { 
+                it.name.contains(query, ignoreCase = true) || it.role.contains(query, ignoreCase = true)
             }
         }
-        dialog.show()
+        partiesList.clear()
+        partiesList.addAll(filtered)
+        partyAdapter.updateData(partiesList)
     }
 
     private fun showDeleteConfirmation(party: Party) {

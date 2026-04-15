@@ -1,34 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Widget.App.GlassCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="@dimen/_12sdp"
     android:layout_marginTop="@dimen/_8sdp"
-    android:layout_marginHorizontal="@dimen/_12sdp"
-    android:gravity="center_vertical"
-    android:background="@drawable/bg_glass_card">
+    android:layout_marginHorizontal="@dimen/_16sdp"
+    android:clickable="true"
+    android:focusable="true">
 
-    <TextView
-        android:id="@+id/tvName"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:fontFamily="@font/roboto_regular"
-        android:text="Entity Name"
-        android:textSize="@dimen/_14ssp"
-        android:textColor="@color/text_color"
-        android:layout_marginStart="@dimen/_4sdp"/>
+        android:orientation="horizontal"
+        android:padding="@dimen/_12sdp"
+        android:gravity="center_vertical">
 
-    <ImageButton
-        android:id="@+id/btnDelete"
-        android:layout_width="@dimen/_32sdp"
-        android:layout_height="@dimen/_32sdp"
-        android:src="@android:drawable/ic_menu_delete"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:padding="@dimen/_6sdp"
-        app:tint="@color/danger"
-        android:contentDescription="Delete" />
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="@dimen/_36sdp"
+            android:layout_height="@dimen/_36sdp"
+            app:cardCornerRadius="@dimen/_18sdp"
+            app:cardBackgroundColor="@color/stitch_surface_container_highest"
+            app:cardElevation="0dp">
 
-</LinearLayout>
+            <ImageView
+                android:id="@+id/ivIcon"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_action_group"
+                app:tint="@color/stitch_primary" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="@dimen/_16sdp">
+
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_medium"
+                android:text="Entity Name"
+                android:textSize="@dimen/_14ssp"
+                android:textColor="@android:color/white" />
+
+            <TextView
+                android:id="@+id/tvSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Role / Description"
+                android:textSize="@dimen/_10ssp"
+                android:textColor="@color/stitch_on_surface_variant"
+                android:visibility="gone"
+                tools:visibility="visible" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btnDelete"
+            android:layout_width="@dimen/_32sdp"
+            android:layout_height="@dimen/_32sdp"
+            android:src="@drawable/ic_action_delete"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="@dimen/_8sdp"
+            app:tint="@color/danger"
+            android:layout_marginStart="@dimen/_8sdp" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

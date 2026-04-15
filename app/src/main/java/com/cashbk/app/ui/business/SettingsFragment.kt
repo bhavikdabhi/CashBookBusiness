@@ -28,11 +28,11 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         if (!currentBusinessId.isNullOrEmpty()) {
             fetchData()
         }
-        
+
         binding.btnManageMembers.setOnClickListener {
             if (currentBusinessId.isNullOrEmpty()) return@setOnClickListener
             val intent = Intent(requireContext(), com.cashbk.app.ui.members.MembersActivity::class.java)
@@ -40,11 +40,11 @@ class SettingsFragment : Fragment() {
             intent.putExtra("entityType", "business")
             startActivity(intent)
         }
-        
+
         binding.btnLeaveBusiness.setOnClickListener {
             Toast.makeText(requireContext(), "Leave business not fully implemented yet", Toast.LENGTH_SHORT).show()
         }
-        
+
         binding.btnDeleteBusiness.setOnClickListener {
             if (currentBusinessId.isNullOrEmpty()) return@setOnClickListener
             AlertDialog.Builder(requireContext())
@@ -88,27 +88,27 @@ class SettingsFragment : Fragment() {
     private fun fetchData() {
         val bid = currentBusinessId ?: return
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
-        
+
         // Fetch Business Details
         FirebaseDatabase.getInstance().reference.child("businesses").child(bid).get()
             .addOnSuccessListener { snapshot ->
                 if (!snapshot.exists()) return@addOnSuccessListener
                 if (_binding == null) return@addOnSuccessListener
-                
+
                 val name = snapshot.child("name").getValue(String::class.java) ?: ""
                 val ownerId = snapshot.child("ownerId").getValue(String::class.java) ?: ""
                 val createdAt = snapshot.child("createdAt").getValue(Long::class.java) ?: 0L
-                
+
                 binding.tvBizName.text = name
                 binding.tvManagingBusiness.text = "Managing: $name"
-                
+
                 if (createdAt > 0) {
                     val sdf = java.text.SimpleDateFormat("MMM yyyy", java.util.Locale.getDefault())
                     binding.tvBizEst.text = "Established ${sdf.format(java.util.Date(createdAt))}"
                 } else {
                     binding.tvBizEst.text = "Established recently"
                 }
-                
+
                 if (ownerId == uid) {
                     binding.lblRole.text = "Organization Admin"
                 } else {
@@ -126,7 +126,7 @@ class SettingsFragment : Fragment() {
                         }
                 }
             }
-            
+
         // Fetch Notebooks Count
         FirebaseDatabase.getInstance().reference.child("notebooks")
             .orderByChild("businessId").equalTo(bid)
@@ -138,7 +138,7 @@ class SettingsFragment : Fragment() {
                 }
                 override fun onCancelled(error: com.google.firebase.database.DatabaseError) {}
             })
-            
+
         // Fetch Partners Count
         FirebaseDatabase.getInstance().reference.child("business_members").child(bid)
             .addListenerForSingleValueEvent(object : com.google.firebase.database.ValueEventListener {

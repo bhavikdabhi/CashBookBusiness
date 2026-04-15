@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/stitch_background"
+    android:clickable="true"
+    android:focusable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- Header -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_56sdp"
+            android:paddingHorizontal="@dimen/_12sdp">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_gravity="center_vertical"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_back"
+                app:tint="@color/stitch_primary"
+                android:padding="@dimen/_8sdp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="New Category"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="@dimen/_16ssp"
+                android:textColor="@color/stitch_primary" />
+        </FrameLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/_20sdp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Define Category"
+                    android:fontFamily="@font/roboto_bold"
+                    android:textSize="@dimen/_24ssp"
+                    android:textColor="@android:color/white"
+                    android:layout_marginBottom="@dimen/_8sdp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Specify a name for your financial category to better organize your cashflow ledger."
+                    android:fontFamily="@font/roboto_regular"
+                    android:textSize="@dimen/_12ssp"
+                    android:textColor="@color/stitch_on_surface_variant"
+                    android:layout_marginBottom="@dimen/_32sdp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilCategoryName"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Category Name"
+                    android:textColorHint="@color/stitch_outline_variant"
+                    app:boxStrokeColor="@color/stitch_primary"
+                    app:hintTextColor="@color/stitch_primary"
+                    app:boxStrokeWidthFocused="2dp"
+                    app:boxCornerRadiusBottomEnd="@dimen/_12sdp"
+                    app:boxCornerRadiusBottomStart="@dimen/_12sdp"
+                    app:boxCornerRadiusTopEnd="@dimen/_12sdp"
+                    app:boxCornerRadiusTopStart="@dimen/_12sdp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etCategoryName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textCapWords"
+                        android:textColor="@android:color/white"
+                        android:fontFamily="@font/roboto_regular" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilCategoryDescription"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Short Description"
+                    android:layout_marginTop="@dimen/_16sdp"
+                    android:textColorHint="@color/stitch_outline_variant"
+                    app:boxStrokeColor="@color/stitch_primary"
+                    app:hintTextColor="@color/stitch_primary"
+                    app:boxStrokeWidthFocused="2dp"
+                    app:boxCornerRadiusBottomEnd="@dimen/_12sdp"
+                    app:boxCornerRadiusBottomStart="@dimen/_12sdp"
+                    app:boxCornerRadiusTopEnd="@dimen/_12sdp"
+                    app:boxCornerRadiusTopStart="@dimen/_12sdp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etCategoryDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textCapSentences"
+                        android:textColor="@android:color/white"
+                        android:fontFamily="@font/roboto_regular" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_20sdp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSave"
+                style="@style/Widget.App.Button.Gradient"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_48sdp"
+                android:text="CREATE CATEGORY"
+                android:textColor="@color/stitch_background"
+                app:backgroundTint="@null" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

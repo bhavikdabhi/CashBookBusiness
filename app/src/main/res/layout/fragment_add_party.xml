@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/auth_bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- ══════════════════════════════ TOP BAR ══════════════════════════════ -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="12dp">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_gravity="center_vertical|start"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_back"
+                android:padding="10dp"
+                app:tint="@color/stitch_primary" />
+
+        </FrameLayout>
+
+        <!-- ══════════════════════ SCROLLABLE CONTENT ══════════════════════════ -->
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true"
+            android:overScrollMode="never">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="16dp">
+
+                <!-- ─── NEW ENTRY label ─── -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="NEW ENTRY"
+                    android:fontFamily="@font/roboto_bold"
+                    android:textSize="10sp"
+                    android:letterSpacing="0.12"
+                    android:textColor="@color/stitch_primary"
+                    android:layout_marginBottom="4dp" />
+
+                <!-- ─── Add Party title ─── -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Add Party"
+                    android:fontFamily="@font/roboto_bold"
+                    android:textSize="30sp"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="10dp" />
+
+                <!-- ─── Subtitle ─── -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Register a new business partner to start tracking transactions, debts, and credits within your ethereal ecosystem."
+                    android:fontFamily="@font/roboto_regular"
+                    android:textSize="12sp"
+                    android:lineSpacingMultiplier="1.5"
+                    android:textColor="@color/stitch_on_surface_variant"
+                    android:layout_marginBottom="20dp" />
+
+                <!-- ══════════════════ ENTITY DETAILS CARD ══════════════════════ -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_glass_card"
+                    android:padding="16dp"
+                    android:layout_marginBottom="22dp">
+
+                    <!-- Icon + texts row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <!-- Icon box -->
+                        <FrameLayout
+                            android:layout_width="46dp"
+                            android:layout_height="46dp"
+                            android:background="@drawable/bg_glass_field">
+
+                            <ImageView
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_person_add"
+                                app:tint="@color/stitch_primary" />
+                        </FrameLayout>
+
+                        <!-- Title + subtitle -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="14dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Entity Details"
+                                android:fontFamily="@font/roboto_bold"
+                                android:textSize="14sp"
+                                android:textColor="@color/white" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Basic Identification information"
+                                android:fontFamily="@font/roboto_regular"
+                                android:textSize="11sp"
+                                android:textColor="@color/stitch_on_surface_variant"
+                                android:layout_marginTop="2dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Select from Contacts chip -->
+                    <LinearLayout
+                        android:id="@+id/chipSelectContact"
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:background="@drawable/bg_contacts_chip"
+                        android:paddingHorizontal="12dp"
+                        android:layout_marginTop="14dp"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:src="@drawable/ic_settings"
+                            app:tint="@color/stitch_primary"
+                            android:layout_marginEnd="6dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Select from Contacts"
+                            android:fontFamily="@font/roboto_medium"
+                            android:textSize="12sp"
+                            android:textColor="@color/stitch_primary" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- ══════════════════ FULL NAME ══════════════════════════════════ -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="FULL NAME"
+                    android:fontFamily="@font/roboto_bold"
+                    android:textSize="9sp"
+                    android:letterSpacing="0.10"
+                    android:textColor="@color/gray"
+                    android:layout_marginBottom="6dp" />
+
+                <EditText
+                    android:id="@+id/etPartyName"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_input_field"
+                    android:hint="e.g. Alexander Vance"
+                    android:textColorHint="#664A5568"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textSize="14sp"
+                    android:paddingHorizontal="16dp"
+                    android:inputType="textCapWords"
+                    android:layout_marginBottom="18dp" />
+
+                <!-- Invisible TextInputLayout for error -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilPartyName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintEnabled="false"
+                    app:errorEnabled="true"
+                    android:visibility="gone" />
+
+                <!-- ══════════════════ PHONE NUMBER ════════════════════════════════ -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PHONE NUMBER"
+                    android:fontFamily="@font/roboto_bold"
+                    android:textSize="9sp"
+                    android:letterSpacing="0.10"
+                    android:textColor="@color/gray"
+                    android:layout_marginBottom="6dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="22dp">
+
+                    <!-- Country code badge -->
+                    <TextView
+                        android:layout_width="48dp"
+                        android:layout_height="match_parent"
+                        android:text="+1"
+                        android:fontFamily="@font/roboto_medium"
+                        android:textSize="13sp"
+                        android:textColor="@color/stitch_on_surface_variant"
+                        android:gravity="center"
+                        android:background="@drawable/bg_input_field"
+                        android:layout_marginEnd="8dp" />
+
+                    <EditText
+                        android:id="@+id/etContact"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_input_field"
+                        android:hint="000 000 0000"
+                        android:textColorHint="#664A5568"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/roboto_regular"
+                        android:textSize="14sp"
+                        android:paddingHorizontal="16dp"
+                        android:inputType="phone" />
+                </LinearLayout>
+
+                <!-- ══════════════════ ASSIGNED ROLE ═══════════════════════════════ -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ASSIGNED ROLE"
+                    android:fontFamily="@font/roboto_bold"
+                    android:textSize="9sp"
+                    android:letterSpacing="0.10"
+                    android:textColor="@color/gray"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- Role row 1: Vendor | Customer -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp">
+
+                    <!-- Vendor -->
+                    <LinearLayout
+                        android:id="@+id/roleVendor"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="@drawable/bg_role_button_default"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <ImageView
+                            android:id="@+id/ivVendorIcon"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:src="@drawable/ic_business"
+                            app:tint="@color/stitch_on_surface_variant" />
+
+                        <TextView
+                            android:id="@+id/tvVendor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Vendor"
+                            android:fontFamily="@font/roboto_medium"
+                            android:textSize="12sp"
+                            android:textColor="@color/stitch_on_surface_variant"
+                            android:layout_marginTop="8dp" />
+                    </LinearLayout>
+
+                    <!-- Customer (selected by default) -->
+                    <LinearLayout
+                        android:id="@+id/roleCustomer"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginStart="6dp"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="@drawable/bg_role_button_selected"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <ImageView
+                            android:id="@+id/ivCustomerIcon"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:src="@drawable/ic_person_add"
+                            app:tint="@color/auth_bg" />
+
+                        <TextView
+                            android:id="@+id/tvCustomer"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Customer"
+                            android:fontFamily="@font/roboto_medium"
+                            android:textSize="12sp"
+                            android:textColor="@color/auth_bg"
+                            android:layout_marginTop="8dp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Role row 2: Contractor | Employee -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:orientation="horizontal">
+
+                    <!-- Contractor -->
+                    <LinearLayout
+                        android:id="@+id/roleContractor"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="@drawable/bg_role_button_default"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <ImageView
+                            android:id="@+id/ivContractorIcon"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:src="@drawable/ic_action_edit"
+                            app:tint="@color/stitch_on_surface_variant" />
+
+                        <TextView
+                            android:id="@+id/tvContractor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Contractor"
+                            android:fontFamily="@font/roboto_medium"
+                            android:textSize="12sp"
+                            android:textColor="@color/stitch_on_surface_variant"
+                            android:layout_marginTop="8dp" />
+                    </LinearLayout>
+
+                    <!-- Employee -->
+                    <LinearLayout
+                        android:id="@+id/roleEmployee"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginStart="6dp"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="@drawable/bg_role_button_default"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <ImageView
+                            android:id="@+id/ivEmployeeIcon"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:src="@drawable/ic_menu_member"
+                            app:tint="@color/stitch_on_surface_variant" />
+
+                        <TextView
+                            android:id="@+id/tvEmployee"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Employee"
+                            android:fontFamily="@font/roboto_medium"
+                            android:textSize="12sp"
+                            android:textColor="@color/stitch_on_surface_variant"
+                            android:layout_marginTop="8dp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Gradient Create Partner button -->
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnSave"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:text="+ Create Partner"
+                    android:textAllCaps="false"
+                    android:fontFamily="@font/roboto_bold"
+                    android:textSize="15sp"
+                    android:textColor="@color/auth_bg"
+                    android:background="@drawable/bg_gradient_button"
+                    android:elevation="6dp"
+                    android:outlineAmbientShadowColor="@color/auth_glow_1"
+                    android:outlineSpotShadowColor="@color/auth_glow_1" />
+
+                <!-- Cancel text link -->
+                <TextView
+                    android:id="@+id/btnCancel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Cancel"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textSize="14sp"
+                    android:textColor="@color/stitch_on_surface_variant"
+                    android:gravity="center"
+                    android:paddingVertical="14dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground" />
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+        <!-- ══════════════════════════ BOTTOM ACTIONS ════════════════════════════ -->
+
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
