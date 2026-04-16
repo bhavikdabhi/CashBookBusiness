@@ -125,10 +125,10 @@
                 android:id="@+id/ViewLine"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_1sdp"
-                android:layout_marginTop="@dimen/_2sdp"
+                android:layout_marginTop="@dimen/_5sdp"
                 android:layout_marginBottom="@dimen/_2sdp"
                 android:background="@color/glass_border"
-                app:layout_constraintTop_toBottomOf="@id/tvCategoryChip" />
+                app:layout_constraintTop_toBottomOf="@id/receiptRow" />
 
             <!-- ── RECEIPT ATTACHMENT ROW ── -->
             <LinearLayout
@@ -145,7 +145,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@id/ViewLine"
+                app:layout_constraintTop_toBottomOf="@id/tvCategoryChip"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
@@ -209,7 +209,7 @@
                 android:textSize="@dimen/_10ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/receiptRow" />
+                app:layout_constraintTop_toBottomOf="@id/ViewLine" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

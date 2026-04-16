@@ -13,128 +13,256 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- Header -->
-        <FrameLayout
+        <!-- Premium Header -->
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_56sdp"
-            android:paddingHorizontal="@dimen/_12sdp">
+            android:layout_height="64dp"
+            android:paddingHorizontal="16dp">
 
             <ImageButton
                 android:id="@+id/btnBack"
-                android:layout_width="@dimen/_40sdp"
-                android:layout_height="@dimen/_40sdp"
-                android:layout_gravity="center_vertical"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="8dp"
                 android:src="@drawable/ic_back"
-                app:tint="@color/stitch_primary"
-                android:padding="@dimen/_8sdp" />
+                app:tint="@color/white" />
 
             <TextView
+                android:id="@+id/tvHeaderTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="New Category"
-                android:fontFamily="@font/roboto_medium"
-                android:textSize="@dimen/_16ssp"
-                android:textColor="@color/stitch_primary" />
-        </FrameLayout>
+                android:layout_centerVertical="true"
+                android:layout_marginStart="12dp"
+                android:layout_toEndOf="@id/btnBack"
+                android:fontFamily="@font/roboto_bold"
+                android:text="Ethereal Ledger"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_default_avtar"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+                app:strokeColor="@color/glass_border"
+                app:strokeWidth="1dp" />
+        </RelativeLayout>
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:paddingBottom="24dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="@dimen/_20sdp">
+                android:paddingHorizontal="24dp">
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Define Category"
+                    android:layout_marginTop="24dp"
                     android:fontFamily="@font/roboto_bold"
-                    android:textSize="@dimen/_24ssp"
-                    android:textColor="@android:color/white"
-                    android:layout_marginBottom="@dimen/_8sdp" />
+                    android:text="Create Category"
+                    android:textColor="@color/white"
+                    android:textSize="32sp" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Specify a name for your financial category to better organize your cashflow ledger."
+                    android:layout_marginTop="8dp"
+                    android:alpha="0.6"
                     android:fontFamily="@font/roboto_regular"
-                    android:textSize="@dimen/_12ssp"
-                    android:textColor="@color/stitch_on_surface_variant"
-                    android:layout_marginBottom="@dimen/_32sdp" />
+                    android:text="Define a new bucket for your financial momentum."
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilCategoryName"
-                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                <!-- CATEGORY NAME & TYPE CARD -->
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Category Name"
-                    android:textColorHint="@color/stitch_outline_variant"
-                    app:boxStrokeColor="@color/stitch_primary"
-                    app:hintTextColor="@color/stitch_primary"
-                    app:boxStrokeWidthFocused="2dp"
-                    app:boxCornerRadiusBottomEnd="@dimen/_12sdp"
-                    app:boxCornerRadiusBottomStart="@dimen/_12sdp"
-                    app:boxCornerRadiusTopEnd="@dimen/_12sdp"
-                    app:boxCornerRadiusTopStart="@dimen/_12sdp">
+                    android:layout_marginTop="32dp"
+                    app:cardBackgroundColor="@color/card_bg"
+                    app:cardCornerRadius="24dp"
+                    app:strokeColor="@color/glass_border"
+                    app:strokeWidth="1dp">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etCategoryName"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textCapWords"
-                        android:textColor="@android:color/white"
-                        android:fontFamily="@font/roboto_regular" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:orientation="vertical"
+                        android:padding="20dp">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilCategoryDescription"
-                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_medium"
+                            android:text="CATEGORY NAME"
+                            android:textColor="@color/text_disabled"
+                            android:textSize="12sp"
+                            android:letterSpacing="0.1" />
+
+                        <EditText
+                            android:id="@+id/etCategoryName"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:layout_marginTop="12dp"
+                            android:background="@drawable/bg_glass_field"
+                            android:fontFamily="@font/roboto_regular"
+                            android:hint="e.g. Marketing, Rent, Coffee"
+                            android:inputType="textCapWords"
+                            android:paddingHorizontal="16dp"
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/gray" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="24dp"
+                            android:fontFamily="@font/roboto_medium"
+                            android:text="TRANSACTION TYPE"
+                            android:textColor="@color/text_disabled"
+                            android:textSize="12sp"
+                            android:letterSpacing="0.1" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:layout_marginTop="12dp"
+                            android:orientation="horizontal">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnTypeIncome"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginEnd="6dp"
+                                android:layout_weight="1"
+                                android:backgroundTint="@color/card_bg"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"
+                                android:text="Income"
+                                android:textColor="@color/white"
+                                app:cornerRadius="16dp"
+                                app:icon="@drawable/ic_type_income"
+                                app:iconGravity="textStart"
+                                app:iconTint="@null"
+                                app:strokeColor="@color/glass_border"
+                                app:strokeWidth="1dp" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnTypeExpense"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="6dp"
+                                android:layout_weight="1"
+                                android:backgroundTint="@color/card_bg"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"
+                                android:text="Expense"
+                                android:textColor="@color/danger"
+                                app:cornerRadius="16dp"
+                                app:icon="@drawable/ic_type_expense"
+                                app:iconGravity="textStart"
+                                app:iconTint="@null"
+                                app:strokeColor="@color/danger"
+                                app:strokeWidth="1dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- AESTHETIC TINT CARD -->
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Short Description"
-                    android:layout_marginTop="@dimen/_16sdp"
-                    android:textColorHint="@color/stitch_outline_variant"
-                    app:boxStrokeColor="@color/stitch_primary"
-                    app:hintTextColor="@color/stitch_primary"
-                    app:boxStrokeWidthFocused="2dp"
-                    app:boxCornerRadiusBottomEnd="@dimen/_12sdp"
-                    app:boxCornerRadiusBottomStart="@dimen/_12sdp"
-                    app:boxCornerRadiusTopEnd="@dimen/_12sdp"
-                    app:boxCornerRadiusTopStart="@dimen/_12sdp">
+                    android:layout_marginTop="16dp"
+                    app:cardBackgroundColor="@color/card_bg"
+                    app:cardCornerRadius="24dp"
+                    app:strokeColor="@color/glass_border"
+                    app:strokeWidth="1dp">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etCategoryDescription"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textCapSentences"
-                        android:textColor="@android:color/white"
-                        android:fontFamily="@font/roboto_regular" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:orientation="vertical"
+                        android:padding="20dp">
 
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_medium"
+                            android:text="AESTHETIC TINT"
+                            android:textColor="@color/text_disabled"
+                            android:textSize="12sp"
+                            android:letterSpacing="0.1" />
+
+                        <GridLayout
+                            android:id="@+id/colorGrid"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:columnCount="5"
+                            android:useDefaultMargins="true" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- FINANCIAL GLYPH CARD -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:cardBackgroundColor="@color/card_bg"
+                    app:cardCornerRadius="24dp"
+                    app:strokeColor="@color/glass_border"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_medium"
+                            android:text="FINANCIAL GLYPH"
+                            android:textColor="@color/text_disabled"
+                            android:textSize="12sp"
+                            android:letterSpacing="0.1" />
+
+                        <GridLayout
+                            android:id="@+id/iconGrid"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:columnCount="4"
+                            android:useDefaultMargins="true" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSave"
+                    style="@style/Widget.App.Button.Gradient"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_45sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:fontFamily="@font/roboto_bold"
+                    android:text="CREATE CATEGORY"
+                    android:textColor="@color/stitch_background"
+                    app:backgroundTint="@null"
+                    app:cornerRadius="16dp"
+                    app:rippleColor="@color/white" />
             </LinearLayout>
         </ScrollView>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/_20sdp">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnSave"
-                style="@style/Widget.App.Button.Gradient"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_48sdp"
-                android:text="CREATE CATEGORY"
-                android:textColor="@color/stitch_background"
-                app:backgroundTint="@null" />
-        </LinearLayout>
-
+        <!-- Save Button Area -->
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -18,7 +18,7 @@ class BusinessDetailActivity : AppCompatActivity() {
     
     // Fragments
     private val cashbooksFragment = CashbooksFragment()
-    private val paymentsFragment = PaymentsFragment()
+    private val profileFragment = ProfileFragment()
     private val eventsFragment = EventsFragment()
     private val settingsFragment = SettingsFragment()
 
@@ -72,8 +72,8 @@ class BusinessDetailActivity : AppCompatActivity() {
                     loadFragment(cashbooksFragment)
                     true
                 }
-                R.id.nav_payments -> {
-                    loadFragment(paymentsFragment)
+                R.id.nav_profile -> {
+                    loadFragment(profileFragment)
                     true
                 }
                 R.id.nav_events -> {
@@ -98,7 +98,7 @@ class BusinessDetailActivity : AppCompatActivity() {
     
     private fun updateFragmentsBusinessId() {
         cashbooksFragment.updateBusinessId(currentBusinessId)
-        paymentsFragment.updateBusinessId(currentBusinessId)
+        profileFragment.updateBusinessId(currentBusinessId)
         eventsFragment.updateBusinessId(currentBusinessId)
         settingsFragment.updateBusinessId(currentBusinessId)
     }

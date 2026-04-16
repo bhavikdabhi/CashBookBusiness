@@ -1,21 +1,42 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# Project Specific Rules
+-keepattributes Signature
+-keepattributes *Annotation*
+-keepattributes EnclosingMethod
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Firebase & Play Services
+-keep class com.google.firebase.** { *; }
+-keep class com.google.android.gms.** { *; }
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Google API Client (Drive)
+-keep class com.google.api.client.** { *; }
+-keep class com.google.api.services.drive.** { *; }
+-keep class com.google.api.services.drive.model.** { *; }
+-dontwarn com.google.api.client.**
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Glide
+-keep public class * extends com.github.bumptech.glide.module.AppGlideModule
+-keep public class * extends com.github.bumptech.glide.module.LibraryGlideModule
+-keep class com.github.bumptech.glide.** { *; }
+-dontwarn com.github.bumptech.glide.**
+
+# Data Classes (Important for Firebase Serialization)
+-keep class com.cashbk.app.dataclass.** { *; }
+-keepclassmembers class com.cashbk.app.dataclass.** {
+    <fields>;
+    <init>(...);
+}
+
+# Android Framework
+-keep class androidx.appcompat.** { *; }
+-keep class com.google.android.material.** { *; }
+
+# SDP/SSP (Dimensions)
+-keep class com.intuit.sdp.** { *; }
+-keep class com.intuit.ssp.** { *; }
+
+# Remove Logs for Scanner Cleanliness
+-assumenosideeffects class android.util.Log {
+    public static *** d(...);
+    public static *** v(...);
+    public static *** i(...);
+}

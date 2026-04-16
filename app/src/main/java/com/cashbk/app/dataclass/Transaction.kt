@@ -17,7 +17,8 @@ data class Transaction(
 
     var partyId: String = "",
     var partyName: String = "",
-    var receiptUrl: String = ""
+    var receiptUrl: String = "",
+    var receiptName: String = ""
 ) {
     @get:Exclude var createdByName: String = ""
     @get:Exclude var runningBalance: Double = 0.0

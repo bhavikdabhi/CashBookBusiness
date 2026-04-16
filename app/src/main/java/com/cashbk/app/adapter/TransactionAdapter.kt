@@ -83,22 +83,38 @@ class TransactionAdapter(
         if (url.isNotEmpty()) {
             holder.binding.receiptRow.visibility = View.VISIBLE
 
-            // ── Filename: URL-decode Firebase's %2F encoded paths, strip query params ──
-            val rawSegment = try {
+            // ── Filename: Use stored name if available, otherwise decode from URL ──
+            val rawSegment = if (transaction.receiptName.isNotEmpty()) {
+                transaction.receiptName
+            } else {
+                try {
                 Uri.decode(Uri.parse(url).lastPathSegment ?: "")
                     .substringAfterLast("/")  // remove any remaining folder prefix
                     .substringBefore("?")
                     .uppercase(Locale.getDefault())
                     .let { if (it.length > 28) it.take(26) + "\u2026" else it }
                     .ifEmpty { "RECEIPT" }
-            } catch (e: Exception) { "RECEIPT" }
+                } catch (e: Exception) { "RECEIPT" }
+            }
 
-            holder.binding.tvReceiptName.text = rawSegment
+            holder.binding.tvReceiptName.text = rawSegment.uppercase(Locale.getDefault())
 
-            // ── Image detection: check decoded URL + common image indicators ──
+            // ── Image detection & URL Transformation for Google Drive ──
             val lowerDecoded = rawSegment.lowercase(Locale.getDefault())
             val lowerUrl     = url.lowercase(Locale.getDefault())
-            val isImage = listOf(".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp")
+            
+            val isDriveUrl = lowerUrl.contains("drive.google.com")
+            var displayUrl = url
+
+            if (isDriveUrl) {
+                // Extract file ID from drive link and use thumbnail URL for Glide
+                val fileId = extractDriveFileId(url)
+                if (fileId != null) {
+                    displayUrl = "https://drive.google.com/thumbnail?id=$fileId&sz=w300"
+                }
+            }
+
+            val isImage = isDriveUrl || listOf(".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp")
                 .any { lowerDecoded.endsWith(it) || lowerUrl.contains(it) }
 
             val thumb = holder.binding.ivReceiptThumb
@@ -110,10 +126,10 @@ class TransactionAdapter(
             if (isImage) {
                 // ── Load real image thumbnail ──
                 Glide.with(context)
-                    .load(url)
+                    .load(displayUrl)
                     .transition(DrawableTransitionOptions.withCrossFade(200))
                     .placeholder(R.drawable.bg_glass_field)   // subtle bg while loading
-                    .error(R.drawable.ic_default_avtar)
+                    .error(R.drawable.ic_book) // fallback to icon if image fails to load
                     .centerCrop()
                     .into(thumb)
             } else {
@@ -145,4 +161,17 @@ class TransactionAdapter(
     }
 
     override fun getItemCount() = transactions.size
+
+    private fun extractDriveFileId(url: String): String? {
+        return try {
+            val uri = Uri.parse(url)
+            if (url.contains("/d/")) {
+                url.substringAfter("/d/").substringBefore("/")
+            } else {
+                uri.getQueryParameter("id")
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
 }

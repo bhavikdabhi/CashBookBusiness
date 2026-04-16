@@ -362,7 +362,7 @@ class NotebookHomeFragment : Fragment() {
         fragment.arguments = args
         parentFragmentManager.beginTransaction()
             .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
-            .replace(R.id.fragment_container, fragment, "AddTransactionFragment")
+            .replace(R.id.notebook_fragment_container, fragment)
             .addToBackStack(null)
             .commit()
     }

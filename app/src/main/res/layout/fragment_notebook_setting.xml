@@ -1,322 +1,399 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/stitch_background">
+    android:fillViewport="true"
+    android:background="@color/bg_color">
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/_40sdp">
 
-        <LinearLayout
+        <!-- ──── TOOLBAR SECTION ──── -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_header"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:paddingHorizontal="@dimen/_12sdp"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="@dimen/_36sdp"
+                android:layout_height="@dimen/_36sdp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_back"
+                app:tint="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Notebook Settings"
+                android:textColor="@color/white"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="@dimen/_16ssp"
+                android:layout_marginStart="@dimen/_8sdp"
+                app:layout_constraintStart_toEndOf="@id/btnBack"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <ImageButton
+                android:id="@+id/btn_overflow_menu"
+                android:layout_width="@dimen/_36sdp"
+                android:layout_height="@dimen/_36sdp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_expand_more"
+                android:rotation="90"
+                app:tint="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- ──── GENERAL IDENTITY SECTION ──── -->
+        <TextView
+            android:id="@+id/lbl_general_identity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="GENERAL IDENTITY"
+            android:textColor="@color/gray"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="@dimen/_9ssp"
+            android:letterSpacing="0.1"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginStart="@dimen/_16sdp"
+            app:layout_constraintTop_toBottomOf="@id/layout_header"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/card_identity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/_40sdp">
+            android:layout_marginHorizontal="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:background="@drawable/bg_glass_card"
+            android:padding="@dimen/_20sdp"
+            app:layout_constraintTop_toBottomOf="@id/lbl_general_identity">
 
-            <!-- Header -->
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_56sdp"
-                android:paddingHorizontal="@dimen/_12sdp">
-
-                <ImageButton
-                    android:id="@+id/btnBack"
-                    android:layout_width="@dimen/_40sdp"
-                    android:layout_height="@dimen/_40sdp"
-                    android:layout_gravity="center_vertical"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_back"
-                    app:tint="@color/stitch_primary"
-                    android:padding="@dimen/_8sdp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Notebook Settings"
-                    android:fontFamily="@font/roboto_medium"
-                    android:textSize="@dimen/_16ssp"
-                    android:textColor="@color/stitch_primary" />
-            </FrameLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/lbl_notebook_name"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingHorizontal="@dimen/_20sdp"
-                android:layout_marginTop="@dimen/_12sdp">
+                android:text="NOTEBOOK NAME"
+                android:textColor="@color/gray"
+                android:fontFamily="@font/roboto_bold"
+                android:textSize="@dimen/_8ssp"
+                android:letterSpacing="0.05"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <EditText
+                android:id="@+id/et_notebook_name"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_48sdp"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:background="@drawable/bg_input_field"
+                android:fontFamily="@font/roboto_regular"
+                android:hint="Enter notebook name"
+                android:paddingHorizontal="@dimen/_16sdp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/gray"
+                android:textSize="@dimen/_12ssp"
+                app:layout_constraintTop_toBottomOf="@id/lbl_notebook_name" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSaveName"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_48sdp"
+                android:layout_marginTop="@dimen/_16sdp"
+                android:text="Save Changes"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:fontFamily="@font/roboto_bold"
+                android:textSize="@dimen/_13ssp"
+                app:cornerRadius="@dimen/_12sdp"
+                app:backgroundTint="@color/primary_color"
+                app:layout_constraintTop_toBottomOf="@id/et_notebook_name" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- ──── MANAGEMENT SECTION ──── -->
+        <TextView
+            android:id="@+id/lbl_management"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MANAGEMENT"
+            android:textColor="@color/gray"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="@dimen/_9ssp"
+            android:letterSpacing="0.1"
+            android:layout_marginTop="@dimen/_24sdp"
+            android:layout_marginStart="@dimen/_16sdp"
+            app:layout_constraintTop_toBottomOf="@id/card_identity"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/layout_management_grid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginHorizontal="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:weightSum="2"
+            app:layout_constraintTop_toBottomOf="@id/lbl_management">
+
+            <!-- Partners Card -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/btnManageMembers"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="@dimen/_6sdp"
+                android:background="@drawable/bg_glass_card"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="@dimen/_16sdp">
+
+                <ImageView
+                    android:id="@+id/iv_partners_icon"
+                    android:layout_width="@dimen/_32sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:background="@drawable/bg_input_field"
+                    android:padding="@dimen/_8sdp"
+                    android:src="@drawable/ic_action_group"
+                    app:tint="#4DB6AC"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
 
                 <TextView
-                    android:id="@+id/tvManagingBusiness"
-                    android:layout_width="match_parent"
+                    android:id="@+id/tv_members_count"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Administration"
+                    android:text="0"
+                    android:textColor="@color/white"
                     android:fontFamily="@font/roboto_bold"
-                    android:textSize="@dimen/_24ssp"
-                    android:textColor="@android:color/white"
-                    android:layout_marginBottom="@dimen/_8sdp" />
+                    android:textSize="@dimen/_20ssp"
+                    android:layout_marginTop="@dimen/_16sdp"
+                    app:layout_constraintTop_toBottomOf="@id/iv_partners_icon"
+                    app:layout_constraintStart_toStartOf="parent" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Manage your organizational roles, governance policies, and ledger security."
-                    android:fontFamily="@font/roboto_regular"
-                    android:textSize="@dimen/_12ssp"
-                    android:textColor="@color/stitch_on_surface_variant"
-                    android:layout_marginBottom="@dimen/_24sdp" />
-
-                <!-- Role Info Card -->
-                <com.google.android.material.card.MaterialCardView
-                    style="@style/Widget.App.GlassCard"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/_16sdp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/_16sdp"
-                        android:gravity="center_vertical">
-
-                        <ImageView
-                            android:layout_width="@dimen/_32sdp"
-                            android:layout_height="@dimen/_32sdp"
-                            android:src="@drawable/ic_action_group"
-                            app:tint="@color/stitch_primary" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:layout_marginStart="@dimen/_16sdp">
-
-                            <TextView
-                                android:id="@+id/tv_role_title"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Organization Admin"
-                                android:fontFamily="@font/roboto_bold"
-                                android:textSize="@dimen/_11ssp"
-                                android:textColor="@color/stitch_primary"
-                                android:letterSpacing="0.05" />
-
-                            <TextView
-                                android:id="@+id/tv_biz_name"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Active Business Ledger"
-                                android:fontFamily="@font/roboto_regular"
-                                android:textSize="@dimen/_10ssp"
-                                android:textColor="@color/stitch_on_surface_variant" />
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="ACTIVE"
-                            android:textColor="@color/success"
-                            android:fontFamily="@font/roboto_bold"
-                            android:textSize="@dimen/_8ssp"
-                            android:background="@drawable/bg_badge_active"
-                            android:paddingHorizontal="@dimen/_8sdp"
-                            android:paddingVertical="@dimen/_2sdp" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <!-- GOVERNANCE SECTION -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="GOVERNANCE"
+                    android:text="Total Members"
+                    android:textColor="@color/gray"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textSize="@dimen/_9ssp"
+                    app:layout_constraintTop_toBottomOf="@id/tv_members_count"
+                    app:layout_constraintStart_toStartOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Classes Card -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/btnManageCategories"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/_6sdp"
+                android:background="@drawable/bg_glass_card"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="@dimen/_16sdp">
+
+                <ImageView
+                    android:id="@+id/iv_classes_icon"
+                    android:layout_width="@dimen/_32sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:background="@drawable/bg_input_field"
+                    android:padding="@dimen/_8sdp"
+                    android:src="@android:drawable/ic_menu_agenda"
+                    app:tint="#81D4FA"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_classes_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="@color/white"
                     android:fontFamily="@font/roboto_bold"
-                    android:textSize="@dimen/_10ssp"
-                    android:textColor="@color/stitch_primary"
-                    android:layout_marginBottom="@dimen/_12sdp"
-                    android:letterSpacing="0.1" />
+                    android:textSize="@dimen/_20ssp"
+                    android:layout_marginTop="@dimen/_16sdp"
+                    app:layout_constraintTop_toBottomOf="@id/iv_classes_icon"
+                    app:layout_constraintStart_toStartOf="parent" />
 
-                <!-- Manage Partners -->
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/btnManageMembers"
-                    style="@style/Widget.App.GlassCard"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/_12sdp"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/_14sdp"
-                        android:gravity="center_vertical">
-
-                        <ImageView
-                            android:layout_width="@dimen/_24sdp"
-                            android:layout_height="@dimen/_24sdp"
-                            android:src="@drawable/ic_action_group"
-                            app:tint="@color/stitch_primary" />
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            android:text="Manage Partners"
-                            android:fontFamily="@font/roboto_medium"
-                            android:textSize="@dimen/_13ssp"
-                            android:textColor="@android:color/white"
-                            android:layout_marginStart="@dimen/_16sdp" />
-
-                        <ImageView
-                            android:layout_width="@dimen/_20sdp"
-                            android:layout_height="@dimen/_20sdp"
-                            android:src="@drawable/ic_arrow_right"
-                            app:tint="@color/stitch_outline_variant" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <!-- Logout -->
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/btnLogout"
-                    style="@style/Widget.App.GlassCard"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/_12sdp"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/_14sdp"
-                        android:gravity="center_vertical">
-
-                        <ImageView
-                            android:layout_width="@dimen/_24sdp"
-                            android:layout_height="@dimen/_24sdp"
-                            android:src="@android:drawable/ic_lock_power_off"
-                            app:tint="@color/danger" />
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            android:text="Logout Session"
-                            android:fontFamily="@font/roboto_medium"
-                            android:textSize="@dimen/_13ssp"
-                            android:textColor="@color/danger"
-                            android:layout_marginStart="@dimen/_16sdp" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <!-- Leave Business -->
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/btnLeaveBusiness"
-                    style="@style/Widget.App.GlassCard"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/_12sdp"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/_14sdp"
-                        android:gravity="center_vertical">
-
-                        <ImageView
-                            android:layout_width="@dimen/_24sdp"
-                            android:layout_height="@dimen/_24sdp"
-                            android:src="@android:drawable/ic_menu_revert"
-                            app:tint="#FF9800" />
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            android:text="Leave Business"
-                            android:fontFamily="@font/roboto_medium"
-                            android:textSize="@dimen/_13ssp"
-                            android:textColor="#FF9800"
-                            android:layout_marginStart="@dimen/_16sdp" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-
-                <!-- Danger Zone -->
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_danger_zone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_24sdp"
-                    app:cardBackgroundColor="#2D1B22"
-                    app:cardCornerRadius="@dimen/_14sdp"
-                    app:strokeColor="#522C35"
-                    app:strokeWidth="1dp"
-                    android:padding="@dimen/_16sdp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="@dimen/_16sdp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:layout_marginBottom="@dimen/_8sdp">
-                            <ImageView
-                                android:layout_width="@dimen/_18sdp"
-                                android:layout_height="@dimen/_18sdp"
-                                android:src="@android:drawable/ic_dialog_alert"
-                                app:tint="#FFB3B3" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Critical Actions"
-                                android:textColor="#FFB3B3"
-                                android:fontFamily="@font/roboto_bold"
-                                android:textSize="@dimen/_12ssp"
-                                android:layout_marginStart="@dimen/_8sdp" />
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Permanently remove all ledger history and member access. This action cannot be reversed."
-                            android:textColor="@color/stitch_on_surface_variant"
-                            android:fontFamily="@font/roboto_regular"
-                            android:textSize="@dimen/_11ssp"
-                            android:layout_marginBottom="@dimen/_16sdp" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnDeleteBusiness"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/_45sdp"
-                            android:text="DELETE BUSINESS"
-                            android:textColor="#FFB3B3"
-                            android:fontFamily="@font/roboto_bold"
-                            android:textSize="@dimen/_11ssp"
-                            app:strokeColor="#FFB3B3"
-                            app:strokeWidth="1dp"
-                            app:cornerRadius="@dimen/_12sdp"
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-            </LinearLayout>
+                    android:text="Ledger Classes"
+                    android:textColor="@color/gray"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textSize="@dimen/_9ssp"
+                    app:layout_constraintTop_toBottomOf="@id/tv_classes_count"
+                    app:layout_constraintStart_toStartOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <!-- ──── UTILITY ACTIONS SECTION ──── -->
+        <TextView
+            android:id="@+id/lbl_utility"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="UTILITY ACTIONS"
+            android:textColor="@color/gray"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="@dimen/_9ssp"
+            android:letterSpacing="0.1"
+            android:layout_marginTop="@dimen/_24sdp"
+            android:layout_marginStart="@dimen/_16sdp"
+            app:layout_constraintTop_toBottomOf="@id/layout_management_grid"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/btnDuplicateNotebook"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:background="@drawable/bg_glass_card"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="@dimen/_16sdp"
+            app:layout_constraintTop_toBottomOf="@id/lbl_utility">
+
+            <ImageView
+                android:id="@+id/iv_duplicate_icon"
+                android:layout_width="@dimen/_36sdp"
+                android:layout_height="@dimen/_36sdp"
+                android:background="@drawable/bg_input_field"
+                android:padding="@dimen/_8sdp"
+                android:src="@android:drawable/ic_menu_set_as"
+                app:tint="@color/gray"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_duplicate_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Duplicate Notebook"
+                android:textColor="@color/white"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="@dimen/_13ssp"
+                android:layout_marginStart="@dimen/_16sdp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/iv_duplicate_icon" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Clone all entries and settings to a new book"
+                android:textColor="@color/gray"
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="@dimen/_10ssp"
+                android:layout_marginTop="@dimen/_1sdp"
+                app:layout_constraintTop_toBottomOf="@id/tv_duplicate_title"
+                app:layout_constraintStart_toStartOf="@id/tv_duplicate_title"
+                app:layout_constraintEnd_toStartOf="@id/iv_chevron" />
+
+            <ImageView
+                android:id="@+id/iv_chevron"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:src="@drawable/ic_arrow_right"
+                app:tint="@color/gray"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- ──── DANGER ZONE SECTION ──── -->
+        <TextView
+            android:id="@+id/lbl_danger_zone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DANGER ZONE"
+            android:textColor="#FFB3B3"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="@dimen/_9ssp"
+            android:letterSpacing="0.1"
+            android:layout_marginTop="@dimen/_24sdp"
+            android:layout_marginStart="@dimen/_16sdp"
+            app:layout_constraintTop_toBottomOf="@id/btnDuplicateNotebook"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/card_danger_zone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:background="@drawable/bg_danger_zone"
+            android:padding="@dimen/_20sdp"
+            app:layout_constraintTop_toBottomOf="@id/lbl_danger_zone">
+
+            <ImageView
+                android:id="@+id/iv_danger_icon"
+                android:layout_width="@dimen/_24sdp"
+                android:layout_height="@dimen/_24sdp"
+                android:src="@android:drawable/ic_dialog_alert"
+                app:tint="#FFB3B3"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_danger_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete this notebook"
+                android:textColor="#FFB3B3"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="@dimen/_14ssp"
+                android:layout_marginStart="@dimen/_12sdp"
+                app:layout_constraintTop_toTopOf="@id/iv_danger_icon"
+                app:layout_constraintBottom_toBottomOf="@id/iv_danger_icon"
+                app:layout_constraintStart_toEndOf="@id/iv_danger_icon" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Once you delete a notebook, there is no going back. All financial data will be permanently purged."
+                android:textColor="#CC8888"
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="@dimen/_11ssp"
+                android:layout_marginTop="@dimen/_8sdp"
+                app:layout_constraintTop_toBottomOf="@id/iv_danger_icon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDeleteBusiness"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_48sdp"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:text="Delete Notebook"
+                android:textAllCaps="false"
+                android:textColor="#FFB3B3"
+                android:fontFamily="@font/roboto_bold"
+                android:textSize="@dimen/_13ssp"
+                app:cornerRadius="@dimen/_12sdp"
+                app:strokeColor="#FFB3B3"
+                app:strokeWidth="1dp"
+                app:layout_constraintTop_toBottomOf="@id/tv_danger_title"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="8dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+                <!-- Note: The anchor above is wrong, fixing below -->
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

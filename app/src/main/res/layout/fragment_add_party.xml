@@ -1,438 +1,360 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/auth_bg">
+    android:fillViewport="true"
+    android:background="@color/bg_color"> <!-- Precise dark background from screen -->
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/_16sdp"
+        android:paddingBottom="@dimen/_40sdp">
 
-        <!-- ══════════════════════════════ TOP BAR ══════════════════════════════ -->
-        <FrameLayout
+        <!-- Toolbar -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:paddingStart="4dp"
-            android:paddingEnd="12dp">
+            android:layout_height="?attr/actionBarSize"
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageButton
                 android:id="@+id/btnBack"
-                android:layout_width="44dp"
-                android:layout_height="44dp"
-                android:layout_gravity="center_vertical|start"
+                android:layout_width="@dimen/_32sdp"
+                android:layout_height="@dimen/_32sdp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_back"
-                android:padding="10dp"
-                app:tint="@color/stitch_primary" />
+                app:tint="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
-        </FrameLayout>
-
-        <!-- ══════════════════════ SCROLLABLE CONTENT ══════════════════════════ -->
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:fillViewport="true"
-            android:overScrollMode="never">
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:paddingTop="2dp"
-                android:paddingBottom="16dp">
+                android:text="Ethereal Ledger"
+                android:textColor="@color/white"
+                android:fontFamily="@font/roboto_bold"
+                android:textSize="@dimen/_14ssp"
+                android:layout_marginStart="@dimen/_12sdp"
+                app:layout_constraintStart_toEndOf="@id/btnBack"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
-                <!-- ─── NEW ENTRY label ─── -->
+            <ImageView
+                android:id="@+id/iv_search"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:src="@drawable/ic_search"
+                android:layout_marginEnd="@dimen/_12sdp"
+                app:tint="@color/gray"
+                app:layout_constraintEnd_toStartOf="@id/iv_profile"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_profile"
+                android:layout_width="@dimen/_24sdp"
+                android:layout_height="@dimen/_24sdp"
+                android:src="@drawable/ic_party_person"
+                app:shapeAppearanceOverlay="@style/CircleImageView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Typography Header -->
+        <TextView
+            android:id="@+id/tv_label_new"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="NEW ENTRY"
+            android:textColor="@color/gray"
+            android:fontFamily="@font/roboto_bold"
+            android:letterSpacing="0.1"
+            android:textSize="@dimen/_8ssp"
+            android:layout_marginTop="@dimen/_24sdp"
+            app:layout_constraintTop_toBottomOf="@id/layout_toolbar"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Party"
+            android:textColor="@color/white"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="@dimen/_26ssp"
+            android:layout_marginTop="@dimen/_4sdp"
+            app:layout_constraintTop_toBottomOf="@id/tv_label_new"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Register a new business partner to start tracking transactions, debts, and credits within your ethereal ecosystem."
+            android:textColor="@color/gray"
+            android:fontFamily="@font/roboto_regular"
+            android:textSize="@dimen/_11ssp"
+            android:lineSpacingExtra="4dp"
+            android:layout_marginTop="@dimen/_12sdp"
+            app:layout_constraintTop_toBottomOf="@id/tv_title" />
+
+        <!-- Entity Details Card -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/card_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_glass_card"
+            android:layout_marginTop="@dimen/_24sdp"
+            android:padding="@dimen/_16sdp"
+            app:layout_constraintTop_toBottomOf="@id/tv_description">
+
+            <ImageView
+                android:id="@+id/iv_entity_icon"
+                android:layout_width="@dimen/_36sdp"
+                android:layout_height="@dimen/_36sdp"
+                android:background="@drawable/bg_input_field"
+                android:padding="@dimen/_8sdp"
+                android:src="@drawable/ic_party_person"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_entity_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Entity Details"
+                android:textColor="@color/white"
+                android:fontFamily="@font/roboto_bold"
+                android:textSize="@dimen/_12ssp"
+                android:layout_marginStart="@dimen/_12sdp"
+                app:layout_constraintTop_toTopOf="@id/iv_entity_icon"
+                app:layout_constraintStart_toEndOf="@id/iv_entity_icon" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Basic Identification Information"
+                android:textColor="@color/gray"
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="@dimen/_9ssp"
+                app:layout_constraintTop_toBottomOf="@id/tv_entity_title"
+                app:layout_constraintStart_toStartOf="@id/tv_entity_title" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_select_contacts"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_32sdp"
+                android:text="Select from Contacts"
+                android:textAllCaps="false"
+                android:textSize="@dimen/_9ssp"
+                android:fontFamily="@font/roboto_medium"
+                app:icon="@drawable/ic_action_group"
+                app:iconSize="@dimen/_14sdp"
+                app:backgroundTint="#2D333B"
+                app:cornerRadius="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                app:layout_constraintTop_toBottomOf="@id/iv_entity_icon"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/lbl_full_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="FULL NAME"
+                android:textColor="@color/gray"
+                android:fontFamily="@font/roboto_bold"
+                android:textSize="@dimen/_8ssp"
+                android:layout_marginTop="@dimen/_16sdp"
+                app:layout_constraintTop_toBottomOf="@id/btn_select_contacts"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <EditText
+                android:id="@+id/et_name"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                android:background="@drawable/bg_input_field"
+                android:hint="e.g. Alexander Vance"
+                android:textColor="@color/white"
+                android:textColorHint="@color/gray"
+                android:paddingHorizontal="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_6sdp"
+                app:layout_constraintTop_toBottomOf="@id/lbl_full_name" />
+
+            <TextView
+                android:id="@+id/lbl_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PHONE NUMBER"
+                android:textColor="@color/gray"
+                android:fontFamily="@font/roboto_bold"
+                android:textSize="@dimen/_8ssp"
+                android:layout_marginTop="@dimen/_16sdp"
+                app:layout_constraintTop_toBottomOf="@id/et_name"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <EditText
+                android:id="@+id/et_contact"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                android:background="@drawable/bg_input_field"
+                android:hint="+91  000 000 0000"
+                android:inputType="phone"
+                android:textColor="@color/white"
+                android:textColorHint="@color/gray"
+                android:paddingHorizontal="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_6sdp"
+                app:layout_constraintTop_toBottomOf="@id/lbl_phone" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Assigned Role Grid -->
+        <TextView
+            android:id="@+id/lbl_role"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ASSIGNED ROLE"
+            android:textColor="@color/gray"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="@dimen/_8ssp"
+            android:layout_marginTop="@dimen/_24sdp"
+            app:layout_constraintTop_toBottomOf="@id/card_details"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <GridLayout
+            android:id="@+id/role_grid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:layout_marginTop="@dimen/_12sdp"
+            app:layout_constraintTop_toBottomOf="@id/lbl_role">
+
+            <!-- Vendor Card -->
+            <LinearLayout
+                android:id="@+id/btn_role_vendor"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_64sdp"
+                android:layout_columnWeight="1"
+                android:layout_marginEnd="@dimen/_6sdp"
+                android:layout_marginBottom="@dimen/_12sdp"
+                android:background="@drawable/bg_role_card"
+                android:gravity="center"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="@dimen/_18sdp"
+                    android:src="@drawable/ic_party_shop"
+                    app:tint="@color/white" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="NEW ENTRY"
-                    android:fontFamily="@font/roboto_bold"
-                    android:textSize="10sp"
-                    android:letterSpacing="0.12"
-                    android:textColor="@color/stitch_primary"
-                    android:layout_marginBottom="4dp" />
-
-                <!-- ─── Add Party title ─── -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Add Party"
-                    android:fontFamily="@font/roboto_bold"
-                    android:textSize="30sp"
+                    android:text="Vendor"
                     android:textColor="@color/white"
-                    android:layout_marginBottom="10dp" />
-
-                <!-- ─── Subtitle ─── -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Register a new business partner to start tracking transactions, debts, and credits within your ethereal ecosystem."
-                    android:fontFamily="@font/roboto_regular"
-                    android:textSize="12sp"
-                    android:lineSpacingMultiplier="1.5"
-                    android:textColor="@color/stitch_on_surface_variant"
-                    android:layout_marginBottom="20dp" />
-
-                <!-- ══════════════════ ENTITY DETAILS CARD ══════════════════════ -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:background="@drawable/bg_glass_card"
-                    android:padding="16dp"
-                    android:layout_marginBottom="22dp">
-
-                    <!-- Icon + texts row -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <!-- Icon box -->
-                        <FrameLayout
-                            android:layout_width="46dp"
-                            android:layout_height="46dp"
-                            android:background="@drawable/bg_glass_field">
-
-                            <ImageView
-                                android:layout_width="22dp"
-                                android:layout_height="22dp"
-                                android:layout_gravity="center"
-                                android:src="@drawable/ic_person_add"
-                                app:tint="@color/stitch_primary" />
-                        </FrameLayout>
-
-                        <!-- Title + subtitle -->
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:layout_marginStart="14dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Entity Details"
-                                android:fontFamily="@font/roboto_bold"
-                                android:textSize="14sp"
-                                android:textColor="@color/white" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Basic Identification information"
-                                android:fontFamily="@font/roboto_regular"
-                                android:textSize="11sp"
-                                android:textColor="@color/stitch_on_surface_variant"
-                                android:layout_marginTop="2dp" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <!-- Select from Contacts chip -->
-                    <LinearLayout
-                        android:id="@+id/chipSelectContact"
-                        android:layout_width="wrap_content"
-                        android:layout_height="32dp"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:background="@drawable/bg_contacts_chip"
-                        android:paddingHorizontal="12dp"
-                        android:layout_marginTop="14dp"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <ImageView
-                            android:layout_width="14dp"
-                            android:layout_height="14dp"
-                            android:src="@drawable/ic_settings"
-                            app:tint="@color/stitch_primary"
-                            android:layout_marginEnd="6dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Select from Contacts"
-                            android:fontFamily="@font/roboto_medium"
-                            android:textSize="12sp"
-                            android:textColor="@color/stitch_primary" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <!-- ══════════════════ FULL NAME ══════════════════════════════════ -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="FULL NAME"
-                    android:fontFamily="@font/roboto_bold"
-                    android:textSize="9sp"
-                    android:letterSpacing="0.10"
-                    android:textColor="@color/gray"
-                    android:layout_marginBottom="6dp" />
-
-                <EditText
-                    android:id="@+id/etPartyName"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:background="@drawable/bg_input_field"
-                    android:hint="e.g. Alexander Vance"
-                    android:textColorHint="#664A5568"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/roboto_regular"
-                    android:textSize="14sp"
-                    android:paddingHorizontal="16dp"
-                    android:inputType="textCapWords"
-                    android:layout_marginBottom="18dp" />
-
-                <!-- Invisible TextInputLayout for error -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilPartyName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:hintEnabled="false"
-                    app:errorEnabled="true"
-                    android:visibility="gone" />
-
-                <!-- ══════════════════ PHONE NUMBER ════════════════════════════════ -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="PHONE NUMBER"
-                    android:fontFamily="@font/roboto_bold"
-                    android:textSize="9sp"
-                    android:letterSpacing="0.10"
-                    android:textColor="@color/gray"
-                    android:layout_marginBottom="6dp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="22dp">
-
-                    <!-- Country code badge -->
-                    <TextView
-                        android:layout_width="48dp"
-                        android:layout_height="match_parent"
-                        android:text="+1"
-                        android:fontFamily="@font/roboto_medium"
-                        android:textSize="13sp"
-                        android:textColor="@color/stitch_on_surface_variant"
-                        android:gravity="center"
-                        android:background="@drawable/bg_input_field"
-                        android:layout_marginEnd="8dp" />
-
-                    <EditText
-                        android:id="@+id/etContact"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@drawable/bg_input_field"
-                        android:hint="000 000 0000"
-                        android:textColorHint="#664A5568"
-                        android:textColor="@color/white"
-                        android:fontFamily="@font/roboto_regular"
-                        android:textSize="14sp"
-                        android:paddingHorizontal="16dp"
-                        android:inputType="phone" />
-                </LinearLayout>
-
-                <!-- ══════════════════ ASSIGNED ROLE ═══════════════════════════════ -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="ASSIGNED ROLE"
-                    android:fontFamily="@font/roboto_bold"
-                    android:textSize="9sp"
-                    android:letterSpacing="0.10"
-                    android:textColor="@color/gray"
-                    android:layout_marginBottom="12dp" />
-
-                <!-- Role row 1: Vendor | Customer -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="8dp">
-
-                    <!-- Vendor -->
-                    <LinearLayout
-                        android:id="@+id/roleVendor"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="6dp"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:background="@drawable/bg_role_button_default"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <ImageView
-                            android:id="@+id/ivVendorIcon"
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@drawable/ic_business"
-                            app:tint="@color/stitch_on_surface_variant" />
-
-                        <TextView
-                            android:id="@+id/tvVendor"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Vendor"
-                            android:fontFamily="@font/roboto_medium"
-                            android:textSize="12sp"
-                            android:textColor="@color/stitch_on_surface_variant"
-                            android:layout_marginTop="8dp" />
-                    </LinearLayout>
-
-                    <!-- Customer (selected by default) -->
-                    <LinearLayout
-                        android:id="@+id/roleCustomer"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:layout_marginStart="6dp"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:background="@drawable/bg_role_button_selected"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <ImageView
-                            android:id="@+id/ivCustomerIcon"
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@drawable/ic_person_add"
-                            app:tint="@color/auth_bg" />
-
-                        <TextView
-                            android:id="@+id/tvCustomer"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Customer"
-                            android:fontFamily="@font/roboto_medium"
-                            android:textSize="12sp"
-                            android:textColor="@color/auth_bg"
-                            android:layout_marginTop="8dp" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <!-- Role row 2: Contractor | Employee -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:orientation="horizontal">
-
-                    <!-- Contractor -->
-                    <LinearLayout
-                        android:id="@+id/roleContractor"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="6dp"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:background="@drawable/bg_role_button_default"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <ImageView
-                            android:id="@+id/ivContractorIcon"
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@drawable/ic_action_edit"
-                            app:tint="@color/stitch_on_surface_variant" />
-
-                        <TextView
-                            android:id="@+id/tvContractor"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Contractor"
-                            android:fontFamily="@font/roboto_medium"
-                            android:textSize="12sp"
-                            android:textColor="@color/stitch_on_surface_variant"
-                            android:layout_marginTop="8dp" />
-                    </LinearLayout>
-
-                    <!-- Employee -->
-                    <LinearLayout
-                        android:id="@+id/roleEmployee"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:layout_marginStart="6dp"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:background="@drawable/bg_role_button_default"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <ImageView
-                            android:id="@+id/ivEmployeeIcon"
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@drawable/ic_menu_member"
-                            app:tint="@color/stitch_on_surface_variant" />
-
-                        <TextView
-                            android:id="@+id/tvEmployee"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Employee"
-                            android:fontFamily="@font/roboto_medium"
-                            android:textSize="12sp"
-                            android:textColor="@color/stitch_on_surface_variant"
-                            android:layout_marginTop="8dp" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <!-- Gradient Create Partner button -->
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btnSave"
-                    android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    android:text="+ Create Partner"
-                    android:textAllCaps="false"
-                    android:fontFamily="@font/roboto_bold"
-                    android:textSize="15sp"
-                    android:textColor="@color/auth_bg"
-                    android:background="@drawable/bg_gradient_button"
-                    android:elevation="6dp"
-                    android:outlineAmbientShadowColor="@color/auth_glow_1"
-                    android:outlineSpotShadowColor="@color/auth_glow_1" />
-
-                <!-- Cancel text link -->
-                <TextView
-                    android:id="@+id/btnCancel"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Cancel"
-                    android:fontFamily="@font/roboto_medium"
-                    android:textSize="14sp"
-                    android:textColor="@color/stitch_on_surface_variant"
-                    android:gravity="center"
-                    android:paddingVertical="14dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?attr/selectableItemBackground" />
-
+                    android:textSize="@dimen/_9ssp" />
             </LinearLayout>
 
-        </androidx.core.widget.NestedScrollView>
+            <!-- Customer Card -->
+            <LinearLayout
+                android:id="@+id/btn_role_customer"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_64sdp"
+                android:layout_columnWeight="1"
+                android:layout_marginStart="@dimen/_6sdp"
+                android:layout_marginBottom="@dimen/_12sdp"
+                android:background="@drawable/bg_role_selected"
+                android:gravity="center"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="@dimen/_18sdp"
+                    android:src="@drawable/ic_party_person"
+                    app:tint="@color/white" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Customer"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_9ssp" />
+            </LinearLayout>
 
-        <!-- ══════════════════════════ BOTTOM ACTIONS ════════════════════════════ -->
+            <!-- Contractor Card -->
+            <LinearLayout
+                android:id="@+id/btn_role_contractor"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_64sdp"
+                android:layout_columnWeight="1"
+                android:layout_marginEnd="@dimen/_6sdp"
+                android:background="@drawable/bg_role_card"
+                android:gravity="center"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="@dimen/_18sdp"
+                    android:src="@drawable/ic_party_tool"
+                    app:tint="@color/white" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Contractor"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_9ssp" />
+            </LinearLayout>
 
+            <!-- Employee Card -->
+            <LinearLayout
+                android:id="@+id/btn_role_employee"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_64sdp"
+                android:layout_columnWeight="1"
+                android:layout_marginStart="@dimen/_6sdp"
+                android:background="@drawable/bg_role_card"
+                android:gravity="center"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="@dimen/_18sdp"
+                    android:src="@drawable/ic_party_employee"
+                    app:tint="@color/white" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Employee"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_9ssp" />
+            </LinearLayout>
+        </GridLayout>
 
-    </LinearLayout>
+        <!-- Final Actions -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_44sdp"
+            android:text="Create Partner"
+            android:textAllCaps="false"
+            android:textSize="@dimen/_13ssp"
+            android:fontFamily="@font/roboto_bold"
+            app:icon="@drawable/ic_action_group"
+            app:cornerRadius="@dimen/_22sdp"
+            app:backgroundTint="#6750A4"
+            android:layout_marginTop="@dimen/_32sdp"
+            app:layout_constraintTop_toBottomOf="@id/role_grid" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <TextView
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:textColor="@color/gray"
+            android:fontFamily="@font/roboto_medium"
+            android:textSize="@dimen/_12ssp"
+            android:layout_marginTop="@dimen/_16sdp"
+            app:layout_constraintTop_toBottomOf="@id/btnSave"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

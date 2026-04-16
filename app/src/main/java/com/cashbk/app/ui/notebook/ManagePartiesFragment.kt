@@ -54,7 +54,12 @@ class ManagePartiesFragment : Fragment() {
             parentFragmentManager.popBackStack()
         }
 
-        binding.btnAddToolbar.setOnClickListener { navigateToAddParty() }
+        binding.ivSearchIconToolbar.setOnClickListener {
+            binding.etSearch.requestFocus()
+            val imm = requireContext().getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+            imm.showSoftInput(binding.etSearch, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT)
+        }
+        
         binding.btnAddPlaceholder.setOnClickListener { navigateToAddParty() }
         binding.fabAdd.setOnClickListener { navigateToAddParty() }
 
@@ -75,7 +80,7 @@ class ManagePartiesFragment : Fragment() {
 
         parentFragmentManager.beginTransaction()
             .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
-            .replace(R.id.fragment_container, fragment)
+            .replace(R.id.notebook_fragment_container, fragment)
             .addToBackStack(null)
             .commit()
     }

@@ -21,17 +21,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.cashbk.app.utils.GoogleDriveManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
-import com.google.api.client.http.InputStreamContent
-import com.google.api.client.http.javanet.NetHttpTransport
-import com.google.api.client.json.gson.GsonFactory
-import com.google.api.services.drive.Drive
-import com.google.api.services.drive.DriveScopes
-import com.google.api.services.drive.model.File
-import com.google.api.services.drive.model.Permission
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import java.text.SimpleDateFormat
@@ -53,11 +46,13 @@ class AddTransactionFragment : Fragment() {
     private val parties = mutableListOf<Party>()
 
     private var receiptUri: android.net.Uri? = null
+    private var capturedReceiptName: String = ""
 
     private val pickReceiptLauncher = registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.GetContent()) { uri: android.net.Uri? ->
         uri?.let {
             receiptUri = it
-            binding.tvAttachLabel.text = "Receipt Ready"
+            capturedReceiptName = getFileNameFromUri(it) ?: "Receipt_${System.currentTimeMillis()}.jpg"
+            binding.tvAttachLabel.text = capturedReceiptName
             binding.tvAttachLabel.setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), com.cashbk.app.R.color.success))
             binding.ivAttachIcon.setImageResource(android.R.drawable.ic_menu_gallery)
             binding.ivAttachIcon.imageTintList = android.content.res.ColorStateList.valueOf(androidx.core.content.ContextCompat.getColor(requireContext(), com.cashbk.app.R.color.success))
@@ -368,7 +363,7 @@ class AddTransactionFragment : Fragment() {
             
             val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
-                .requestScopes(Scope(DriveScopes.DRIVE_FILE))
+                .requestScopes(Scope("https://www.googleapis.com/auth/drive.file"))
                 .build()
             val client = GoogleSignIn.getClient(requireActivity(), signInOptions)
             driveSignInLauncher.launch(client.signInIntent)
@@ -377,44 +372,30 @@ class AddTransactionFragment : Fragment() {
             executeFirebaseSave(closeAfterSave, "")
         }
     }
-
     private fun uploadToGoogleDrive(googleAccount: com.google.android.gms.auth.api.signin.GoogleSignInAccount) {
-        binding.saveButton.text = "Uploading..."
+        binding.saveButton.text = "Uploading Receipt..."
         
-        val credential = GoogleAccountCredential.usingOAuth2(requireContext(), listOf(DriveScopes.DRIVE_FILE))
-        credential.selectedAccount = googleAccount.account
-
-        val driveService = Drive.Builder(NetHttpTransport(), GsonFactory.getDefaultInstance(), credential)
-            .setApplicationName("CashBookBusiness")
-            .build()
+        val driveManager = GoogleDriveManager(requireContext(), googleAccount)
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val fileMetadata = File()
-                fileMetadata.name = "Receipt_${System.currentTimeMillis()}.jpg"
+                val fileName = capturedReceiptName.ifEmpty { "Receipt_${System.currentTimeMillis()}.jpg" }
 
-                val contentResolver = requireContext().contentResolver
-                val inputStream = contentResolver.openInputStream(receiptUri!!)
-                val mediaContent = InputStreamContent("image/jpeg", inputStream)
+                val webViewLink = driveManager.uploadFile(
+                    fileUri = receiptUri!!,
+                    fileName = fileName,
+                    folderName = "cashbook"
+                )
 
-                val uploadedFile = driveService.files().create(fileMetadata, mediaContent)
-                    .setFields("id, webViewLink")
-                    .execute()
-
-                // Set permission to anyone with link so partners can view
-                val permission = Permission().apply {
-                    type = "anyone"
-                    role = "reader"
-                }
-                driveService.permissions().create(uploadedFile.id, permission).execute()
-
-                val webViewLink = uploadedFile.webViewLink
-
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(requireContext(), "Uploaded to Google Drive!", Toast.LENGTH_SHORT).show()
-                    binding.saveButton.isEnabled = true
-                    binding.saveButton.text = "Confirm Transaction"
-                    executeFirebaseSave(pendingCloseAfterSave, webViewLink)
+                if (webViewLink != null) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(requireContext(), "Uploaded to Google Drive!", Toast.LENGTH_SHORT).show()
+                        binding.saveButton.isEnabled = true
+                        binding.saveButton.text = "Confirm Transaction"
+                        executeFirebaseSave(pendingCloseAfterSave, webViewLink)
+                    }
+                } else {
+                    throw Exception("Failed to get upload link")
                 }
 
             } catch (e: Exception) {
@@ -468,7 +449,8 @@ class AddTransactionFragment : Fragment() {
             categoryName = selectedCategoryName,
             partyId = partyId,
             partyName = selectedPartyName,
-            receiptUrl = finalReceiptUrl
+            receiptUrl = finalReceiptUrl,
+            receiptName = capturedReceiptName
         )
 
         transactionRef.setValue(transaction)
@@ -500,6 +482,7 @@ class AddTransactionFragment : Fragment() {
         
         // Reset Receipt
         receiptUri = null
+        capturedReceiptName = ""
         binding.tvAttachLabel.text = "ATTACH BILL / RECEIPT"
         binding.tvAttachLabel.setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), com.cashbk.app.R.color.gray))
         binding.ivAttachIcon.setImageResource(android.R.drawable.ic_menu_camera)
@@ -539,5 +522,26 @@ class AddTransactionFragment : Fragment() {
             binding.cashInButton.backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.TRANSPARENT)
             binding.cashInButton.setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), com.cashbk.app.R.color.gray))
         }
+    }
+
+    private fun getFileNameFromUri(uri: android.net.Uri): String? {
+        var result: String? = null
+        if (uri.scheme == "content") {
+            val cursor = requireContext().contentResolver.query(uri, null, null, null, null)
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    val index = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
+                    if (index != -1) result = cursor.getString(index)
+                }
+            } finally {
+                cursor?.close()
+            }
+        }
+        if (result == null) {
+            result = uri.path
+            val cut = result?.lastIndexOf('/') ?: -1
+            if (cut != -1) result = result?.substring(cut + 1)
+        }
+        return result
     }
 }

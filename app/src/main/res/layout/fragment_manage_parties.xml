@@ -38,7 +38,7 @@
                 android:fontFamily="@font/roboto_medium"
                 android:textSize="@dimen/_14ssp"
                 android:textColor="@android:color/white" />
-            
+
             <ImageButton
                 android:id="@+id/btnAddToolbar"
                 android:layout_width="@dimen/_40sdp"
@@ -90,13 +90,14 @@
 
                     <!-- Pill Search Bar -->
                     <LinearLayout
+                        android:id="@+id/ivSearchIconToolbar"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_48sdp"
                         android:background="@drawable/bg_input_field"
                         android:layout_marginTop="@dimen/_24sdp"
                         android:gravity="center_vertical"
                         android:paddingHorizontal="@dimen/_16sdp">
-                        
+
                         <ImageView
                             android:layout_width="@dimen/_20sdp"
                             android:layout_height="@dimen/_20sdp"
@@ -136,7 +137,7 @@
                     android:background="@drawable/bg_dashed_border"
                     android:clickable="true"
                     android:focusable="true">
-                    
+
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

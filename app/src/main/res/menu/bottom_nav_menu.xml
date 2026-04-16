@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/nav_payments"
-        android:icon="@drawable/ic_payment"
-        android:title="Payments" />
+
     <item
         android:id="@+id/nav_cashbooks"
         android:icon="@drawable/ic_book"
         android:title="Cashbooks" />
+
     <item
         android:id="@+id/nav_events"
         android:icon="@drawable/ic_event"
-        android:title="Settings" />
+        android:title="Events" />
+
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/ic_party_person"
+        android:title="Profile" />
+
     <item
         android:id="@+id/nav_settings"
         android:icon="@drawable/ic_settings"

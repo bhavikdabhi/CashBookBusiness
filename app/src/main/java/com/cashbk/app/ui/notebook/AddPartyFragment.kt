@@ -4,11 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.cashbk.app.R
 import com.cashbk.app.databinding.FragmentAddPartyBinding
@@ -21,26 +17,7 @@ class AddPartyFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var notebookId: String? = null
-    private var selectedRole: String = "CUSTOMER"   // default — matches reference
-
-    // Convenience holder for each role tile's views
-    private data class RoleTile(
-        val container: LinearLayout,
-        val icon: ImageView,
-        val label: TextView,
-        val roleKey: String
-    )
-
-    private val tiles by lazy {
-        listOf(
-            RoleTile(binding.roleVendor,     binding.ivVendorIcon,     binding.tvVendor,     "VENDOR"),
-            RoleTile(binding.roleCustomer,   binding.ivCustomerIcon,   binding.tvCustomer,   "CUSTOMER"),
-            RoleTile(binding.roleContractor, binding.ivContractorIcon, binding.tvContractor, "CONTRACTOR"),
-            RoleTile(binding.roleEmployee,   binding.ivEmployeeIcon,   binding.tvEmployee,   "EMPLOYEE")
-        )
-    }
-
-    // ─── Lifecycle ─────────────────────────────────────────────────────────────
+    private var selectedRole = "CUSTOMER" // Default as per screenshot
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,101 +31,101 @@ class AddPartyFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         notebookId = arguments?.getString("notebookId")
-        if (notebookId.isNullOrEmpty()) {
-            Toast.makeText(requireContext(), "Notebook configuration error", Toast.LENGTH_SHORT).show()
+        if (notebookId == null) {
+            Toast.makeText(requireContext(), "Notebook ID missing", Toast.LENGTH_SHORT).show()
             parentFragmentManager.popBackStack()
             return
         }
 
-        applyRoleHighlight(selectedRole)   // paint default selection
-        setupClickListeners()
+        setupRoleSelection()
+        
+        binding.btnBack.setOnClickListener { parentFragmentManager.popBackStack() }
+        binding.btnCancel.setOnClickListener { parentFragmentManager.popBackStack() }
+        binding.btnSave.setOnClickListener { saveParty() }
+        
+        binding.btnSelectContacts.setOnClickListener {
+            Toast.makeText(requireContext(), "Contact integration coming soon", Toast.LENGTH_SHORT).show()
+        }
     }
 
-    // ─── Listeners ─────────────────────────────────────────────────────────────
+    private fun setupRoleSelection() {
+        val roleMap = mapOf(
+            binding.btnRoleVendor to "VENDOR",
+            binding.btnRoleCustomer to "CUSTOMER",
+            binding.btnRoleContractor to "CONTRACTOR",
+            binding.btnRoleEmployee to "EMPLOYEE"
+        )
 
-    private fun setupClickListeners() {
-
-        // Navigation
-        binding.btnBack.setOnClickListener   { parentFragmentManager.popBackStack() }
-        binding.btnCancel.setOnClickListener { parentFragmentManager.popBackStack() }
-
-        // Contacts chip
-        binding.chipSelectContact.setOnClickListener {
-            Toast.makeText(requireContext(), "Contact picker coming soon", Toast.LENGTH_SHORT).show()
-        }
-
-        // Role tiles
-        tiles.forEach { tile ->
-            tile.container.setOnClickListener {
-                selectedRole = tile.roleKey
-                applyRoleHighlight(selectedRole)
+        roleMap.forEach { (view, role) ->
+            view.setOnClickListener {
+                selectedRole = role
+                updateRoleUI()
             }
         }
-
-        // Save
-        binding.btnSave.setOnClickListener { saveParty() }
+        updateRoleUI() // Initial state
     }
 
-    // ─── Role highlighting ──────────────────────────────────────────────────────
+    private fun updateRoleUI() {
+        val roleViews = listOf(
+            binding.btnRoleVendor,
+            binding.btnRoleCustomer,
+            binding.btnRoleContractor,
+            binding.btnRoleEmployee
+        )
 
-    private fun applyRoleHighlight(activeRole: String) {
-        tiles.forEach { tile ->
-            val selected = tile.roleKey == activeRole
+        val selectedView = when (selectedRole) {
+            "VENDOR" -> binding.btnRoleVendor
+            "CUSTOMER" -> binding.btnRoleCustomer
+            "CONTRACTOR" -> binding.btnRoleContractor
+            "EMPLOYEE" -> binding.btnRoleEmployee
+            else -> binding.btnRoleCustomer
+        }
 
-            tile.container.background = ContextCompat.getDrawable(
-                requireContext(),
-                if (selected) R.drawable.bg_role_button_selected
-                else          R.drawable.bg_role_button_default
-            )
-
-            val iconColor = ContextCompat.getColor(
-                requireContext(),
-                if (selected) R.color.auth_bg              // dark colour on glowing bg
-                else          R.color.stitch_on_surface_variant
-            )
-            tile.icon.setColorFilter(iconColor)
-
-            val textColor = ContextCompat.getColor(
-                requireContext(),
-                if (selected) R.color.auth_bg
-                else          R.color.stitch_on_surface_variant
-            )
-            tile.label.setTextColor(textColor)
+        roleViews.forEach { view ->
+            if (view == selectedView) {
+                view.setBackgroundResource(R.drawable.bg_role_selected)
+            } else {
+                view.setBackgroundResource(R.drawable.bg_role_card)
+            }
         }
     }
 
-    // ─── Save ──────────────────────────────────────────────────────────────────
-
     private fun saveParty() {
-        val name    = binding.etPartyName.text.toString().trim()
+        val name = binding.etName.text.toString().trim()
         val contact = binding.etContact.text.toString().trim()
 
         if (name.isEmpty()) {
-            binding.etPartyName.error = "Full name is required"
+            Toast.makeText(requireContext(), "Full name is required", Toast.LENGTH_SHORT).show()
             return
         }
-        binding.etPartyName.error = null
 
         binding.btnSave.isEnabled = false
-
-        val db = FirebaseDatabase.getInstance().reference
-            .child("parties")
-            .child(notebookId!!)
-        val partyId = db.push().key ?: ""
+        val database = FirebaseDatabase.getInstance().reference.child("parties").child(notebookId!!)
+        val partyId = database.push().key ?: ""
 
         val party = Party(
-            id          = partyId,
-            name        = name,
-            role        = selectedRole,
-            contact     = contact,
-            email       = "",
-            priorityTag = "GENERAL"
+            id = partyId,
+            name = name,
+            contact = contact,
+            role = selectedRole,
+            colorHex = "#80DEEA", // Keep default color or map from role
+            iconResName = when(selectedRole) {
+                "VENDOR" -> "ic_party_shop"
+                "CUSTOMER" -> "ic_party_person"
+                "CONTRACTOR" -> "ic_party_tool"
+                "EMPLOYEE" -> "ic_party_employee"
+                else -> "ic_party_person"
+            }
         )
 
-        db.child(partyId).setValue(party)
+        database.child(partyId).setValue(party)
             .addOnSuccessListener {
-                Toast.makeText(requireContext(), "Partner added successfully", Toast.LENGTH_SHORT).show()
-                parentFragmentManager.popBackStack()
+                val context = context ?: return@addOnSuccessListener
+                Toast.makeText(context, "Partner created successfully!", Toast.LENGTH_SHORT).show()
+                
+                if (isAdded && !parentFragmentManager.isStateSaved) {
+                    parentFragmentManager.popBackStack()
+                }
             }
             .addOnFailureListener { e ->
                 binding.btnSave.isEnabled = true
