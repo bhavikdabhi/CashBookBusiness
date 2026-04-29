@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.cashbk.app.fragment.EditProfileBottomSheet
 import com.cashbk.app.R
 import com.cashbk.app.databinding.FragmentProfileBinding
 import com.cashbk.app.dataclass.User
@@ -91,8 +92,15 @@ class ProfileFragment : Fragment() {
             binding.btnEditProfile.performClick()
         }
 
+        
         binding.icProfileEdit.setOnClickListener {
-            binding.btnEditProfile.performClick()
+            val bottomSheet = EditProfileBottomSheet(
+                currentUser?.name,
+                currentUser?.phone
+            ) { newName, newPhone ->
+                performProfileUpdate(newName, newPhone)
+            }
+            bottomSheet.show(parentFragmentManager, "EditProfileBottomSheet")
         }
 
         binding.btnSignOut.setOnClickListener {
@@ -249,6 +257,72 @@ class ProfileFragment : Fragment() {
             .addOnSuccessListener {
                 Toast.makeText(requireContext(), "Profile updated successfully", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    private fun performProfileUpdate(newName: String, newPhone: String) {
+        val uid = auth.currentUser?.uid ?: return
+        val currentPhone = currentUser?.phone
+
+        // 1. Check if the new phone is already registered to a DIFFERENT user
+        database.child("users").orderByChild("phone").equalTo(newPhone)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    var otherUid: String? = null
+                    for (child in snapshot.children) {
+                        if (child.key != uid) {
+                            otherUid = child.key
+                            break
+                        }
+                    }
+
+                    if (otherUid != null) {
+                        // Conflict! Perform Reverse Merge (Move Other UID's data to Current UID)
+                        migrateData(otherUid, uid, newName, newPhone)
+                    } else {
+                        // No conflict, safe update
+                        val updates = mapOf(
+                            "name" to newName,
+                            "phone" to newPhone
+                        )
+                        database.child("users").child(uid).updateChildren(updates)
+                            .addOnSuccessListener {
+                                Toast.makeText(requireContext(), "Profile updated successfully", Toast.LENGTH_SHORT).show()
+                            }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(requireContext(), "Update failed: ${error.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
+    private fun migrateData(fromUid: String, toUid: String, newName: String, newPhone: String) {
+        Toast.makeText(requireContext(), "Merging data from existing record...", Toast.LENGTH_LONG).show()
+
+        // 1. Update existing businesses ownership
+        database.child("businesses").orderByChild("ownerId").equalTo(fromUid)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val batchUpdates = mutableMapOf<String, Any?>()
+                    for (child in snapshot.children) {
+                        batchUpdates["businesses/${child.key}/ownerId"] = toUid
+                    }
+
+                    // 2. Clear old phone record and Update current user in one go
+                    batchUpdates["users/$fromUid/phone"] = ""
+                    batchUpdates["users/$toUid/name"] = newName
+                    batchUpdates["users/$toUid/phone"] = newPhone
+
+                    database.updateChildren(batchUpdates).addOnSuccessListener {
+                        Toast.makeText(requireContext(), "Account merged and updated successfully", Toast.LENGTH_LONG).show()
+                    }.addOnFailureListener {
+                        Toast.makeText(requireContext(), "Merge failed: ${it.message}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {}
+            })
     }
 
     fun updateBusinessId(businessId: String?) {

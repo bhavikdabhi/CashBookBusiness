@@ -70,20 +70,20 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- SAVE BUTTON -->
-    <com.google.android.material.button.MaterialButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/save_party_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_48sdp"
         android:layout_marginTop="@dimen/_20sdp"
-        android:fontFamily="@font/roboto_bold"
         android:textFontWeight="600"
         android:text="Save"
+        android:fontFamily="@font/roboto_bold"
+        android:textSize="@dimen/_13ssp"
+        android:textColor="@color/auth_bg"
         android:textAllCaps="false"
-        android:textSize="@dimen/_14ssp"
-        android:textColor="@color/text_color"
-        app:backgroundTint="@color/primary_color"
-        app:cornerRadius="@dimen/_12sdp"
-        style="@style/Widget.MaterialComponents.Button" />
+        android:elevation="@dimen/_16sdp"
+        android:background="@drawable/bg_gradient_button"
+        app:cornerRadius="@dimen/_12sdp" />
 
     <!-- CANCEL -->
     <com.google.android.material.button.MaterialButton
@@ -94,6 +94,7 @@
         android:layout_marginTop="@dimen/_10sdp"
         android:textColor="@color/text_color"
         android:textSize="@dimen/_12ssp"
+        android:textAllCaps="false"
         style="@style/Widget.MaterialComponents.Button.TextButton" />
 
 </LinearLayout>

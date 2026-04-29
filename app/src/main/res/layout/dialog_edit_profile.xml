@@ -8,83 +8,93 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/_16sdp"
+        android:padding="@dimen/_20sdp"
         android:orientation="vertical"
         android:background="@drawable/bg_glass_card"
         android:elevation="@dimen/_6sdp"
         android:clipToOutline="true">
 
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add New Member"
-        android:textSize="@dimen/_16ssp"
-        android:textStyle="bold"
-        android:fontFamily="@font/roboto_medium"
-        android:textFontWeight="600"
-        android:layout_marginBottom="@dimen/_12sdp"/>
 
-    <com.google.android.material.textfield.TextInputLayout
+    <TextView
+        android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="Edit Profile"
+        android:fontFamily="@font/roboto_medium"
+        android:textFontWeight="600"
+        android:textColor="@color/text_color"
+        android:textSize="@dimen/_16ssp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:paddingBottom="@dimen/_10sdp"  />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_name"
         style="@style/GlassInput"
-        android:hint="Phone Number (10 digits)"
-        android:layout_marginBottom="@dimen/_12sdp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Full Name"
         android:textColorHint="@color/gray">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etMemberPhone"
+            android:id="@+id/et_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/text_color"
+            android:inputType="textPersonName"
+            android:textSize="@dimen/_12ssp"
             android:fontFamily="@font/roboto_regular"
             android:textFontWeight="600"
-            android:textSize="@dimen/_12ssp"
-            android:inputType="phone"
-            android:maxLength="10"/>
-
+            />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilRole"
-        style="@style/GlassInput.ExposedDropdownMenu"
-        app:boxCornerRadiusTopStart="12dp"
-        app:boxCornerRadiusTopEnd="12dp"
-        app:boxCornerRadiusBottomStart="12dp"
-        app:boxCornerRadiusBottomEnd="12dp"
+        android:id="@+id/til_phone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Select Role"
-        android:layout_marginBottom="@dimen/_12sdp"
-        android:textColorHint="@color/gray">
+        android:inputType="phone"
+        android:layout_marginTop="@dimen/_14sdp"
+        android:fontFamily="@font/roboto_regular"
+        android:textFontWeight="600"
+        android:textSize="@dimen/_12ssp"
+        android:textColor="@color/text_color"
+        android:hint="Phone Number"
+        style="@style/GlassInput"
+        android:textColorHint="@color/gray" >
 
-        <AutoCompleteTextView
-            android:id="@+id/actvRole"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_color"
             android:fontFamily="@font/roboto_regular"
-            android:textFontWeight="600"
-            android:textSize="@dimen/_12ssp"
-            android:inputType="none"/>
-
+            android:inputType="phone"
+            android:maxLength="10"
+            android:textColor="@color/white" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnAddMember"
-        android:layout_marginTop="@dimen/_20sdp"
-        android:textFontWeight="600"
-        android:text="Add Member"
-        android:textAllCaps="false"
-        android:textSize="@dimen/_14ssp"
+        android:id="@+id/btn_update"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_45sdp"
+        android:layout_marginTop="@dimen/_24sdp"
+        android:text="Update Profile"
         android:fontFamily="@font/roboto_bold"
+        android:textSize="@dimen/_13ssp"
         android:textColor="@color/auth_bg"
+        android:textAllCaps="false"
         android:elevation="@dimen/_16sdp"
         android:background="@drawable/bg_gradient_button"
         app:cornerRadius="@dimen/_12sdp" />
 
-</LinearLayout>
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/btn_update"
+        app:layout_constraintEnd_toEndOf="@id/btn_update"
+        app:layout_constraintStart_toStartOf="@id/btn_update"
+        app:layout_constraintTop_toTopOf="@id/btn_update" />
+
+    </LinearLayout>
 </FrameLayout>

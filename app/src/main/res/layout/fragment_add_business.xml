@@ -48,20 +48,20 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Save -->
-        <com.google.android.material.button.MaterialButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnSaveBusiness"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_48sdp"
-            android:layout_marginTop="@dimen/_20sdp"
-            android:fontFamily="@font/roboto_bold"
             android:textFontWeight="600"
             android:textSize="@dimen/_14ssp"
             android:text="Save"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_45sdp"
+            android:layout_marginTop="@dimen/_24sdp"
+            android:fontFamily="@font/roboto_bold"
+            android:textColor="@color/auth_bg"
             android:textAllCaps="false"
-            android:textColor="@color/text_color"
-            app:backgroundTint="@color/primary_color"
-            app:cornerRadius="@dimen/_12sdp"
-            style="@style/Widget.MaterialComponents.Button" />
+            android:elevation="@dimen/_16sdp"
+            android:background="@drawable/bg_gradient_button"
+            app:cornerRadius="@dimen/_12sdp" />
 
         <!-- Cancel -->
         <com.google.android.material.button.MaterialButton

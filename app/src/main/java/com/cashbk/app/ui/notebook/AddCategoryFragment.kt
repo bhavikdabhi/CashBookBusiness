@@ -170,8 +170,11 @@ class AddCategoryFragment : Fragment() {
 
         iconOptions.forEach { iconName ->
             val frame = FrameLayout(context)
-            val params = GridLayout.LayoutParams()
-            params.width = (context.resources.displayMetrics.density * 72).toInt()
+            val params = GridLayout.LayoutParams(
+                GridLayout.spec(GridLayout.UNDEFINED),
+                GridLayout.spec(GridLayout.UNDEFINED, 1f)
+            )
+            params.width = 0
             params.height = size
             params.setMargins(margin, margin, margin, margin)
             frame.layoutParams = params

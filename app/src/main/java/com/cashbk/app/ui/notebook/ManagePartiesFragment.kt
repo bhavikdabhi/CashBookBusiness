@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cashbk.app.R
 import com.cashbk.app.adapter.PartyAdapter
-import com.cashbk.app.databinding.DialogAddEntityBinding
 import com.cashbk.app.databinding.FragmentManagePartiesBinding
 import com.cashbk.app.dataclass.Party
 import com.google.firebase.database.*

@@ -37,19 +37,47 @@
                 android:layout_marginStart="12dp"
                 android:layout_toEndOf="@id/btnBack"
                 android:fontFamily="@font/roboto_bold"
-                android:text="Ethereal Ledger"
+                android:text="NotebookName"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
 
-            <com.google.android.material.imageview.ShapeableImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+<!--            <com.google.android.material.imageview.ShapeableImageView-->
+<!--                android:id="@+id/iv_profile"-->
+<!--                android:layout_width="32dp"-->
+<!--                android:layout_height="32dp"-->
+<!--                android:layout_alignParentEnd="true"-->
+<!--                android:layout_centerVertical="true"-->
+<!--                android:src="@drawable/ic_default_avtar"-->
+<!--                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"-->
+<!--                app:strokeColor="@color/glass_border"-->
+<!--                app:strokeWidth="1dp" />-->
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_profile_pic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/ic_default_avtar"
-                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
-                app:strokeColor="@color/glass_border"
-                app:strokeWidth="1dp" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/iv_profile"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:padding="2dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_default_avtar"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:shapeAppearanceOverlay="@style/CircleImageView"
+                    app:strokeColor="@color/auth_glow_1"
+                    app:strokeWidth="2dp" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </RelativeLayout>
 
         <ScrollView
@@ -57,40 +85,40 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:clipToPadding="false"
-            android:paddingBottom="24dp">
+            android:paddingBottom="@dimen/_24sdp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingHorizontal="24dp">
+                android:paddingHorizontal="@dimen/_16sdp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="@dimen/_16sdp"
                     android:fontFamily="@font/roboto_bold"
                     android:text="Create Category"
                     android:textColor="@color/white"
-                    android:textSize="32sp" />
+                    android:textSize="@dimen/_16ssp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="@dimen/_6sdp"
                     android:alpha="0.6"
                     android:fontFamily="@font/roboto_regular"
                     android:text="Define a new bucket for your financial momentum."
                     android:textColor="@color/white"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/_12ssp" />
 
                 <!-- CATEGORY NAME & TYPE CARD -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="@dimen/_20sdp"
                     app:cardBackgroundColor="@color/card_bg"
-                    app:cardCornerRadius="24dp"
+                    app:cardCornerRadius="@dimen/_16sdp"
                     app:strokeColor="@color/glass_border"
                     app:strokeWidth="1dp">
 
@@ -98,44 +126,45 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="20dp">
+                        android:padding="@dimen/_16sdp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto_medium"
-                            android:text="CATEGORY NAME"
+                            android:letterSpacing="0.1"
+                            android:text="Category Name"
                             android:textColor="@color/text_disabled"
-                            android:textSize="12sp"
-                            android:letterSpacing="0.1" />
+                            android:textSize="@dimen/_12ssp" />
 
                         <EditText
                             android:id="@+id/etCategoryName"
                             android:layout_width="match_parent"
-                            android:layout_height="56dp"
-                            android:layout_marginTop="12dp"
+                            android:layout_height="@dimen/_40sdp"
+                            android:layout_marginTop="@dimen/_12sdp"
                             android:background="@drawable/bg_glass_field"
                             android:fontFamily="@font/roboto_regular"
                             android:hint="e.g. Marketing, Rent, Coffee"
                             android:inputType="textCapWords"
-                            android:paddingHorizontal="16dp"
+                            android:paddingHorizontal="@dimen/_16sdp"
                             android:textColor="@color/white"
-                            android:textColorHint="@color/gray" />
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/_12ssp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="24dp"
+                            android:layout_marginTop="@dimen/_12sdp"
                             android:fontFamily="@font/roboto_medium"
-                            android:text="TRANSACTION TYPE"
+                            android:letterSpacing="0.1"
+                            android:text="Transaction Type"
                             android:textColor="@color/text_disabled"
-                            android:textSize="12sp"
-                            android:letterSpacing="0.1" />
+                            android:textSize="@dimen/_12ssp" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="56dp"
-                            android:layout_marginTop="12dp"
+                            android:layout_height="@dimen/_35sdp"
+                            android:layout_marginTop="@dimen/_10sdp"
                             android:orientation="horizontal">
 
                             <com.google.android.material.button.MaterialButton
@@ -149,7 +178,7 @@
                                 android:insetBottom="0dp"
                                 android:text="Income"
                                 android:textColor="@color/white"
-                                app:cornerRadius="16dp"
+                                app:cornerRadius="@dimen/_14sdp"
                                 app:icon="@drawable/ic_type_income"
                                 app:iconGravity="textStart"
                                 app:iconTint="@null"
@@ -167,7 +196,7 @@
                                 android:insetBottom="0dp"
                                 android:text="Expense"
                                 android:textColor="@color/danger"
-                                app:cornerRadius="16dp"
+                                app:cornerRadius="@dimen/_14sdp"
                                 app:icon="@drawable/ic_type_expense"
                                 app:iconGravity="textStart"
                                 app:iconTint="@null"
@@ -181,9 +210,9 @@
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="@dimen/_12sdp"
                     app:cardBackgroundColor="@color/card_bg"
-                    app:cardCornerRadius="24dp"
+                    app:cardCornerRadius="@dimen/_16sdp"
                     app:strokeColor="@color/glass_border"
                     app:strokeWidth="1dp">
 
@@ -191,24 +220,25 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="20dp">
+                        android:padding="@dimen/_16sdp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto_medium"
-                            android:text="AESTHETIC TINT"
+                            android:letterSpacing="0.1"
+                            android:text="Aesthetic Tint"
                             android:textColor="@color/text_disabled"
-                            android:textSize="12sp"
-                            android:letterSpacing="0.1" />
+                            android:textSize="@dimen/_12ssp" />
 
                         <GridLayout
                             android:id="@+id/colorGrid"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
+                            android:layout_marginTop="@dimen/_10sdp"
                             android:columnCount="5"
                             android:useDefaultMargins="true" />
+
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -216,9 +246,9 @@
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="@dimen/_12sdp"
                     app:cardBackgroundColor="@color/card_bg"
-                    app:cardCornerRadius="24dp"
+                    app:cardCornerRadius="@dimen/_16sdp"
                     app:strokeColor="@color/glass_border"
                     app:strokeWidth="1dp">
 
@@ -226,24 +256,25 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="20dp">
+                        android:padding="@dimen/_12sdp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto_medium"
-                            android:text="FINANCIAL GLYPH"
+                            android:letterSpacing="0.1"
+                            android:text="Financial Glyph"
                             android:textColor="@color/text_disabled"
-                            android:textSize="12sp"
-                            android:letterSpacing="0.1" />
+                            android:textSize="@dimen/_12ssp" />
 
                         <GridLayout
                             android:id="@+id/iconGrid"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
+                            android:layout_marginTop="@dimen/_12ssp"
                             android:columnCount="4"
                             android:useDefaultMargins="true" />
+
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -253,13 +284,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_45sdp"
                     android:layout_marginTop="@dimen/_20sdp"
+                    android:background="@drawable/bg_gradient_button"
+                    android:elevation="@dimen/_16sdp"
                     android:fontFamily="@font/roboto_bold"
-                    android:text="CREATE CATEGORY"
-                    android:textColor="@color/stitch_background"
+                    android:text="Create Category"
+                    android:textAllCaps="false"
+                    android:textColor="@color/auth_bg"
+                    android:textSize="@dimen/_14ssp"
                     app:backgroundTint="@null"
-                    app:cornerRadius="16dp"
-                    app:rippleColor="@color/white" />
+                    app:cornerRadius="@dimen/_12sdp"
+                    app:rippleColor="@null" />
             </LinearLayout>
+
         </ScrollView>
 
         <!-- Save Button Area -->

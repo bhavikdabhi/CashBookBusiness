@@ -31,19 +31,23 @@
         android:maxHeight="@dimen/_400sdp"
         android:layout_marginBottom="@dimen/_8sdp"/>
 
-    <com.google.android.material.button.MaterialButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_add_new_business"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/_16sdp"
-        android:fontFamily="@font/roboto_bold"
         android:textFontWeight="600"
-        android:textSize="@dimen/_12ssp"
         android:text="+ ADD NEW BUSINESS"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/primary_color"
+        android:padding="@dimen/_12sdp"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_45sdp"
+        android:layout_marginTop="@dimen/_24sdp"
+        android:fontFamily="@font/roboto_bold"
+        android:textSize="@dimen/_13ssp"
+        android:textColor="@color/auth_bg"
+        android:textAllCaps="false"
+        android:elevation="@dimen/_16sdp"
+        android:background="@drawable/bg_gradient_button"
         app:cornerRadius="@dimen/_12sdp"
-        android:padding="@dimen/_12sdp"/>
+        />
 
 </LinearLayout>
 </FrameLayout>

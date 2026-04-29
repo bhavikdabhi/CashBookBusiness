@@ -129,7 +129,7 @@ class MembersActivity : AppCompatActivity() {
 
     private fun showAddMemberDialog() {
         val dialogBinding = DialogAddMemberBinding.inflate(layoutInflater)
-        val dialog = AlertDialog.Builder(this)
+        val dialog = com.google.android.material.dialog.MaterialAlertDialogBuilder(this, R.style.CashbkAlertDialog)
             .setView(dialogBinding.root)
             .create()
 
@@ -154,7 +154,7 @@ class MembersActivity : AppCompatActivity() {
                 else -> it
             }
         }
-        val adapter = android.widget.ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, roleDisplayNames)
+        val adapter = android.widget.ArrayAdapter(this, R.layout.item_dropdown, roleDisplayNames)
         dialogBinding.actvRole.setAdapter(adapter)
 
         // Select default

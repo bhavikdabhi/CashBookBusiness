@@ -32,6 +32,17 @@
         <item name="android:textColor">@color/text_color</item>
     </style>
 
+    <style name="GlassInput.ExposedDropdownMenu" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="boxBackgroundColor">@color/card_bg</item>
+        <item name="boxStrokeColor">@color/glass_border</item>
+        <item name="boxCornerRadiusTopStart">14dp</item>
+        <item name="boxCornerRadiusTopEnd">14dp</item>
+        <item name="boxCornerRadiusBottomStart">14dp</item>
+        <item name="boxCornerRadiusBottomEnd">14dp</item>
+        <item name="hintTextColor">@color/text_color</item>
+        <item name="android:textColor">@color/text_color</item>
+    </style>
+
 
     <style name="PopupMenuTheme" parent="ThemeOverlay.Material3.Light">
         <item name="popupMenuBackground">@drawable/bg_popup_menu</item>
@@ -74,7 +85,5 @@
         <item name="android:textColor">@color/text_color</item>
         <item name="colorPrimary">@color/primary_color</item>
     </style>
-
-
 
 </resources>
