@@ -26,7 +26,7 @@
                 android:layout_gravity="center_vertical"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_back"
-                app:tint="@color/stitch_primary"
+                app:tint="@color/white"
                 android:padding="@dimen/_8sdp" />
 
             <TextView
@@ -35,19 +35,20 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="Business Finance"
-                android:fontFamily="@font/roboto_medium"
-                android:textSize="@dimen/_14ssp"
+                android:fontFamily="@font/roboto_bold"
+                android:textSize="@dimen/_16ssp"
                 android:textColor="@android:color/white" />
             
-            <ImageButton
-                android:id="@+id/btnToolbarAdd"
-                android:layout_width="@dimen/_40sdp"
-                android:layout_height="@dimen/_40sdp"
-                android:layout_gravity="center_vertical|end"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_add"
-                app:tint="@android:color/white"
-                android:padding="@dimen/_8sdp" />
+<!--            <ImageButton-->
+<!--                android:id="@+id/btnToolbarAdd"-->
+<!--                android:layout_width="@dimen/_40sdp"-->
+<!--                android:layout_height="@dimen/_40sdp"-->
+<!--                android:layout_gravity="center_vertical|end"-->
+<!--                android:background="?attr/selectableItemBackgroundBorderless"-->
+<!--                android:src="@drawable/ic_add"-->
+<!--                app:tint="@android:color/white"-->
+<!--                android:padding="@dimen/_8sdp" />-->
+
         </FrameLayout>
 
         <androidx.core.widget.NestedScrollView
@@ -68,14 +69,14 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:paddingHorizontal="@dimen/_20sdp"
-                    android:layout_marginTop="@dimen/_16sdp">
+                    android:layout_marginTop="@dimen/_12sdp">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Edit Categories"
+                        android:text="Manage Categories"
                         android:fontFamily="@font/roboto_bold"
-                        android:textSize="@dimen/_28ssp"
+                        android:textSize="@dimen/_16ssp"
                         android:textColor="@android:color/white" />
 
                     <TextView
@@ -84,17 +85,19 @@
                         android:text="Organize your financial flow by managing transaction categories. These will be reflected across your momentum reports."
                         android:fontFamily="@font/roboto_regular"
                         android:textSize="@dimen/_12ssp"
-                        android:textColor="@color/stitch_on_surface_variant"
-                        android:layout_marginTop="@dimen/_12sdp"
+                        android:textColor="@color/auth_text_light"
+                        android:layout_marginTop="@dimen/_6sdp"
                         android:lineSpacingExtra="2dp" />
 
                     <!-- Search + Create Box -->
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardBackgroundColor="#0DFFFFFF"
+                        app:cardBackgroundColor="@color/card_bg"
                         app:cardElevation="0dp"
-                        app:cardCornerRadius="@dimen/_16sdp"
+                        app:cardCornerRadius="@dimen/_12sdp"
+                        app:strokeColor="@color/card_bg"
+                        app:strokeWidth="1dp"
                         android:layout_marginTop="@dimen/_24sdp"
                         android:padding="@dimen/_12sdp">
                         
@@ -102,12 +105,12 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:padding="@dimen/_12sdp">
+                            android:padding="@dimen/_8sdp">
                             
                             <!-- Search -->
                             <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/_36sdp"
+                                android:layout_height="@dimen/_45sdp"
                                 android:background="@drawable/bg_input_field"
                                 android:orientation="horizontal"
                                 android:gravity="center_vertical"
@@ -131,30 +134,41 @@
                             </LinearLayout>
 
                             <!-- Create Button -->
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnCreateCategory"
-                                style="@style/Widget.App.Button.Gradient"
-                                android:layout_width="match_parent"
-                                android:layout_height="@dimen/_42sdp"
-                                android:layout_marginTop="@dimen/_12sdp"
-                                android:text="+ Create Category"
-                                android:textAllCaps="false"
-                                android:fontFamily="@font/roboto_medium"
-                                app:backgroundTint="@null" />
+<!--                            <com.google.android.material.button.MaterialButton-->
+<!--                                android:id="@+id/btnCreateCategory"-->
+<!--                                style="@style/Widget.App.Button.Gradient"-->
+<!--                                android:layout_marginTop="@dimen/_12sdp"-->
+<!--                                android:text="+ Create Category"-->
+<!--                                android:textAllCaps="false"-->
+<!--                                android:fontFamily="@font/roboto_medium"-->
+<!--                                app:backgroundTint="@null"-->
+<!--                                android:layout_width="match_parent"-->
+<!--                                android:layout_height="@dimen/_45sdp"-->
+<!--                                android:background="@drawable/bg_gradient_button"-->
+<!--                                android:elevation="@dimen/_16sdp"-->
+<!--                                android:textColor="@color/auth_bg"-->
+<!--                                android:textSize="@dimen/_14ssp"-->
+<!--                                app:cornerRadius="@dimen/_12sdp"-->
+<!--                                app:rippleColor="@null"-->
+
+<!--                                />-->
+<!--                      -->
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
+
                 </LinearLayout>
 
                 <!-- List Section -->
+
+                <!-- Add New Category Placeholder -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvCategories"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="false"
                     android:layout_marginTop="@dimen/_8sdp"
+                    android:nestedScrollingEnabled="false"
                     tools:listitem="@layout/item_category_premium" />
 
-                <!-- Add New Category Placeholder -->
                 <FrameLayout
                     android:id="@+id/btnAddPlaceholder"
                     android:layout_width="match_parent"
@@ -171,17 +185,18 @@
                         android:orientation="vertical"
                         android:layout_gravity="center"
                         android:gravity="center">
+
                         <ImageView
                             android:layout_width="@dimen/_24sdp"
                             android:layout_height="@dimen/_24sdp"
                             android:src="@drawable/ic_add"
-                            app:tint="@color/stitch_on_surface_variant" />
+                            app:tint="@color/auth_text_light" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Add New Category"
                             android:fontFamily="@font/roboto_medium"
-                            android:textColor="@color/stitch_on_surface_variant"
+                            android:textColor="@color/auth_text_light"
                             android:layout_marginTop="@dimen/_8sdp" />
                     </LinearLayout>
                 </FrameLayout>
@@ -192,5 +207,17 @@
         </androidx.core.widget.NestedScrollView>
 
     </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnCreateCategory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/_24sdp"
+        android:src="@drawable/ic_add"
+        app:tint="@color/auth_bg"
+        app:backgroundTint="@color/auth_glow_2"
+        app:elevation="@dimen/_6sdp"
+        android:contentDescription="Create Category" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

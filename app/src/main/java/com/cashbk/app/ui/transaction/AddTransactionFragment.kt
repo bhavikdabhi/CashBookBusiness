@@ -64,6 +64,7 @@ class AddTransactionFragment : Fragment() {
         if (result.resultCode == android.app.Activity.RESULT_OK) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
             task.addOnSuccessListener { account ->
+                saveGoogleDriveEmail(account.email)
                 uploadToGoogleDrive(account)
             }.addOnFailureListener {
                 Toast.makeText(requireContext(), "Drive Authorization Failed", Toast.LENGTH_SHORT).show()
@@ -361,15 +362,38 @@ class AddTransactionFragment : Fragment() {
             binding.saveButton.isEnabled = false
             binding.saveButton.text = "Connecting to Drive..."
             
-            val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .requestScopes(Scope("https://www.googleapis.com/auth/drive.file"))
-                .build()
-            val client = GoogleSignIn.getClient(requireActivity(), signInOptions)
-            driveSignInLauncher.launch(client.signInIntent)
+            val uid = auth.currentUser?.uid ?: return
+            FirebaseDatabase.getInstance().reference.child("users").child(uid).child("googleDriveEmail").get()
+                .addOnSuccessListener { snapshot ->
+                    val driveEmail = snapshot.getValue(String::class.java)
+                    val builder = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestEmail()
+                        .requestScopes(Scope("https://www.googleapis.com/auth/drive.file"))
+                    if (!driveEmail.isNullOrEmpty()) {
+                        builder.setAccountName(driveEmail)
+                    }
+                    val signInOptions = builder.build()
+                    val client = GoogleSignIn.getClient(requireActivity(), signInOptions)
+                    driveSignInLauncher.launch(client.signInIntent)
+                }
+                .addOnFailureListener {
+                    val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestEmail()
+                        .requestScopes(Scope("https://www.googleapis.com/auth/drive.file"))
+                        .build()
+                    val client = GoogleSignIn.getClient(requireActivity(), signInOptions)
+                    driveSignInLauncher.launch(client.signInIntent)
+                }
         } else {
             // No receipt, save directly to Firebase
             executeFirebaseSave(closeAfterSave, "")
+        }
+    }
+
+    private fun saveGoogleDriveEmail(email: String?) {
+        val uid = auth.currentUser?.uid ?: return
+        if (email != null) {
+            FirebaseDatabase.getInstance().reference.child("users").child(uid).child("googleDriveEmail").setValue(email)
         }
     }
     private fun uploadToGoogleDrive(googleAccount: com.google.android.gms.auth.api.signin.GoogleSignInAccount) {
@@ -384,7 +408,7 @@ class AddTransactionFragment : Fragment() {
                 val webViewLink = driveManager.uploadFile(
                     fileUri = receiptUri!!,
                     fileName = fileName,
-                    folderName = "cashbook"
+                    folderName = "Receipt"
                 )
 
                 if (webViewLink != null) {

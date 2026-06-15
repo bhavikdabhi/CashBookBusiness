@@ -39,6 +39,8 @@ class CashbooksFragment : Fragment() {
     private lateinit var notebookAdapter: NotebookAdapter
     private val notebookList = mutableListOf<Notebook>()
     private var currentBusinessId: String? = null
+    private var notebooksQuery: Query? = null
+    private var notebooksListener: ValueEventListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -70,35 +72,37 @@ class CashbooksFragment : Fragment() {
 
     private fun fetchNotebooks() {
         val id = currentBusinessId ?: return
-        database.orderByChild("businessId").equalTo(id)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    notebookList.clear()
-                    if (snapshot.exists()) {
-                        for (notebookSnapshot in snapshot.children) {
-                            val notebook = notebookSnapshot.getValue(Notebook::class.java)
-                            notebook?.id = notebookSnapshot.key.orEmpty()
-                            notebook?.let { notebookList.add(it) }
-                        }
-                    }
-                    if (isAdded) {
-                         notebookAdapter.notifyDataSetChanged()
-                         if (notebookList.isEmpty()) {
-                             binding.layoutEmpty.visibility = View.VISIBLE
-                             binding.notebooksRecyclerView.visibility = View.GONE
-                         } else {
-                             binding.layoutEmpty.visibility = View.GONE
-                             binding.notebooksRecyclerView.visibility = View.VISIBLE
-                         }
+        notebooksListener?.let { notebooksQuery?.removeEventListener(it) }
+        
+        notebooksQuery = database.orderByChild("businessId").equalTo(id)
+        notebooksListener = notebooksQuery?.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                notebookList.clear()
+                if (snapshot.exists()) {
+                    for (notebookSnapshot in snapshot.children) {
+                        val notebook = notebookSnapshot.getValue(Notebook::class.java)
+                        notebook?.id = notebookSnapshot.key.orEmpty()
+                        notebook?.let { notebookList.add(it) }
                     }
                 }
+                if (isAdded) {
+                     notebookAdapter.notifyDataSetChanged()
+                     if (notebookList.isEmpty()) {
+                         binding.layoutEmpty.visibility = View.VISIBLE
+                         binding.notebooksRecyclerView.visibility = View.GONE
+                     } else {
+                         binding.layoutEmpty.visibility = View.GONE
+                         binding.notebooksRecyclerView.visibility = View.VISIBLE
+                     }
+                }
+            }
 
-                override fun onCancelled(error: DatabaseError) {
-                    if (isAdded) {
-                        Toast.makeText(context, "Failed to load notebooks", Toast.LENGTH_SHORT).show()
-                    }
+            override fun onCancelled(error: DatabaseError) {
+                if (isAdded) {
+                    Toast.makeText(context, "Failed to load notebooks", Toast.LENGTH_SHORT).show()
                 }
-            })
+            }
+        })
     }
 
     private fun setupRecyclerView() {
@@ -152,6 +156,7 @@ class CashbooksFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        notebooksListener?.let { notebooksQuery?.removeEventListener(it) }
         super.onDestroyView()
         _binding = null
     }

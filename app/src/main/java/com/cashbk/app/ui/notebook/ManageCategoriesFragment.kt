@@ -65,7 +65,6 @@ class ManageCategoriesFragment : Fragment() {
             parentFragmentManager.popBackStack()
         }
 
-        binding.btnToolbarAdd.setOnClickListener { navigateToAddCategory() }
         binding.btnCreateCategory.setOnClickListener { navigateToAddCategory() }
         binding.btnAddPlaceholder.setOnClickListener { navigateToAddCategory() }
     }

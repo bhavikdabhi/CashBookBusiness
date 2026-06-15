@@ -36,8 +36,8 @@ class AddCategoryFragment : Fragment() {
     )
 
     private val iconOptions = listOf(
-        "ic_cat_money", "ic_cat_shopping", "ic_cat_dining", "ic_cat_transport",
-        "ic_cat_home", "ic_cat_travel", "ic_book", "ic_payment"
+        "ic_cat_money", "ic_cat_shop", "ic_cat_food", "ic_cat_car",
+        "ic_cat_home", "ic_cat_travel", "ic_cat_medkit", "ic_cat_video"
     )
 
     override fun onCreateView(
@@ -219,7 +219,7 @@ class AddCategoryFragment : Fragment() {
     }
 
     private fun saveCategory() {
-        val name = binding.etCategoryName.text.toString().trim()
+        val name = binding.etCategoryName.toString().trim()
         
         if (name.isEmpty()) {
             Toast.makeText(requireContext(), "Please enter a category name", Toast.LENGTH_SHORT).show()

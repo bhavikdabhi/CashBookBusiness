@@ -7,5 +7,6 @@ data class User(
     val email: String? = null,
     val profileImageUrl: String? = null,
     val membershipTier: String? = "GOLD MEMBER",
-    val createdAt: Any? = null
+    val createdAt: Any? = null,
+    val googleDriveEmail: String? = null
 )

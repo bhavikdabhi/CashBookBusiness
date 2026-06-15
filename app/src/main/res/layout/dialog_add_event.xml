@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bg_color">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_glass_card"
+        android:clipToOutline="true"
+        android:elevation="@dimen/_6sdp"
+        android:orientation="vertical"
+        android:padding="@dimen/_16sdp">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_12sdp"
+            android:fontFamily="@font/roboto_medium"
+            android:text="Create Business Event"
+            android:textColor="@color/text_color"
+            android:textSize="@dimen/_16ssp"
+            android:textStyle="bold" />
+
+        <!-- Event Name -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/GlassInput"
+            android:hint="Event Name"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:textColorHint="@color/gray">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etEventName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_color"
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="@dimen/_12ssp"
+                android:inputType="textCapWords" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Event Date -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilEventDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/GlassInput"
+            android:hint="Event Date"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:textColorHint="@color/gray">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etEventDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_color"
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="@dimen/_12ssp"
+                android:focusable="false"
+                android:clickable="true"
+                android:inputType="none" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Notebook Selector -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilNotebook"
+            style="@style/GlassInput.ExposedDropdownMenu"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Scope to Notebook"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:textColorHint="@color/gray">
+
+            <AutoCompleteTextView
+                android:id="@+id/actvNotebook"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_color"
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="@dimen/_12ssp"
+                android:inputType="none"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Visibility Selector -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilVisibility"
+            style="@style/GlassInput.ExposedDropdownMenu"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Visibility"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:textColorHint="@color/gray">
+
+            <AutoCompleteTextView
+                android:id="@+id/actvVisibility"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_color"
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="@dimen/_12ssp"
+                android:inputType="none"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Specific Members Selection Row -->
+        <LinearLayout
+            android:id="@+id/layoutMemberSelection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:visibility="gone">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnSelectMembers"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_36sdp"
+                android:background="@drawable/bg_glass_field"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Choose Members"
+                android:textColor="@color/text_color"
+                android:textSize="@dimen/_12ssp"
+                android:textAllCaps="false" />
+
+            <TextView
+                android:id="@+id/tvSelectedMembers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/_11ssp"
+                android:text="Selected: None" />
+        </LinearLayout>
+
+        <!-- Event Description -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/GlassInput"
+            android:hint="Event Description (Optional)"
+            android:layout_marginBottom="@dimen/_16sdp"
+            android:textColorHint="@color/gray">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etEventDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_color"
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="@dimen/_12ssp"
+                android:inputType="textMultiLine"
+                android:gravity="top|start"
+                android:minLines="3" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Save Button -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSaveEvent"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_45sdp"
+            android:background="@drawable/bg_gradient_button"
+            android:elevation="@dimen/_16sdp"
+            android:fontFamily="@font/roboto_bold"
+            android:text="Create Event"
+            android:textAllCaps="false"
+            android:textColor="@color/auth_bg"
+            android:textSize="@dimen/_14ssp"
+            app:cornerRadius="@dimen/_12sdp" />
+
+    </LinearLayout>
+</FrameLayout>

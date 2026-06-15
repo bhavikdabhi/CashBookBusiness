@@ -21,6 +21,8 @@ import com.google.firebase.database.*
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import com.cashbk.app.adapter.FilterAdapter
+import com.cashbk.app.adapter.FilterItem
 
 class NotebookHomeFragment : Fragment() {
 
@@ -43,6 +45,18 @@ class NotebookHomeFragment : Fragment() {
     private var filterCategoryId: String? = null
     private var filterStartDate: Long? = null
     private var filterEndDate: Long? = null
+    private var filterPartyId: String? = null
+    private var filterType: String? = null
+    private var filterEntryBy: String? = null
+
+    private lateinit var filterAdapter: FilterAdapter
+    private val filterItemList = mutableListOf(
+        FilterItem("date", "Date"),
+        FilterItem("category", "Category"),
+        FilterItem("party", "Party"),
+        FilterItem("type", "Type"),
+        FilterItem("entry_by", "Entry By")
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -82,8 +96,7 @@ class NotebookHomeFragment : Fragment() {
 
         binding.btnCashIn.setOnClickListener { showAddTransactionDialog("in") }
         binding.btnCashOut.setOnClickListener { showAddTransactionDialog("out") }
-        binding.chipDate.setOnClickListener { showDateRangePicker() }
-        binding.chipFilter.setOnClickListener { showCategoryFilterDialog() }
+        setupFilterRecyclerView()
         
         binding.btnViewReports.setOnClickListener {
             val notebookName = binding.tvTitle.text.toString()
@@ -258,6 +271,15 @@ class NotebookHomeFragment : Fragment() {
                 t.categoryId == filterCategoryId
             }
         }
+        if (filterPartyId != null) {
+            filteredList = filteredList.filter { t -> t.partyId == filterPartyId }
+        }
+        if (filterType != null) {
+            filteredList = filteredList.filter { t -> t.type == filterType }
+        }
+        if (filterEntryBy != null) {
+            filteredList = filteredList.filter { t -> t.createdBy == filterEntryBy }
+        }
 
         var fIn = 0.0
         var fOut = 0.0
@@ -304,7 +326,108 @@ class NotebookHomeFragment : Fragment() {
         binding.tvEntriesCount.text = "Showing $count entries"
     }
 
-    private fun showDateRangePicker() {
+    private fun setupFilterRecyclerView() {
+        filterAdapter = FilterAdapter(filterItemList) { item, position ->
+            when (item.type) {
+                "date" -> showDateFilterDialog(position)
+                "category" -> showCategoryFilterDialog(position)
+                "party" -> showPartyFilterDialog(position)
+                "type" -> showTypeFilterDialog(position)
+                "entry_by" -> showEntryByFilterDialog(position)
+            }
+        }
+        binding.filterRecyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = filterAdapter
+        }
+    }
+
+    private fun showDateFilterDialog(position: Int) {
+        val options = arrayOf("All Time", "Today", "Yesterday", "This Month", "Last Month", "This Year", "Custom")
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Filter by Date")
+            .setItems(options) { _, which ->
+                val calendar = Calendar.getInstance()
+                when (which) {
+                    0 -> { // All Time
+                        filterStartDate = null
+                        filterEndDate = null
+                        filterAdapter.updateItem(position, "Date")
+                        applyFilters()
+                    }
+                    1 -> { // Today
+                        setStartOfDay(calendar)
+                        filterStartDate = calendar.timeInMillis
+                        setEndOfDay(calendar)
+                        filterEndDate = calendar.timeInMillis
+                        filterAdapter.updateItem(position, "Today")
+                        applyFilters()
+                    }
+                    2 -> { // Yesterday
+                        calendar.add(Calendar.DAY_OF_YEAR, -1)
+                        setStartOfDay(calendar)
+                        filterStartDate = calendar.timeInMillis
+                        setEndOfDay(calendar)
+                        filterEndDate = calendar.timeInMillis
+                        filterAdapter.updateItem(position, "Yesterday")
+                        applyFilters()
+                    }
+                    3 -> { // This Month
+                        calendar.set(Calendar.DAY_OF_MONTH, 1)
+                        setStartOfDay(calendar)
+                        filterStartDate = calendar.timeInMillis
+                        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH))
+                        setEndOfDay(calendar)
+                        filterEndDate = calendar.timeInMillis
+                        filterAdapter.updateItem(position, "This Month")
+                        applyFilters()
+                    }
+                    4 -> { // Last Month
+                        calendar.add(Calendar.MONTH, -1)
+                        calendar.set(Calendar.DAY_OF_MONTH, 1)
+                        setStartOfDay(calendar)
+                        filterStartDate = calendar.timeInMillis
+                        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH))
+                        setEndOfDay(calendar)
+                        filterEndDate = calendar.timeInMillis
+                        filterAdapter.updateItem(position, "Last Month")
+                        applyFilters()
+                    }
+                    5 -> { // This Year
+                        calendar.set(Calendar.DAY_OF_YEAR, 1)
+                        setStartOfDay(calendar)
+                        filterStartDate = calendar.timeInMillis
+                        calendar.set(Calendar.MONTH, Calendar.DECEMBER)
+                        calendar.set(Calendar.DAY_OF_MONTH, 31)
+                        setEndOfDay(calendar)
+                        filterEndDate = calendar.timeInMillis
+                        filterAdapter.updateItem(position, "This Year")
+                        applyFilters()
+                    }
+                    6 -> { // Custom
+                        showDateRangePicker(position)
+                    }
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun setStartOfDay(calendar: Calendar) {
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+    }
+
+    private fun setEndOfDay(calendar: Calendar) {
+        calendar.set(Calendar.HOUR_OF_DAY, 23)
+        calendar.set(Calendar.MINUTE, 59)
+        calendar.set(Calendar.SECOND, 59)
+        calendar.set(Calendar.MILLISECOND, 999)
+    }
+
+    private fun showDateRangePicker(position: Int) {
         val dateRangePicker = MaterialDatePicker.Builder.dateRangePicker()
             .setTitleText("Select Dates")
             .build()
@@ -315,14 +438,14 @@ class NotebookHomeFragment : Fragment() {
             filterEndDate = selection.second + 86399999L 
             
             val sdf = SimpleDateFormat("MMM dd", Locale.getDefault())
-            binding.chipDate.text = "${sdf.format(Date(filterStartDate!!))} - ${sdf.format(Date(filterEndDate!!))}"
+            filterAdapter.updateItem(position, "${sdf.format(Date(filterStartDate!!))} - ${sdf.format(Date(filterEndDate!!))}")
             applyFilters()
         }
             
         dateRangePicker.show(parentFragmentManager, "DateRangePicker")
     }
 
-    private fun showCategoryFilterDialog() {
+    private fun showCategoryFilterDialog(position: Int) {
         val categories = categoryMap.values.toTypedArray()
         val categoryIds = categoryMap.keys.toTypedArray()
         
@@ -339,10 +462,92 @@ class NotebookHomeFragment : Fragment() {
                 if (_binding == null) return@setItems
                 if (which == 0) {
                     filterCategoryId = null
-                    binding.chipFilter.text = "Filter"
+                    filterAdapter.updateItem(position, "Category")
                 } else {
                     filterCategoryId = categoryIds[which - 1]
-                    binding.chipFilter.text = categories[which - 1]
+                    filterAdapter.updateItem(position, categories[which - 1])
+                }
+                applyFilters()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun showPartyFilterDialog(position: Int) {
+        val parties = partyMap.values.toTypedArray()
+        val partyIds = partyMap.keys.toTypedArray()
+        
+        if (parties.isEmpty()) {
+            Toast.makeText(requireContext(), "No parties found", Toast.LENGTH_SHORT).show()
+            return
+        }
+        
+        val displayOptions = arrayOf("All Parties") + parties
+        
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Filter by Party")
+            .setItems(displayOptions) { _, which ->
+                if (_binding == null) return@setItems
+                if (which == 0) {
+                    filterPartyId = null
+                    filterAdapter.updateItem(position, "Party")
+                } else {
+                    filterPartyId = partyIds[which - 1]
+                    filterAdapter.updateItem(position, parties[which - 1])
+                }
+                applyFilters()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun showTypeFilterDialog(position: Int) {
+        val options = arrayOf("All Types", "Cash In", "Cash Out")
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Filter by Type")
+            .setItems(options) { _, which ->
+                if (_binding == null) return@setItems
+                when (which) {
+                    0 -> {
+                        filterType = null
+                        filterAdapter.updateItem(position, "Type")
+                    }
+                    1 -> {
+                        filterType = "in"
+                        filterAdapter.updateItem(position, "Cash In")
+                    }
+                    2 -> {
+                        filterType = "out"
+                        filterAdapter.updateItem(position, "Cash Out")
+                    }
+                }
+                applyFilters()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun showEntryByFilterDialog(position: Int) {
+        val users = userMap.values.toTypedArray()
+        val userIds = userMap.keys.toTypedArray()
+        
+        if (users.isEmpty()) {
+            Toast.makeText(requireContext(), "No members found", Toast.LENGTH_SHORT).show()
+            return
+        }
+        
+        val displayOptions = arrayOf("All Members") + users
+        
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Filter by Entry By")
+            .setItems(displayOptions) { _, which ->
+                if (_binding == null) return@setItems
+                if (which == 0) {
+                    filterEntryBy = null
+                    filterAdapter.updateItem(position, "Entry By")
+                } else {
+                    filterEntryBy = userIds[which - 1]
+                    filterAdapter.updateItem(position, users[which - 1])
                 }
                 applyFilters()
             }

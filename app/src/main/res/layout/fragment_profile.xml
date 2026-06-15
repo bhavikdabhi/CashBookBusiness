@@ -132,7 +132,7 @@
                 android:id="@+id/ic_person"
                 android:layout_width="@dimen/_18sdp"
                 android:layout_height="@dimen/_18sdp"
-                android:src="@drawable/ic_party_person"
+                android:src="@drawable/ic_people_"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:tint="@color/auth_glow_1" />

@@ -93,36 +93,15 @@
             android:orientation="vertical"
             android:padding="@dimen/_12sdp">
 
-            <!-- FILTER CHIPS -->
-            <LinearLayout
+            <!-- FILTER CHIPS RECYCLER VIEW -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/filter_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="@dimen/_5sdp">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Filter"
-                    android:fontFamily="@font/roboto_regular"
-                    android:textFontWeight="600"
-                    app:chipIcon="@drawable/ic_filter_list"
-                    app:chipBackgroundColor="@color/card_bg"
-                    app:chipIconTint="@color/text_color"
-                    android:textColor="@color/text_color"/>
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Select Date"
-                    android:fontFamily="@font/roboto_regular"
-                    android:textFontWeight="600"
-                    android:layout_marginStart="@dimen/_8sdp"
-                    app:chipBackgroundColor="@color/card_bg"
-                    android:textColor="@color/text_color"/>
-            </LinearLayout>
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:layout_marginBottom="@dimen/_5sdp"
+                tools:listitem="@layout/item_filter_chip"/>
 
             <!-- SUMMARY CARD -->
             <com.google.android.material.card.MaterialCardView
@@ -315,18 +294,23 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:paddingHorizontal="@dimen/_10sdp"
+    android:paddingBottom="@dimen/_10sdp"
+    android:paddingTop="@dimen/_5sdp"
+    android:elevation="@dimen/_8sdp"
+    >
     <!-- BOTTOM BAR -->
     <LinearLayout
         android:id="@+id/bottom_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:orientation="horizontal"
-        android:paddingHorizontal="@dimen/_10sdp"
-        android:paddingBottom="@dimen/_10sdp"
-        android:paddingTop="@dimen/_5sdp"
         android:background="@android:color/transparent"
-        android:elevation="@dimen/_8sdp">
+      >
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_cash_in"
@@ -355,5 +339,5 @@
             android:layout_marginStart="@dimen/_8sdp"/>
 
     </LinearLayout>
-
+</FrameLayout>
 </RelativeLayout>

@@ -118,9 +118,9 @@
         android:fontFamily="@font/roboto_medium"
         android:textFontWeight="600"
         android:src="@android:drawable/ic_input_add"
-        android:backgroundTint="@color/primary_color"
+        app:tint="@color/stitch_surface"
+        app:backgroundTint="@color/stitch_primary"
         android:icon="@drawable/ic_add"
-        app:tint="@color/text_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:contentDescription="Add Book" />

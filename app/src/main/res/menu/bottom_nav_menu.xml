@@ -13,7 +13,7 @@
 
     <item
         android:id="@+id/nav_profile"
-        android:icon="@drawable/ic_party_person"
+        android:icon="@drawable/ic_default_avtar"
         android:title="Profile" />
 
     <item

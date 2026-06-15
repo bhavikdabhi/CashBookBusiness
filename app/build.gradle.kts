@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -7,6 +9,24 @@ plugins {
 android {
     namespace = "com.cashbk.app"
     compileSdk = 34
+
+    // Load keystore.properties from root directory if it exists
+    val keystorePropertiesFile = rootProject.file("keystore.properties")
+    val keystoreProperties = Properties()
+    if (keystorePropertiesFile.exists()) {
+        keystoreProperties.load(keystorePropertiesFile.inputStream())
+    }
+
+    signingConfigs {
+        create("release") {
+            if (keystorePropertiesFile.exists()) {
+                storeFile = file(keystoreProperties.getProperty("storeFile"))
+                storePassword = keystoreProperties.getProperty("storePassword")
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+            }
+        }
+    }
 
     defaultConfig {
         applicationId = "com.cashbk.app"
@@ -25,6 +45,7 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
@@ -89,4 +110,45 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test:monitor:1.6.1")
+}
+
+val generateReleaseKeystore = tasks.register("generateReleaseKeystore") {
+    val keystoreFile = rootProject.file("release.keystore")
+    doLast {
+        if (!keystoreFile.exists()) {
+            val javaHome = System.getProperty("java.home")
+            val isWindows = System.getProperty("os.name").lowercase().contains("win")
+            val keytoolBinary = if (isWindows) "$javaHome/bin/keytool.exe" else "$javaHome/bin/keytool"
+            
+            val process = ProcessBuilder(
+                keytoolBinary,
+                "-genkeypair",
+                "-v",
+                "-keystore", keystoreFile.absolutePath,
+                "-alias", "cashbook",
+                "-keyalg", "RSA",
+                "-keysize", "2048",
+                "-validity", "10000",
+                "-storepass", "CashBookRelease123",
+                "-keypass", "CashBookRelease123",
+                "-dname", "CN=CashBook Business, OU=Development, O=CashBook, C=US"
+            )
+                .directory(rootProject.projectDir)
+                .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+                .redirectError(ProcessBuilder.Redirect.INHERIT)
+                .start()
+            
+            val exitCode = process.waitFor()
+            if (exitCode != 0) {
+                throw GradleException("Failed to generate release keystore. Exit code: $exitCode")
+            }
+            logger.lifecycle("Generated release.keystore at ${keystoreFile.absolutePath}")
+        }
+    }
+}
+
+tasks.configureEach {
+    if (name.contains("Sign") || name.contains("Package") || name.contains("processReleaseResources")) {
+        dependsOn(generateReleaseKeystore)
+    }
 }

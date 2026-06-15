@@ -40,6 +40,8 @@ class ProfileFragment : Fragment() {
     private var currentBusinessId: String? = null
     private var currentUser: User? = null
     private var pendingImageUri: Uri? = null
+    private var profileListener: ValueEventListener? = null
+    private var registeredUid: String? = null
 
     private val imagePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
@@ -52,6 +54,7 @@ class ProfileFragment : Fragment() {
         if (result.resultCode == Activity.RESULT_OK) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
             task.addOnSuccessListener { account ->
+                saveGoogleDriveEmail(account.email)
                 if (pendingImageUri != null) {
                     uploadToGoogleDrive(account)
                 }
@@ -105,10 +108,15 @@ class ProfileFragment : Fragment() {
 
         binding.btnSignOut.setOnClickListener {
             auth.signOut()
-            val intent = Intent(requireContext(), AuthActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
-            requireActivity().finish()
+            val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
+            GoogleSignIn.getClient(requireActivity(), signInOptions).signOut().addOnCompleteListener {
+                if (isAdded) {
+                    val intent = Intent(context, AuthActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    requireActivity().finish()
+                }
+            }
         }
 
         binding.btnResetPassword.setOnClickListener {
@@ -116,10 +124,14 @@ class ProfileFragment : Fragment() {
             if (!email.isNullOrEmpty()) {
                 auth.sendPasswordResetEmail(email)
                     .addOnSuccessListener {
-                        Toast.makeText(requireContext(), "Reset email sent to $email", Toast.LENGTH_LONG).show()
+                        if (isAdded) {
+                            Toast.makeText(context, "Reset email sent to $email", Toast.LENGTH_LONG).show()
+                        }
                     }
                     .addOnFailureListener {
-                        Toast.makeText(requireContext(), "Failed to send reset email: ${it.message}", Toast.LENGTH_SHORT).show()
+                        if (isAdded) {
+                            Toast.makeText(context, "Failed to send reset email: ${it.message}", Toast.LENGTH_SHORT).show()
+                        }
                     }
             } else {
                 Toast.makeText(requireContext(), "Email address not found.", Toast.LENGTH_SHORT).show()
@@ -165,18 +177,32 @@ class ProfileFragment : Fragment() {
     }
 
     private fun startDriveAuthFlow() {
-        val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        val builder = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
             .requestScopes(Scope("https://www.googleapis.com/auth/drive.file"))
-            .build()
+        
+        currentUser?.googleDriveEmail?.let {
+            if (it.isNotEmpty()) {
+                builder.setAccountName(it)
+            }
+        }
+
+        val signInOptions = builder.build()
         val client = GoogleSignIn.getClient(requireActivity(), signInOptions)
         driveSignInLauncher.launch(client.signInIntent)
     }
 
+    private fun saveGoogleDriveEmail(email: String?) {
+        val uid = auth.currentUser?.uid ?: return
+        if (email != null) {
+            database.child("users").child(uid).child("googleDriveEmail").setValue(email)
+        }
+    }
+
     private fun fetchUserProfile() {
         val uid = auth.currentUser?.uid ?: return
-        
-        database.child("users").child(uid).addValueEventListener(object : ValueEventListener {
+        registeredUid = uid
+        profileListener = database.child("users").child(uid).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (!isAdded || _binding == null) return
                 
@@ -205,7 +231,9 @@ class ProfileFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(requireContext(), "Failed to load profile", Toast.LENGTH_SHORT).show()
+                if (isAdded) {
+                    Toast.makeText(context, "Failed to load profile", Toast.LENGTH_SHORT).show()
+                }
             }
         })
     }
@@ -230,7 +258,7 @@ class ProfileFragment : Fragment() {
                 val webViewLink = driveManager.uploadFile(
                     fileUri = pendingImageUri!!,
                     fileName = fileName,
-                    folderName = "CashBook_Profile"
+                    folderName = "Profile"
                 )
 
                 if (webViewLink != null) {
@@ -245,7 +273,9 @@ class ProfileFragment : Fragment() {
             } catch (e: Exception) {
                 e.printStackTrace()
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(requireContext(), "Upload Failed: ${e.message}", Toast.LENGTH_LONG).show()
+                    if (isAdded) {
+                        Toast.makeText(context, "Upload Failed: ${e.message}", Toast.LENGTH_LONG).show()
+                    }
                 }
             }
         }
@@ -255,7 +285,9 @@ class ProfileFragment : Fragment() {
         val uid = auth.currentUser?.uid ?: return
         database.child("users").child(uid).child("profileImageUrl").setValue(url)
             .addOnSuccessListener {
-                Toast.makeText(requireContext(), "Profile updated successfully", Toast.LENGTH_SHORT).show()
+                if (isAdded) {
+                    Toast.makeText(context, "Profile updated successfully", Toast.LENGTH_SHORT).show()
+                }
             }
     }
 
@@ -286,19 +318,25 @@ class ProfileFragment : Fragment() {
                         )
                         database.child("users").child(uid).updateChildren(updates)
                             .addOnSuccessListener {
-                                Toast.makeText(requireContext(), "Profile updated successfully", Toast.LENGTH_SHORT).show()
+                                if (isAdded) {
+                                    Toast.makeText(context, "Profile updated successfully", Toast.LENGTH_SHORT).show()
+                                }
                             }
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(requireContext(), "Update failed: ${error.message}", Toast.LENGTH_SHORT).show()
+                    if (isAdded) {
+                        Toast.makeText(context, "Update failed: ${error.message}", Toast.LENGTH_SHORT).show()
+                    }
                 }
             })
     }
 
     private fun migrateData(fromUid: String, toUid: String, newName: String, newPhone: String) {
-        Toast.makeText(requireContext(), "Merging data from existing record...", Toast.LENGTH_LONG).show()
+        if (isAdded) {
+            Toast.makeText(context, "Merging data from existing record...", Toast.LENGTH_LONG).show()
+        }
 
         // 1. Update existing businesses ownership
         database.child("businesses").orderByChild("ownerId").equalTo(fromUid)
@@ -315,9 +353,13 @@ class ProfileFragment : Fragment() {
                     batchUpdates["users/$toUid/phone"] = newPhone
 
                     database.updateChildren(batchUpdates).addOnSuccessListener {
-                        Toast.makeText(requireContext(), "Account merged and updated successfully", Toast.LENGTH_LONG).show()
+                        if (isAdded) {
+                            Toast.makeText(context, "Account merged and updated successfully", Toast.LENGTH_LONG).show()
+                        }
                     }.addOnFailureListener {
-                        Toast.makeText(requireContext(), "Merge failed: ${it.message}", Toast.LENGTH_SHORT).show()
+                        if (isAdded) {
+                            Toast.makeText(context, "Merge failed: ${it.message}", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
 
@@ -330,6 +372,11 @@ class ProfileFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        profileListener?.let { listener ->
+            registeredUid?.let { uid ->
+                database.child("users").child(uid).removeEventListener(listener)
+            }
+        }
         super.onDestroyView()
         _binding = null
     }

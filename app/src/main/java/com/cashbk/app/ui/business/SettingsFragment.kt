@@ -11,6 +11,8 @@ import androidx.fragment.app.Fragment
 import com.cashbk.app.databinding.FragmentSettingsBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 class SettingsFragment : Fragment() {
 
@@ -67,11 +69,17 @@ class SettingsFragment : Fragment() {
                 .setMessage("Are you sure you want to log out?")
                 .setPositiveButton("Logout") { _, _ ->
                     FirebaseAuth.getInstance().signOut()
-                    Toast.makeText(requireContext(), "Logged out", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(requireContext(), com.cashbk.app.ui.auth.AuthActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
-                    requireActivity().finish()
+                    
+                    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
+                    GoogleSignIn.getClient(requireActivity(), gso).signOut().addOnCompleteListener {
+                        if (isAdded) {
+                            Toast.makeText(context, "Logged out", Toast.LENGTH_SHORT).show()
+                            val intent = Intent(context, com.cashbk.app.ui.auth.AuthActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                            requireActivity().finish()
+                        }
+                    }
                 }
                 .setNegativeButton("Cancel", null)
                 .show()

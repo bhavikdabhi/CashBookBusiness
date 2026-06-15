@@ -85,11 +85,24 @@ class GoogleDriveManager(private val context: Context, private val googleAccount
     }
 
     /**
-     * Gets an existing folder ID or creates a new one.
+     * Gets an existing folder ID or creates a new one under the "Cashbook" root folder.
      */
     private suspend fun getOrCreateFolder(folderName: String): String? = withContext(Dispatchers.IO) {
         try {
-            val query = "mimeType = 'application/vnd.google-apps.folder' and name = '$folderName' and trashed = false"
+            // 1. Get or create the root folder: "Cashbook"
+            val rootFolderId = getOrCreateFolderAtRoot("Cashbook") ?: return@withContext null
+            
+            // 2. Get or create the child folder (e.g., "Receipt" or "Profile") inside the root folder
+            getOrCreateFolderInParent(folderName, rootFolderId)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private suspend fun getOrCreateFolderAtRoot(folderName: String): String? = withContext(Dispatchers.IO) {
+        try {
+            val query = "mimeType = 'application/vnd.google-apps.folder' and name = '$folderName' and 'root' in parents and trashed = false"
             val result = driveService.files().list()
                 .setQ(query)
                 .setSpaces("drive")
@@ -102,6 +115,35 @@ class GoogleDriveManager(private val context: Context, private val googleAccount
                 val folderMetadata = File().apply {
                     name = folderName
                     mimeType = "application/vnd.google-apps.folder"
+                    parents = listOf("root")
+                }
+                val folder = driveService.files().create(folderMetadata)
+                    .setFields("id")
+                    .execute()
+                folder.id
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private suspend fun getOrCreateFolderInParent(folderName: String, parentId: String): String? = withContext(Dispatchers.IO) {
+        try {
+            val query = "mimeType = 'application/vnd.google-apps.folder' and name = '$folderName' and '$parentId' in parents and trashed = false"
+            val result = driveService.files().list()
+                .setQ(query)
+                .setSpaces("drive")
+                .setFields("files(id, name)")
+                .execute()
+
+            if (result.files.isNotEmpty()) {
+                result.files[0].id
+            } else {
+                val folderMetadata = File().apply {
+                    name = folderName
+                    mimeType = "application/vnd.google-apps.folder"
+                    parents = listOf(parentId)
                 }
                 val folder = driveService.files().create(folderMetadata)
                     .setFields("id")
