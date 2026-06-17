@@ -6,8 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="@dimen/_12sdp"
     android:layout_marginVertical="@dimen/_6sdp"
-    app:cardBackgroundColor="@color/card_bg"
-    app:cardCornerRadius="@dimen/_12sdp"
+    app:cardBackgroundColor="@color/stitch_surface_container_low"
+    app:cardCornerRadius="@dimen/_14sdp"
     app:cardElevation="0dp"
     app:strokeColor="@color/glass_border"
     app:strokeWidth="1dp">
@@ -17,91 +17,120 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/_12sdp">
 
+        <!-- Icon Container -->
+        <FrameLayout
+            android:id="@+id/iconContainer"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
+            android:background="@drawable/bg_glass_card"
+            android:backgroundTint="@color/stitch_surface_container_high"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/ivEventIcon"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_business"
+                app:tint="@color/primary_color" />
+
+        </FrameLayout>
+
+        <!-- Title -->
         <TextView
             android:id="@+id/tvEventName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_color"
-            android:textSize="@dimen/_15ssp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_13ssp"
+            android:fontFamily="@font/roboto_medium"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@id/btnEventOptions"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tvEventDate"
+            app:layout_constraintStart_toEndOf="@id/iconContainer"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="📅 Team Meeting" />
+            tools:text="Quarterly Audit Review" />
 
+        <!-- Date & Time (Top Right) -->
+        <TextView
+            android:id="@+id/tvEventDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/_8ssp"
+            android:fontFamily="@font/roboto_regular"
+            app:layout_constraintEnd_toStartOf="@id/btnEventOptions"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="OCT 13, 09:00" />
+
+        <!-- Options Button -->
         <ImageButton
             android:id="@+id/btnEventOptions"
-            android:layout_width="@dimen/_24sdp"
-            android:layout_height="@dimen/_24sdp"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_marginStart="@dimen/_4sdp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/icon_threedots"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/text_color" />
+            app:tint="@color/gray" />
 
+        <!-- Description -->
         <TextView
             android:id="@+id/tvEventDescription"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_4sdp"
             android:textColor="@color/gray"
-            android:textSize="@dimen/_12ssp"
-            android:visibility="gone"
+            android:textSize="@dimen/_11ssp"
+            android:fontFamily="@font/roboto_regular"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/tvEventName"
             app:layout_constraintTop_toBottomOf="@id/tvEventName"
-            tools:text="Discuss quarterly budget allocation and targets."
-            tools:visibility="visible" />
+            tools:text="Comprehensive review of all ledger entries for Q3 fiscal alignment and tax readiness." />
 
-        <TextView
-            android:id="@+id/tvEventDate"
+        <!-- Tags Container -->
+        <LinearLayout
+            android:id="@+id/layoutTags"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_8sdp"
-            android:textColor="@color/text_color"
-            android:textSize="@dimen/_12ssp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvEventDescription"
-            tools:text="🗓 Date: 15 Jul 2026" />
+            app:layout_constraintStart_toStartOf="@id/tvEventName"
+            app:layout_constraintTop_toBottomOf="@id/tvEventDescription">
 
-        <TextView
-            android:id="@+id/tvAddedBy"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_4sdp"
-            android:textColor="@color/text_color"
-            android:textSize="@dimen/_12ssp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvEventDate"
-            tools:text="👤 Added By: John Smith" />
+            <!-- Tag 1 (Notebook Name) -->
+            <TextView
+                android:id="@+id/tvTagNotebook"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_segmented_container"
+                android:backgroundTint="@color/stitch_surface_container_high"
+                android:paddingHorizontal="@dimen/_8sdp"
+                android:paddingVertical="@dimen/_3sdp"
+                android:textColor="@color/stitch_on_surface_variant"
+                android:textSize="@dimen/_9ssp"
+                android:fontFamily="@font/roboto_medium"
+                tools:text="Compliance" />
 
-        <TextView
-            android:id="@+id/tvCreatedTime"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_4sdp"
-            android:textColor="@color/gray"
-            android:textSize="@dimen/_11ssp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvAddedBy"
-            tools:text="🕒 Created: 10 Jul 2026, 09:30 AM" />
+            <!-- Tag 2 (Visibility Restriction) -->
+            <TextView
+                android:id="@+id/tvTagVisibility"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_6sdp"
+                android:background="@drawable/bg_segmented_container"
+                android:backgroundTint="@color/stitch_surface_container_high"
+                android:paddingHorizontal="@dimen/_8sdp"
+                android:paddingVertical="@dimen/_3sdp"
+                android:textColor="@color/stitch_on_surface_variant"
+                android:textSize="@dimen/_9ssp"
+                android:fontFamily="@font/roboto_medium"
+                tools:text="Admin Only" />
 
-        <TextView
-            android:id="@+id/tvVisibility"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_6sdp"
-            android:background="@drawable/bg_badge_active"
-            android:paddingHorizontal="@dimen/_8sdp"
-            android:paddingVertical="@dimen/_2sdp"
-            android:textColor="@color/stitch_primary"
-            android:textSize="@dimen/_11ssp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvCreatedTime"
-            tools:text="👁 Visibility: Everyone" />
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

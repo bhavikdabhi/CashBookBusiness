@@ -8,6 +8,7 @@ import com.cashbk.app.databinding.AddPartyBottomSheetBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.cashbk.app.dataclass.Party
 
 class AddPartyBottomSheet : BottomSheetDialogFragment() {
 
@@ -42,11 +43,13 @@ class AddPartyBottomSheet : BottomSheetDialogFragment() {
 
             val id = FirebaseDatabase.getInstance().reference.push().key!!
 
-            val partyData = mapOf(
-                "id" to id,
-                "name" to name,
-                "phone" to phone,
-                "ownerId" to userId
+            val party = Party(
+                id = id,
+                name = name,
+                contact = phone,
+                role = "CUSTOMER",
+                colorHex = "#80DEEA",
+                iconResName = "ic_party_person"
             )
 
             val notebookId = arguments?.getString("notebookId") ?: ""
@@ -55,7 +58,7 @@ class AddPartyBottomSheet : BottomSheetDialogFragment() {
                 .child("parties")
                 .child(notebookId)
                 .child(id)
-                .setValue(partyData)
+                .setValue(party)
 
             dismiss()
         }

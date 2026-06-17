@@ -152,6 +152,18 @@
 
                 </LinearLayout>
 
+                <!-- Parties Shimmer Loader -->
+                <LinearLayout
+                    android:id="@+id/layoutShimmerParties"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:layout_marginTop="@dimen/_8sdp">
+                    <include layout="@layout/item_party_shimmer" />
+                    <include layout="@layout/item_party_shimmer" />
+                </LinearLayout>
+
                 <!-- List Content -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvParties"

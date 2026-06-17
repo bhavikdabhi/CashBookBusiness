@@ -24,6 +24,7 @@ class ManagePartnersActivity : AppCompatActivity() {
     private lateinit var partnerAdapter: PartnerAdapter
     private val partnersList = mutableListOf<Partner>()
     private var businessId: String? = null
+    private var currentUserRole: String = "reader"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,12 +41,16 @@ class ManagePartnersActivity : AppCompatActivity() {
 
         database = FirebaseDatabase.getInstance().reference.child("business_members").child(businessId!!)
 
+        // Hide FAB until role is determined
+        binding.addPartnerFab.visibility = View.GONE
+
         binding.btnBack.setOnClickListener {
             finish()
         }
 
         setupRecyclerView()
         fetchPartners()
+        checkUserRole()
 
         binding.addPartnerFab.setOnClickListener {
             showAddPartnerDialog()
@@ -131,6 +136,10 @@ class ManagePartnersActivity : AppCompatActivity() {
     }
 
     private fun showAddPartnerDialog() {
+        if (currentUserRole != "owner" && currentUserRole != "admin") {
+            Toast.makeText(this, "Only owners or admins can add partners", Toast.LENGTH_SHORT).show()
+            return
+        }
         val dialogBinding = DialogAddMemberBinding.inflate(layoutInflater)
         val dialog = AlertDialog.Builder(this)
             .setView(dialogBinding.root)
@@ -190,6 +199,10 @@ class ManagePartnersActivity : AppCompatActivity() {
     }
 
     private fun removePartner(partner: Partner) {
+        if (currentUserRole != "owner" && currentUserRole != "admin") {
+            Toast.makeText(this, "Only owners or admins can remove partners", Toast.LENGTH_SHORT).show()
+            return
+        }
         AlertDialog.Builder(this)
             .setTitle("Remove Partner")
             .setMessage("Are you sure you want to remove ${partner.name}?")
@@ -198,5 +211,34 @@ class ManagePartnersActivity : AppCompatActivity() {
             }
             .setNegativeButton("No", null)
             .show()
+    }
+
+    private fun checkUserRole() {
+        val currentUserId = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val bId = businessId ?: return
+
+        FirebaseDatabase.getInstance().reference.child("businesses").child(bId).get()
+            .addOnSuccessListener { businessSnapshot ->
+                val ownerId = businessSnapshot.child("ownerId").value as? String
+                if (ownerId == currentUserId) {
+                    currentUserRole = "owner"
+                    updateUIForRole()
+                    return@addOnSuccessListener
+                }
+
+                FirebaseDatabase.getInstance().reference.child("business_members").child(bId).child(currentUserId).get()
+                    .addOnSuccessListener { memberSnapshot ->
+                        if (memberSnapshot.exists()) {
+                            val role = memberSnapshot.child("role").value as? String ?: "partner"
+                            currentUserRole = role
+                        }
+                        updateUIForRole()
+                    }
+            }
+    }
+
+    private fun updateUIForRole() {
+        val canManage = currentUserRole == "owner" || currentUserRole == "admin"
+        binding.addPartnerFab.visibility = if (canManage) View.VISIBLE else View.GONE
     }
 }

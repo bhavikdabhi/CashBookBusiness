@@ -19,6 +19,7 @@ class CustomOptionsMenu(private val context: Context, private val anchor: View) 
     private var onReport: (() -> Unit)? = null
     private var onMember: (() -> Unit)? = null
     private var onSettings: (() -> Unit)? = null
+
     private var onDelete: (() -> Unit)? = null
 
     init {

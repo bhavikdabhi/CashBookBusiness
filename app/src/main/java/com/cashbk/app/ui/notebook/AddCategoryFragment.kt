@@ -27,7 +27,7 @@ class AddCategoryFragment : Fragment() {
     private var notebookId: String? = null
 
     private var selectedType = "expense"
-    private var selectedColorHex = "#EF5350" // Default red
+    private var selectedColorHex = "#EF5350"
     private var selectedIconName = "ic_cat_money"
 
     private val colorOptions = listOf(
@@ -219,7 +219,8 @@ class AddCategoryFragment : Fragment() {
     }
 
     private fun saveCategory() {
-        val name = binding.etCategoryName.toString().trim()
+        val name = binding.etName.text.toString().trim()
+
         
         if (name.isEmpty()) {
             Toast.makeText(requireContext(), "Please enter a category name", Toast.LENGTH_SHORT).show()

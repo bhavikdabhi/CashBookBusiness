@@ -15,7 +15,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import androidx.core.content.ContextCompat
 import com.cashbk.app.R
-
+import com.cashbk.app.utils.startPulseAnimation
+import com.cashbk.app.utils.stopPulseAnimation
 
 class BusinessSelectionBottomSheet(
     private val currentBusinessId: String?,
@@ -58,9 +59,24 @@ class BusinessSelectionBottomSheet(
         binding.recyclerBusinessList.adapter = adapter
     }
 
+    private fun hideShimmerWithDelay() {
+        android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+            if (!::binding.isInitialized || view == null) return@postDelayed
+            try {
+                binding.layoutShimmerBusiness.stopPulseAnimation()
+                binding.layoutShimmerBusiness.visibility = View.GONE
+                binding.recyclerBusinessList.visibility = View.VISIBLE
+            } catch (e: Exception) { e.printStackTrace() }
+        }, 2000)
+    }
+
     private fun fetchBusinesses() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val db = FirebaseDatabase.getInstance().reference
+
+        binding.layoutShimmerBusiness.visibility = View.VISIBLE
+        binding.layoutShimmerBusiness.startPulseAnimation()
+        binding.recyclerBusinessList.visibility = View.GONE
 
         ownedQuery = db.child("businesses")
             .orderByChild("ownerId")
@@ -82,18 +98,18 @@ class BusinessSelectionBottomSheet(
                 fetchSharedBusinesses(userId)
             }
 
-            override fun onCancelled(error: DatabaseError) {}
+            override fun onCancelled(error: DatabaseError) {
+                hideShimmerWithDelay()
+            }
         })
     }
 
     private fun fetchSharedBusinesses(userId: String) {
-
         val db = FirebaseDatabase.getInstance().reference
 
         db.child("business_members")
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-
                     val sharedBusinessIds = mutableListOf<String>()
 
                     // Find businesses where current user is member
@@ -105,9 +121,11 @@ class BusinessSelectionBottomSheet(
 
                     if (sharedBusinessIds.isEmpty()) {
                         adapter.notifyDataSetChanged()
+                        hideShimmerWithDelay()
                         return
                     }
 
+                    var pendingChecks = sharedBusinessIds.size
                     // Fetch each shared business
                     sharedBusinessIds.forEach { businessId ->
                         db.child("businesses").child(businessId)
@@ -122,14 +140,25 @@ class BusinessSelectionBottomSheet(
                                     }
 
                                     adapter.notifyDataSetChanged()
+                                    pendingChecks--
+                                    if (pendingChecks == 0) {
+                                        hideShimmerWithDelay()
+                                    }
                                 }
 
-                                override fun onCancelled(error: DatabaseError) {}
+                                override fun onCancelled(error: DatabaseError) {
+                                    pendingChecks--
+                                    if (pendingChecks == 0) {
+                                        hideShimmerWithDelay()
+                                    }
+                                }
                             })
                     }
                 }
 
-                override fun onCancelled(error: DatabaseError) {}
+                override fun onCancelled(error: DatabaseError) {
+                    hideShimmerWithDelay()
+                }
             })
     }
 

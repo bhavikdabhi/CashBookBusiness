@@ -91,6 +91,11 @@ class BusinessDetailActivity : AppCompatActivity() {
     }
 
     private fun loadFragment(fragment: Fragment) {
+        if (fragment is ProfileFragment) {
+            binding.topBar.visibility = View.GONE
+        } else {
+            binding.topBar.visibility = View.VISIBLE
+        }
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
             .commit()

@@ -67,7 +67,8 @@
             android:fontFamily="@font/roboto_regular"
             android:textFontWeight="600"
             android:textSize="@dimen/_12ssp"
-            android:inputType="none"/>
+            android:inputType="none"
+            android:popupBackground="@drawable/bg_dropdown_popup"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 

@@ -161,6 +161,18 @@
                 <!-- List Section -->
 
                 <!-- Add New Category Placeholder -->
+                <!-- Categories Shimmer Loader -->
+                <LinearLayout
+                    android:id="@+id/layoutShimmerCategories"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:layout_marginTop="@dimen/_8sdp">
+                    <include layout="@layout/item_category_shimmer" />
+                    <include layout="@layout/item_category_shimmer" />
+                </LinearLayout>
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvCategories"
                     android:layout_width="match_parent"

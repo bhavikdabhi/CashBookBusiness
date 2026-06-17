@@ -29,20 +29,22 @@ class PartyAdapter(
         val party = parties[position]
         val context = holder.itemView.context
         
-        holder.binding.tvPartyName.text = party.name
-        holder.binding.tvPartyRole.text = party.role
+        holder.binding.tvPartyName.text = party.name ?: "Unknown"
+        holder.binding.tvPartyRole.text = party.role ?: "VENDOR"
 
         // Apply dynamic color tint to the icon container
         try {
-            val color = Color.parseColor(party.colorHex)
+            val colorStr = party.colorHex ?: "#80DEEA"
+            val color = Color.parseColor(colorStr)
             holder.binding.ivPartyIcon.backgroundTintList = ColorStateList.valueOf(color)
             holder.binding.tvPartyName.setTextColor(color)
         } catch (e: Exception) {
-            holder.binding.ivPartyIcon.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#40FFFFFF"))
+            holder.binding.ivPartyIcon.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#80DEEA"))
         }
 
         // Load custom icon
-        val resId = context.resources.getIdentifier(party.iconResName, "drawable", context.packageName)
+        val iconName = party.iconResName ?: "ic_party_person"
+        val resId = context.resources.getIdentifier(iconName, "drawable", context.packageName)
         if (resId != 0) {
             holder.binding.ivPartyIcon.setImageResource(resId)
         } else {

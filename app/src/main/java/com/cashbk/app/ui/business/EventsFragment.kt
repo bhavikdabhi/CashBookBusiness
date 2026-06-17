@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.AdapterView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -24,6 +25,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import java.text.SimpleDateFormat
 import java.util.*
+import com.cashbk.app.utils.startPulseAnimation
+import com.cashbk.app.utils.stopPulseAnimation
 
 class EventsFragment : Fragment() {
 
@@ -115,6 +118,10 @@ class EventsFragment : Fragment() {
             filteredEventsList.clear()
             rebuildCalendar()
             filterEventsForSelectedDate()
+            if (_binding != null) {
+                binding.layoutShimmerEvents.stopPulseAnimation()
+                binding.layoutShimmerEvents.visibility = View.GONE
+            }
         }
     }
 
@@ -265,10 +272,18 @@ class EventsFragment : Fragment() {
     private fun listenToEvents() {
         if (currentBusinessId.isNullOrEmpty()) return
         
+        if (_binding != null) {
+            binding.layoutShimmerEvents.visibility = View.VISIBLE
+            binding.layoutShimmerEvents.startPulseAnimation()
+            binding.rvEvents.visibility = View.GONE
+            binding.layoutEmpty.visibility = View.GONE
+        }
+        
         eventsListener = FirebaseDatabase.getInstance().reference.child("events").child(currentBusinessId!!)
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (_binding == null) return
+
                     allEventsList.clear()
                     for (child in snapshot.children) {
                         val event = child.getValue(EventItem::class.java)
@@ -278,14 +293,26 @@ class EventsFragment : Fragment() {
                             allEventsList.add(event)
                         }
                     }
-                    rebuildCalendar()
-                    filterEventsForSelectedDate()
+
+                    // Artificially delay hiding the shimmer by 2 seconds so the effect is visible
+                    android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                        if (_binding == null) return@postDelayed
+                        binding.layoutShimmerEvents.stopPulseAnimation()
+                        binding.layoutShimmerEvents.visibility = View.GONE
+                        rebuildCalendar()
+                        filterEventsForSelectedDate()
+                    }, 2000)
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    if (isAdded) {
-                        Toast.makeText(context, "Failed to load events: ${error.message}", Toast.LENGTH_SHORT).show()
-                    }
+                    android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                        if (_binding == null) return@postDelayed
+                        binding.layoutShimmerEvents.stopPulseAnimation()
+                        binding.layoutShimmerEvents.visibility = View.GONE
+                        if (isAdded && FirebaseAuth.getInstance().currentUser != null) {
+                            Toast.makeText(context, "Failed to load events: ${error.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }, 2000)
                 }
             })
     }
@@ -307,9 +334,11 @@ class EventsFragment : Fragment() {
 
     private fun setupEventsRecyclerView() {
         val ctx = context ?: return
+        val notebooksMap = notebooksList.associate { it.id to it.name }
         eventAdapter = EventAdapter(
             filteredEventsList,
             currentUserRole,
+            notebooksMap,
             onEditClick = { event -> showEditEventDialog(event) },
             onDeleteClick = { event -> deleteEvent(event) }
         )
@@ -333,11 +362,13 @@ class EventsFragment : Fragment() {
         val firstDayOfWeek = cal.get(Calendar.DAY_OF_WEEK) // 1 = Sun, 2 = Mon, ...
         val maxDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH)
 
-        // Previous Month Padding
+        // Previous Month Padding (Monday-start alignment)
         val prevMonthCal = cal.clone() as Calendar
         prevMonthCal.add(Calendar.MONTH, -1)
         val maxDayPrev = prevMonthCal.getActualMaximum(Calendar.DAY_OF_MONTH)
-        val paddingCount = firstDayOfWeek - 1
+        val paddingCount = if (firstDayOfWeek == Calendar.SUNDAY) 6 else firstDayOfWeek - 2
+
+        val tempDaysList = mutableListOf<CalendarDay>()
 
         for (i in paddingCount - 1 downTo 0) {
             val d = Calendar.getInstance()
@@ -345,7 +376,7 @@ class EventsFragment : Fragment() {
             d.set(Calendar.MONTH, prevMonthCal.get(Calendar.MONTH))
             d.set(Calendar.DAY_OF_MONTH, maxDayPrev - i)
             setMidnight(d)
-            calendarDaysList.add(CalendarDay(d.time, d.get(Calendar.DAY_OF_MONTH).toString(), false, isToday(d)))
+            tempDaysList.add(CalendarDay(d.time, d.get(Calendar.DAY_OF_MONTH).toString(), false, isToday(d)))
         }
 
         // Current Month Days
@@ -356,22 +387,33 @@ class EventsFragment : Fragment() {
             d.set(Calendar.DAY_OF_MONTH, day)
             setMidnight(d)
             val isSel = isSameDay(d, selectedDate)
-            calendarDaysList.add(CalendarDay(d.time, day.toString(), true, isToday(d), isSel))
+            tempDaysList.add(CalendarDay(d.time, day.toString(), true, isToday(d), isSel))
         }
 
-        // Next Month Padding
+        // Next Month Padding (populate up to 42 cells to check for overflow)
         val nextMonthCal = cal.clone() as Calendar
         nextMonthCal.add(Calendar.MONTH, 1)
-        val totalCells = 42
-        val remainingCells = totalCells - calendarDaysList.size
+        val remainingCells = 42 - tempDaysList.size
         for (day in 1..remainingCells) {
             val d = Calendar.getInstance()
             d.set(Calendar.YEAR, nextMonthCal.get(Calendar.YEAR))
             d.set(Calendar.MONTH, nextMonthCal.get(Calendar.MONTH))
             d.set(Calendar.DAY_OF_MONTH, day)
             setMidnight(d)
-            calendarDaysList.add(CalendarDay(d.time, day.toString(), false, isToday(d)))
+            tempDaysList.add(CalendarDay(d.time, day.toString(), false, isToday(d)))
         }
+
+        // Move current month days from Row 6 (indices 35-41) to Row 1 (indices 0-6)
+        for (i in 35..41) {
+            val day = tempDaysList[i]
+            if (day.isCurrentMonth) {
+                val targetIndex = i - 35
+                tempDaysList[targetIndex] = day
+            }
+        }
+
+        // Keep exactly 5 rows (35 cells)
+        calendarDaysList.addAll(tempDaysList.subList(0, 35))
 
         // Set event indicator dots
         val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
@@ -388,9 +430,6 @@ class EventsFragment : Fragment() {
         // Update Labels
         val sdf = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
         binding.tvMonthYear.text = sdf.format(currentMonth.time)
-
-        val sdfHeader = SimpleDateFormat("EEEE, dd MMM yyyy", Locale.getDefault())
-        binding.tvSelectedDateLabel.text = "Events on ${sdfHeader.format(selectedDate.time)}"
     }
 
     private fun filterEventsForSelectedDate() {
@@ -406,6 +445,9 @@ class EventsFragment : Fragment() {
 
         filteredEventsList.addAll(matches)
         
+        // Update active count badge
+        binding.tvActiveCount.text = "${filteredEventsList.size} Active"
+        
         // Notify adapter updates with current role context
         setupEventsRecyclerView()
 
@@ -415,6 +457,7 @@ class EventsFragment : Fragment() {
         } else {
             binding.layoutEmpty.visibility = View.GONE
             binding.rvEvents.visibility = View.VISIBLE
+            
         }
     }
 
@@ -482,30 +525,6 @@ class EventsFragment : Fragment() {
             dialogBinding.etEventDescription.setText(editingEvent.description)
         }
 
-        // Setup Notebook selection
-        val notebookNames = notebooksList.map { it.name }
-        val notebookAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown_text, notebookNames)
-        dialogBinding.actvNotebook.setAdapter(notebookAdapter)
-
-        var selectedNotebookId = editingEvent?.notebookId ?: ""
-        if (selectedNotebookId.isNotEmpty()) {
-            val currentNotebook = notebooksList.find { it.id == selectedNotebookId }
-            if (currentNotebook != null) {
-                dialogBinding.actvNotebook.setText(currentNotebook.name, false)
-            }
-        } else if (notebooksList.isNotEmpty()) {
-            dialogBinding.actvNotebook.setText(notebooksList[0].name, false)
-            selectedNotebookId = notebooksList[0].id
-        }
-
-        // Setup Visibility selection
-        val visibilityOptions = listOf("Everyone", "Specific Members", "Admin & Partner Only", "Only Me")
-        val visibilityAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown_text, visibilityOptions)
-        dialogBinding.actvVisibility.setAdapter(visibilityAdapter)
-
-        val initialVisibility = editingEvent?.visibility ?: "Everyone"
-        dialogBinding.actvVisibility.setText(initialVisibility, false)
-
         // Specific Members selection state
         val selectedMemberUidsMap = mutableMapOf<String, Boolean>()
         if (editingEvent != null) {
@@ -523,10 +542,37 @@ class EventsFragment : Fragment() {
             }
         }
 
-        if (initialVisibility == "Specific Members") {
-            dialogBinding.layoutMemberSelection.visibility = View.VISIBLE
+        var selectedNotebookId = editingEvent?.notebookId ?: ""
+
+        // Setup Notebook selection
+        val notebookNames = notebooksList.map { it.name }
+        val notebookAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, notebookNames)
+        dialogBinding.actvNotebook.setAdapter(notebookAdapter)
+
+        if (selectedNotebookId.isNotEmpty()) {
+            val currentNotebook = notebooksList.find { it.id == selectedNotebookId }
+            if (currentNotebook != null) {
+                dialogBinding.actvNotebook.setText(currentNotebook.name, false)
+            }
+        } else if (notebooksList.isNotEmpty()) {
+            dialogBinding.actvNotebook.setText(notebooksList[0].name, false)
+            selectedNotebookId = notebooksList[0].id
+        }
+
+        dialogBinding.actvNotebook.setOnItemClickListener { _, _, position, _ ->
+            selectedNotebookId = notebooksList[position].id
+            // Reset selected members if notebook changes
+            selectedMemberUidsMap.clear()
             updateSelectedMembersText()
         }
+
+        // Setup Visibility selection
+        val visibilityOptions = listOf("Everyone", "Specific Members", "Admin & Partner Only", "Only Me")
+        val visibilityAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, visibilityOptions)
+        dialogBinding.actvVisibility.setAdapter(visibilityAdapter)
+
+        val initialVisibility = editingEvent?.visibility ?: "Everyone"
+        dialogBinding.actvVisibility.setText(initialVisibility, false)
 
         dialogBinding.actvVisibility.setOnItemClickListener { _, _, position, _ ->
             val visibility = visibilityOptions[position]
@@ -538,10 +584,8 @@ class EventsFragment : Fragment() {
             }
         }
 
-        dialogBinding.actvNotebook.setOnItemClickListener { _, _, position, _ ->
-            selectedNotebookId = notebooksList[position].id
-            // Reset selected members if notebook changes
-            selectedMemberUidsMap.clear()
+        if (initialVisibility == "Specific Members") {
+            dialogBinding.layoutMemberSelection.visibility = View.VISIBLE
             updateSelectedMembersText()
         }
 
@@ -594,6 +638,16 @@ class EventsFragment : Fragment() {
 
             if (eventName.isEmpty()) {
                 dialogBinding.etEventName.error = "Event Name is required"
+                return@setOnClickListener
+            }
+
+            if (eventName.length > 100) {
+                dialogBinding.etEventName.error = "Event Name cannot exceed 100 characters"
+                return@setOnClickListener
+            }
+
+            if (eventDesc.length > 1000) {
+                dialogBinding.etEventDescription.error = "Description cannot exceed 1000 characters"
                 return@setOnClickListener
             }
 

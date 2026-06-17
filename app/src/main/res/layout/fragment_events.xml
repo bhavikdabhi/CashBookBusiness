@@ -6,19 +6,34 @@
     android:layout_height="match_parent"
     android:background="@color/bg_color">
 
+    <!-- Title: Event Calendar -->
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_16sdp"
+        android:text="Event Calendar"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_22ssp"
+        android:fontFamily="@font/roboto_medium"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <!-- Calendar Card -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardCalendar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_10sdp"
-        app:cardBackgroundColor="@color/card_bg"
-        app:cardCornerRadius="@dimen/_12sdp"
+        android:layout_marginHorizontal="@dimen/_14sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        app:cardBackgroundColor="@color/stitch_surface_container_low"
+        app:cardCornerRadius="@dimen/_16sdp"
         app:cardElevation="0dp"
         app:strokeColor="@color/glass_border"
         app:strokeWidth="1dp"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -28,49 +43,68 @@
             android:orientation="vertical"
             android:padding="@dimen/_8sdp">
 
-            <!-- Calendar Month/Year Header -->
-            <LinearLayout
+            <!-- Calendar Month/Year Header & Navigation Controls -->
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-                <ImageButton
-                    android:id="@+id/btnPrevMonth"
-                    android:layout_width="@dimen/_28sdp"
-                    android:layout_height="@dimen/_28sdp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_back"
-                    app:tint="@color/text_color" />
+                android:layout_marginHorizontal="@dimen/_4sdp"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:layout_marginBottom="@dimen/_8sdp">
 
                 <TextView
                     android:id="@+id/tvMonthYear"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:textColor="@color/text_color"
-                    android:textSize="@dimen/_14ssp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_16ssp"
                     android:textStyle="bold"
                     android:fontFamily="@font/roboto_medium"
-                    tools:text="July 2026" />
+                    tools:text="October 2024" />
 
-                <ImageButton
-                    android:id="@+id/btnNextMonth"
-                    android:layout_width="@dimen/_28sdp"
-                    android:layout_height="@dimen/_28sdp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_arrow_right"
-                    app:tint="@color/text_color" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:orientation="horizontal">
 
-            </LinearLayout>
+                    <!-- Prev Button -->
+                    <ImageButton
+                        android:id="@+id/btnPrevMonth"
+                        android:layout_width="@dimen/_26sdp"
+                        android:layout_height="@dimen/_26sdp"
+                        android:background="@drawable/bg_glass_card"
+                        android:backgroundTint="@color/stitch_surface_container_high"
+                        android:src="@drawable/ic_back"
+                        android:padding="@dimen/_6sdp"
+                        android:scaleType="fitCenter"
+                        app:tint="@color/white" />
+
+                    <!-- Next Button -->
+                    <ImageButton
+                        android:id="@+id/btnNextMonth"
+                        android:layout_width="@dimen/_26sdp"
+                        android:layout_height="@dimen/_26sdp"
+                        android:layout_marginStart="@dimen/_8sdp"
+                        android:background="@drawable/bg_glass_card"
+                        android:backgroundTint="@color/stitch_surface_container_high"
+                        android:src="@drawable/ic_arrow_right"
+                        android:padding="@dimen/_6sdp"
+                        android:scaleType="fitCenter"
+                        app:tint="@color/white" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
 
             <!-- Weekdays Header -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_4sdp"
                 android:layout_marginBottom="@dimen/_4sdp"
                 android:weightSum="7">
 
@@ -79,63 +113,70 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Sun"
+                    android:text="MON"
                     android:textColor="@color/gray"
-                    android:textSize="@dimen/_11ssp" />
+                    android:textSize="@dimen/_9ssp"
+                    android:fontFamily="@font/roboto_medium" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Mon"
+                    android:text="TUE"
                     android:textColor="@color/gray"
-                    android:textSize="@dimen/_11ssp" />
+                    android:textSize="@dimen/_9ssp"
+                    android:fontFamily="@font/roboto_medium" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Tue"
+                    android:text="WED"
                     android:textColor="@color/gray"
-                    android:textSize="@dimen/_11ssp" />
+                    android:textSize="@dimen/_9ssp"
+                    android:fontFamily="@font/roboto_medium" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Wed"
+                    android:text="THU"
                     android:textColor="@color/gray"
-                    android:textSize="@dimen/_11ssp" />
+                    android:textSize="@dimen/_9ssp"
+                    android:fontFamily="@font/roboto_medium" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Thu"
+                    android:text="FRI"
                     android:textColor="@color/gray"
-                    android:textSize="@dimen/_11ssp" />
+                    android:textSize="@dimen/_9ssp"
+                    android:fontFamily="@font/roboto_medium" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Fri"
+                    android:text="SAT"
                     android:textColor="@color/gray"
-                    android:textSize="@dimen/_11ssp" />
+                    android:textSize="@dimen/_9ssp"
+                    android:fontFamily="@font/roboto_medium" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Sat"
+                    android:text="SUN"
                     android:textColor="@color/gray"
-                    android:textSize="@dimen/_11ssp" />
+                    android:textSize="@dimen/_9ssp"
+                    android:fontFamily="@font/roboto_medium" />
 
             </LinearLayout>
 
@@ -149,30 +190,72 @@
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Selected Date Events Title -->
-    <TextView
-        android:id="@+id/tvSelectedDateLabel"
-        android:layout_width="0dp"
+    <!-- Selected Date Events Header Layout -->
+    <RelativeLayout
+        android:id="@+id/layoutEventsHeader"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/_12sdp"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:textColor="@color/text_color"
-        android:textSize="@dimen/_13ssp"
-        android:textStyle="bold"
+        android:layout_marginHorizontal="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_16sdp"
         app:layout_constraintTop_toBottomOf="@id/cardCalendar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:text="Events - June 14, 2026" />
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/tvUpcomingLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:text="Upcoming Events"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_15ssp"
+            android:fontFamily="@font/roboto_medium"
+            android:textStyle="bold" />
+
+        <!-- Count Active Pill -->
+        <TextView
+            android:id="@+id/tvActiveCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/bg_badge_capsule"
+            android:paddingHorizontal="@dimen/_10sdp"
+            android:paddingVertical="@dimen/_4sdp"
+            android:textColor="@color/stitch_tertiary"
+            android:textSize="@dimen/_10ssp"
+            android:fontFamily="@font/roboto_medium"
+            tools:text="3 Active" />
+
+    </RelativeLayout>
+
+    <!-- Events Shimmer Loaders -->
+    <LinearLayout
+        android:id="@+id/layoutShimmerEvents"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/_6sdp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/layoutEventsHeader"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+        <include layout="@layout/item_event_shimmer" />
+        <include layout="@layout/item_event_shimmer" />
+        <include layout="@layout/item_event_shimmer" />
+    </LinearLayout>
 
     <!-- Events List -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvEvents"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/_4sdp"
+        android:layout_marginTop="@dimen/_6sdp"
         android:clipToPadding="false"
         android:paddingBottom="@dimen/_80sdp"
-        app:layout_constraintTop_toBottomOf="@id/tvSelectedDateLabel"
+        app:layout_constraintTop_toBottomOf="@id/layoutEventsHeader"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -185,7 +268,7 @@
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/tvSelectedDateLabel"
+        app:layout_constraintTop_toBottomOf="@id/layoutEventsHeader"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

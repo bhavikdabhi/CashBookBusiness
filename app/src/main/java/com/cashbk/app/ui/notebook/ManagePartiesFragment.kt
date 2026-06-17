@@ -13,6 +13,8 @@ import com.cashbk.app.adapter.PartyAdapter
 import com.cashbk.app.databinding.FragmentManagePartiesBinding
 import com.cashbk.app.dataclass.Party
 import com.google.firebase.database.*
+import com.cashbk.app.utils.startPulseAnimation
+import com.cashbk.app.utils.stopPulseAnimation
 
 class ManagePartiesFragment : Fragment() {
 
@@ -95,6 +97,12 @@ class ManagePartiesFragment : Fragment() {
     }
 
     private fun fetchParties() {
+        if (_binding != null) {
+            binding.layoutShimmerParties.visibility = View.VISIBLE
+            binding.layoutShimmerParties.startPulseAnimation()
+            binding.rvParties.visibility = View.GONE
+        }
+
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 partiesList.clear()
@@ -108,13 +116,23 @@ class ManagePartiesFragment : Fragment() {
                     }
                 }
 
-                partyAdapter.updateData(partiesList)
+                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                    if (_binding == null) return@postDelayed
+                    binding.layoutShimmerParties.stopPulseAnimation()
+                    binding.layoutShimmerParties.visibility = View.GONE
+                    binding.rvParties.visibility = View.VISIBLE
+                    partyAdapter.updateData(partiesList)
+                }, 2000)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                if (_binding != null) {
+                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                    if (_binding == null) return@postDelayed
+                    binding.layoutShimmerParties.stopPulseAnimation()
+                    binding.layoutShimmerParties.visibility = View.GONE
+                    binding.rvParties.visibility = View.VISIBLE
                     Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
-                }
+                }, 2000)
             }
         })
     }

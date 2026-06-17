@@ -15,6 +15,8 @@ import com.cashbk.app.adapter.CategoryAdapter
 import com.cashbk.app.databinding.FragmentManageCategoriesBinding
 import com.cashbk.app.dataclass.Category
 import com.google.firebase.database.*
+import com.cashbk.app.utils.startPulseAnimation
+import com.cashbk.app.utils.stopPulseAnimation
 
 class ManageCategoriesFragment : Fragment() {
 
@@ -106,6 +108,12 @@ class ManageCategoriesFragment : Fragment() {
     }
 
     private fun fetchCategories() {
+        if (_binding != null) {
+            binding.layoutShimmerCategories.visibility = View.VISIBLE
+            binding.layoutShimmerCategories.startPulseAnimation()
+            binding.rvCategories.visibility = View.GONE
+        }
+
         valueEventListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (_binding == null) return
@@ -122,14 +130,25 @@ class ManageCategoriesFragment : Fragment() {
                     }
                 }
 
-                categoryAdapter.updateData(categoriesList)
-                updateEmptyState()
+                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                    if (_binding == null) return@postDelayed
+                    binding.layoutShimmerCategories.stopPulseAnimation()
+                    binding.layoutShimmerCategories.visibility = View.GONE
+                    binding.rvCategories.visibility = View.VISIBLE
+                    
+                    categoryAdapter.updateData(categoriesList)
+                    updateEmptyState()
+                }, 2000)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                if (_binding != null) {
+                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                    if (_binding == null) return@postDelayed
+                    binding.layoutShimmerCategories.stopPulseAnimation()
+                    binding.layoutShimmerCategories.visibility = View.GONE
+                    binding.rvCategories.visibility = View.VISIBLE
                     Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
-                }
+                }, 2000)
             }
         }
 

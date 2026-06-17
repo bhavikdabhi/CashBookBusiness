@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             style="@style/GlassInput"
             android:hint="Event Date"
-            android:layout_marginBottom="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_8sdp"
             android:textColorHint="@color/gray">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -87,7 +87,8 @@
                 android:textColor="@color/text_color"
                 android:fontFamily="@font/roboto_regular"
                 android:textSize="@dimen/_12ssp"
-                android:inputType="none"/>
+                android:inputType="none"
+                android:popupBackground="@drawable/bg_dropdown_popup"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Visibility Selector -->
@@ -111,7 +112,8 @@
                 android:textColor="@color/text_color"
                 android:fontFamily="@font/roboto_regular"
                 android:textSize="@dimen/_12ssp"
-                android:inputType="none"/>
+                android:inputType="none"
+                android:popupBackground="@drawable/bg_dropdown_popup"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Specific Members Selection Row -->
@@ -149,6 +151,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/GlassInput"
+            android:layout_marginTop="@dimen/_7sdp"
             android:hint="Event Description (Optional)"
             android:layout_marginBottom="@dimen/_16sdp"
             android:textColorHint="@color/gray">

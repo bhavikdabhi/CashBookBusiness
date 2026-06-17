@@ -96,14 +96,16 @@ class RegisterFragment : Fragment() {
                                                     startActivity(Intent(requireContext(), BusinessDetailActivity::class.java))
                                                     requireActivity().finish()
                                                 } else {
-                                                    Toast.makeText(requireContext(), "Failed to save user data: ${dbTask.exception?.message}", Toast.LENGTH_SHORT).show()
+                                                    user.delete().addOnCompleteListener {
+                                                        Toast.makeText(requireContext(), "Failed to save user data: ${dbTask.exception?.message}", Toast.LENGTH_SHORT).show()
+                                                    }
                                                 }
                                             }
                                     }
                                 }
 
 
-                                
+
 
                                 override fun onCancelled(error: com.google.firebase.database.DatabaseError) {
                                     Toast.makeText(requireContext(), "Database Error: ${error.message}", Toast.LENGTH_SHORT).show()

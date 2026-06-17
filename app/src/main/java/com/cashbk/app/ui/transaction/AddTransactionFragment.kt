@@ -318,7 +318,19 @@ class AddTransactionFragment : Fragment() {
 
                     // Prepend a placeholder "--Select--" entry
                     val spinnerItems = mutableListOf("-- Select Party --") + parties.map { it.name }
-                    val partyAdapter = ArrayAdapter(requireContext(), com.cashbk.app.R.layout.item_dropdown_text, spinnerItems)
+                    val partyAdapter = object : ArrayAdapter<String>(requireContext(), com.cashbk.app.R.layout.item_dropdown_text, spinnerItems) {
+                        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                            val v = super.getView(position, convertView, parent) as android.widget.TextView
+                            v.setTextColor(android.graphics.Color.WHITE)
+                            return v
+                        }
+                        override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                            val v = super.getDropDownView(position, convertView, parent) as android.widget.TextView
+                            v.setTextColor(android.graphics.Color.WHITE)
+                            v.setBackgroundColor(androidx.core.content.ContextCompat.getColor(context, com.cashbk.app.R.color.card_bg))
+                            return v
+                        }
+                    }
                     binding.partySpinner.adapter = partyAdapter
                     // Default to the placeholder (index 0)
                     binding.partySpinner.setSelection(0)
@@ -348,8 +360,19 @@ class AddTransactionFragment : Fragment() {
         if (amount == null) {
             binding.tilAmount.error = "Enter valid amount"
             return
+        } else if (amount <= 0.0) {
+            binding.tilAmount.error = "Amount must be greater than zero"
+            return
         } else {
             binding.tilAmount.error = null
+        }
+        
+        val remarkText = binding.etRemark.text.toString().trim()
+        if (remarkText.length > 500) {
+            binding.tilRemark.error = "Remark cannot exceed 500 characters"
+            return
+        } else {
+            binding.tilRemark.error = null
         }
         
         // Party is optional — skip validation if placeholder is selected

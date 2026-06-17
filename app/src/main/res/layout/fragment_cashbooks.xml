@@ -55,6 +55,19 @@
                         app:tint="@color/text_color"/>
                 </LinearLayout>
 
+                <!-- Notebook Shimmer Loader -->
+                <LinearLayout
+                    android:id="@+id/layoutShimmerNotebooks"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:layout_marginTop="@dimen/_4sdp">
+                    <include layout="@layout/item_notebook_shimmer" />
+                    <include layout="@layout/item_notebook_shimmer" />
+                    <include layout="@layout/item_notebook_shimmer" />
+                </LinearLayout>
+
                 <!-- Notebook List -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_marginTop="@dimen/_4sdp"

@@ -52,20 +52,27 @@ class CalendarAdapter(
 
             if (item.isSelected) {
                 holder.binding.tvDayNumber.setBackgroundResource(R.drawable.bg_calendar_day_selected)
-                holder.binding.tvDayNumber.setTextColor(ContextCompat.getColor(context, R.color.white))
-            } else if (item.isToday) {
-                holder.binding.tvDayNumber.setBackgroundResource(R.drawable.bg_calendar_day_today)
-                holder.binding.tvDayNumber.setTextColor(ContextCompat.getColor(context, R.color.primary_color))
+                holder.binding.tvDayNumber.setTextColor(ContextCompat.getColor(context, R.color.nav_item_color))
             } else {
+                if (item.hasEvents) {
+                    holder.binding.tvDayNumber.setBackgroundResource(R.drawable.bg_calendar_day_event)
+                } else if (item.isToday) {
+                    holder.binding.tvDayNumber.setBackgroundResource(R.drawable.bg_calendar_day_today)
+                }
+
                 if (item.isCurrentMonth) {
-                    holder.binding.tvDayNumber.setTextColor(ContextCompat.getColor(context, R.color.text_color))
+                    if (item.isToday) {
+                        holder.binding.tvDayNumber.setTextColor(ContextCompat.getColor(context, R.color.primary_color))
+                    } else {
+                        holder.binding.tvDayNumber.setTextColor(ContextCompat.getColor(context, R.color.text_color))
+                    }
                 } else {
                     holder.binding.tvDayNumber.setTextColor(ContextCompat.getColor(context, R.color.gray))
-                    holder.binding.tvDayNumber.alpha = 0.6f
+                    holder.binding.tvDayNumber.alpha = 0.4f
                 }
             }
 
-            holder.binding.viewEventDot.visibility = if (item.hasEvents) View.VISIBLE else View.GONE
+            holder.binding.viewEventDot.visibility = View.GONE // Hidden in favor of circular border outline
 
             holder.itemView.setOnClickListener {
                 onDayClick(item)

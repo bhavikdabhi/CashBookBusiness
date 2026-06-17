@@ -52,6 +52,10 @@ class SettingsFragment : Fragment() {
         }
 
         binding.btnSaveName.setOnClickListener {
+            if (currentUserRole != "owner" && currentUserRole != "admin") {
+                Toast.makeText(requireContext(), "Only owners or admins can rename notebooks", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             val newName = binding.etNotebookName.text.toString().trim()
             if (newName.isNotEmpty()) {
                 updateNotebookName(newName)
@@ -81,6 +85,10 @@ class SettingsFragment : Fragment() {
         }
 
         binding.btnDuplicateNotebook.setOnClickListener {
+            if (currentUserRole == "reader") {
+                Toast.makeText(requireContext(), "Readers cannot duplicate notebooks", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             duplicateNotebook()
         }
 
@@ -153,7 +161,12 @@ class SettingsFragment : Fragment() {
         database.child("notebooks").child(newNotebookId).setValue(notebookData)
             .addOnSuccessListener {
                 // 2. Set Current User as Owner in Members
-                database.child("members").child(newNotebookId).child(currentUserId).setValue("owner")
+                val ownerData = mapOf(
+                    "uid" to currentUserId,
+                    "role" to "owner",
+                    "addedAt" to com.google.firebase.database.ServerValue.TIMESTAMP
+                )
+                database.child("members").child(newNotebookId).child(currentUserId).setValue(ownerData)
 
                 // 3. Clone Categories
                 database.child("categories").child(notebookId!!).get().addOnSuccessListener { snapshot ->

@@ -24,6 +24,18 @@
         android:padding="@dimen/_16sdp"
         android:textColor="@color/text_color"/>
 
+    <!-- Business Shimmer Loader -->
+    <LinearLayout
+        android:id="@+id/layoutShimmerBusiness"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <include layout="@layout/item_business_selection_shimmer" />
+        <include layout="@layout/item_business_selection_shimmer" />
+        <include layout="@layout/item_business_selection_shimmer" />
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_business_list"
         android:layout_width="match_parent"

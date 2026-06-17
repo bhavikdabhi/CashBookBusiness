@@ -9,6 +9,7 @@ import com.cashbk.app.R
 import com.cashbk.app.databinding.ItemEventBinding
 import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -28,6 +29,7 @@ data class EventItem(
 class EventAdapter(
     private val events: List<EventItem>,
     private val currentUserRole: String, // "owner", "partner", "admin", "writer", "reader"
+    private val notebooksMap: Map<String, String>, // notebookId -> name
     private val onEditClick: (EventItem) -> Unit,
     private val onDeleteClick: (EventItem) -> Unit
 ) : RecyclerView.Adapter<EventAdapter.ViewHolder>() {
@@ -49,7 +51,7 @@ class EventAdapter(
         val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
         // Event Name
-        holder.binding.tvEventName.text = "📅 ${event.name}"
+        holder.binding.tvEventName.text = event.name
 
         // Description
         if (event.description.isNotEmpty()) {
@@ -59,27 +61,64 @@ class EventAdapter(
             holder.binding.tvEventDescription.visibility = View.GONE
         }
 
-        // Selected Date
-        val sdfDate = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-        val dateString = sdfDate.format(Date(event.date))
-        holder.binding.tvEventDate.text = "🗓 Date: $dateString"
+        // Selected Date & Time (formatted like OCT 13, 09:00)
+        val calendarDate = Calendar.getInstance().apply { timeInMillis = event.date }
+        val calendarTime = Calendar.getInstance().apply { timeInMillis = event.createdAt }
+        calendarDate.set(Calendar.HOUR_OF_DAY, calendarTime.get(Calendar.HOUR_OF_DAY))
+        calendarDate.set(Calendar.MINUTE, calendarTime.get(Calendar.MINUTE))
+        val formattedDateTime = SimpleDateFormat("MMM dd, HH:mm", Locale.US).format(calendarDate.time).uppercase(Locale.US)
+        holder.binding.tvEventDate.text = formattedDateTime
 
-        // Added By
-        val creatorName = if (event.createdBy == currentUserId) "You" else event.createdByName.ifEmpty { "Unknown" }
-        holder.binding.tvAddedBy.text = "👤 Added By: $creatorName"
+        // Set Icon based on name keywords
+        val nameLower = event.name.lowercase(Locale.ROOT)
+        val iconRes = when {
+            nameLower.contains("audit") || nameLower.contains("tax") || nameLower.contains("distribution") || 
+            nameLower.contains("pay") || nameLower.contains("dividend") || nameLower.contains("finance") -> {
+                R.drawable.ic_business
+            }
+            nameLower.contains("summit") || nameLower.contains("meeting") || nameLower.contains("partner") || 
+            nameLower.contains("member") || nameLower.contains("team") || nameLower.contains("shareholder") || 
+            nameLower.contains("board") || nameLower.contains("party") -> {
+                R.drawable.ic_party_group
+            }
+            else -> R.drawable.ic_event
+        }
+        holder.binding.ivEventIcon.setImageResource(iconRes)
 
-        // Created Date & Time
-        val sdfDateTime = SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault())
-        val createdDateTimeString = sdfDateTime.format(Date(event.createdAt))
-        holder.binding.tvCreatedTime.text = "🕒 Created: $createdDateTimeString"
+        // Tags logic
+        // Tag 1: Notebook Name
+        val notebookName = notebooksMap[event.notebookId]
+        if (!notebookName.isNullOrEmpty()) {
+            holder.binding.tvTagNotebook.text = notebookName
+            holder.binding.tvTagNotebook.visibility = View.VISIBLE
+        } else {
+            holder.binding.tvTagNotebook.visibility = View.GONE
+        }
 
-        // Visibility
-        holder.binding.tvVisibility.text = "👁 Visibility: ${event.visibility}"
+        // Tag 2: Visibility Tag
+        val visibilityText = when (event.visibility) {
+            "Admin & Partner Only" -> "Admin Only"
+            "Specific Members" -> "Members Only"
+            "Only Me" -> "Private"
+            else -> "" // Don't show tag if Everyone is visibility
+        }
+        if (visibilityText.isNotEmpty()) {
+            holder.binding.tvTagVisibility.text = visibilityText
+            holder.binding.tvTagVisibility.visibility = View.VISIBLE
+            
+            // Adjust margin based on first tag visibility
+            val params = holder.binding.tvTagVisibility.layoutParams as ViewGroup.MarginLayoutParams
+            params.marginStart = if (holder.binding.tvTagNotebook.visibility == View.VISIBLE) {
+                context.resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._6sdp)
+            } else {
+                0
+            }
+            holder.binding.tvTagVisibility.layoutParams = params
+        } else {
+            holder.binding.tvTagVisibility.visibility = View.GONE
+        }
 
         // Options permissions check:
-        // - Owner or Admin: can edit/delete all events.
-        // - Partner: can edit/delete their own events.
-        // - Others: cannot edit/delete.
         val hasEditDeletePermission = currentUserRole == "owner" || 
                 currentUserRole == "admin" || 
                 (currentUserRole == "partner" && event.createdBy == currentUserId)

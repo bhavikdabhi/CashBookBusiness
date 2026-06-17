@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/_12sdp"
+    android:layout_marginVertical="@dimen/_6sdp"
+    app:cardBackgroundColor="@color/stitch_surface_container_low"
+    app:cardCornerRadius="@dimen/_14sdp"
+    app:cardElevation="0dp"
+    app:strokeColor="@color/glass_border"
+    app:strokeWidth="1dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_12sdp">
+
+        <!-- Icon Placeholder -->
+        <View
+            android:id="@+id/placeholderIcon"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
+            android:background="@drawable/bg_shimmer_placeholder"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Title Placeholder -->
+        <View
+            android:id="@+id/placeholderTitle"
+            android:layout_width="@dimen/_140sdp"
+            android:layout_height="@dimen/_13sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:background="@drawable/bg_shimmer_placeholder"
+            app:layout_constraintStart_toEndOf="@id/placeholderIcon"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Date Placeholder -->
+        <View
+            android:id="@+id/placeholderDate"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_10sdp"
+            android:background="@drawable/bg_shimmer_placeholder"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Description Placeholder -->
+        <View
+            android:id="@+id/placeholderDescription1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_11sdp"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:background="@drawable/bg_shimmer_placeholder"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/placeholderTitle"
+            app:layout_constraintTop_toBottomOf="@id/placeholderTitle" />
+
+        <View
+            android:id="@+id/placeholderDescription2"
+            android:layout_width="@dimen/_180sdp"
+            android:layout_height="@dimen/_11sdp"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:background="@drawable/bg_shimmer_placeholder"
+            app:layout_constraintStart_toStartOf="@id/placeholderTitle"
+            app:layout_constraintTop_toBottomOf="@id/placeholderDescription1" />
+
+        <!-- Tags Placeholder -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="@id/placeholderTitle"
+            app:layout_constraintTop_toBottomOf="@id/placeholderDescription2">
+
+            <View
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_16sdp"
+                android:background="@drawable/bg_shimmer_placeholder" />
+
+            <View
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_16sdp"
+                android:layout_marginStart="@dimen/_6sdp"
+                android:background="@drawable/bg_shimmer_placeholder" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

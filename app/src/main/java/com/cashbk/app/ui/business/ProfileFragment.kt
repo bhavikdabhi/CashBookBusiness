@@ -107,6 +107,13 @@ class ProfileFragment : Fragment() {
         }
 
         binding.btnSignOut.setOnClickListener {
+            profileListener?.let { listener ->
+                registeredUid?.let { uid ->
+                    database.child("users").child(uid).removeEventListener(listener)
+                }
+            }
+            profileListener = null
+
             auth.signOut()
             val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
             GoogleSignIn.getClient(requireActivity(), signInOptions).signOut().addOnCompleteListener {
@@ -231,7 +238,7 @@ class ProfileFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                if (isAdded) {
+                if (isAdded && auth.currentUser != null) {
                     Toast.makeText(context, "Failed to load profile", Toast.LENGTH_SHORT).show()
                 }
             }

@@ -29,6 +29,8 @@ import com.cashbk.app.databinding.PopupDeleteNotebookBinding
 import com.cashbk.app.fragment.AddBusinessFragment
 import com.cashbk.app.fragment.AddNotebookDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.cashbk.app.utils.startPulseAnimation
+import com.cashbk.app.utils.stopPulseAnimation
 
 class CashbooksFragment : Fragment() {
 
@@ -67,12 +69,23 @@ class CashbooksFragment : Fragment() {
         } else {
             notebookList.clear()
             notebookAdapter.notifyDataSetChanged()
+            if (_binding != null) {
+                binding.layoutShimmerNotebooks.stopPulseAnimation()
+                binding.layoutShimmerNotebooks.visibility = View.GONE
+            }
         }
     }
 
     private fun fetchNotebooks() {
         val id = currentBusinessId ?: return
         notebooksListener?.let { notebooksQuery?.removeEventListener(it) }
+        
+        if (_binding != null) {
+            binding.layoutShimmerNotebooks.visibility = View.VISIBLE
+            binding.layoutShimmerNotebooks.startPulseAnimation()
+            binding.notebooksRecyclerView.visibility = View.GONE
+            binding.layoutEmpty.visibility = View.GONE
+        }
         
         notebooksQuery = database.orderByChild("businessId").equalTo(id)
         notebooksListener = notebooksQuery?.addValueEventListener(object : ValueEventListener {
@@ -85,22 +98,34 @@ class CashbooksFragment : Fragment() {
                         notebook?.let { notebookList.add(it) }
                     }
                 }
-                if (isAdded) {
-                     notebookAdapter.notifyDataSetChanged()
-                     if (notebookList.isEmpty()) {
-                         binding.layoutEmpty.visibility = View.VISIBLE
-                         binding.notebooksRecyclerView.visibility = View.GONE
-                     } else {
-                         binding.layoutEmpty.visibility = View.GONE
-                         binding.notebooksRecyclerView.visibility = View.VISIBLE
-                     }
-                }
+                
+                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                    if (_binding == null) return@postDelayed
+                    binding.layoutShimmerNotebooks.stopPulseAnimation()
+                    binding.layoutShimmerNotebooks.visibility = View.GONE
+
+                    if (isAdded) {
+                         notebookAdapter.notifyDataSetChanged()
+                         if (notebookList.isEmpty()) {
+                             binding.layoutEmpty.visibility = View.VISIBLE
+                             binding.notebooksRecyclerView.visibility = View.GONE
+                         } else {
+                             binding.layoutEmpty.visibility = View.GONE
+                             binding.notebooksRecyclerView.visibility = View.VISIBLE
+                         }
+                    }
+                }, 2000)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                if (isAdded) {
-                    Toast.makeText(context, "Failed to load notebooks", Toast.LENGTH_SHORT).show()
-                }
+                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                    if (_binding == null) return@postDelayed
+                    binding.layoutShimmerNotebooks.stopPulseAnimation()
+                    binding.layoutShimmerNotebooks.visibility = View.GONE
+                    if (isAdded) {
+                        Toast.makeText(context, "Failed to load notebooks", Toast.LENGTH_SHORT).show()
+                    }
+                }, 2000)
             }
         })
     }

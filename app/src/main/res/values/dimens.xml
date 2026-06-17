@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dummy dimension to force generation of R.dimen class by Android Gradle Plugin -->
+    <dimen name="dummy_dimen">0dp</dimen>
+</resources>

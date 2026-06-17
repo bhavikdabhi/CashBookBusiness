@@ -35,13 +35,15 @@ class MembersActivity : AppCompatActivity() {
 
         entityId = intent.getStringExtra("entityId")
         entityType = intent.getStringExtra("entityType")
-        currentUserRole = intent.getStringExtra("currentUserRole")
 
         if (entityId.isNullOrEmpty() || entityType.isNullOrEmpty()) {
             Toast.makeText(this, "Error: Missing Entity ID or Type", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
+
+        // Hide FAB by default until verified from database
+        binding.addMemberFab.visibility = android.view.View.GONE
 
         // Correct Paths based on JSON:
         // Business Members -> business_members/{businessId}
@@ -51,6 +53,7 @@ class MembersActivity : AppCompatActivity() {
 
         setupRecyclerView()
         fetchMembers()
+        fetchCurrentUserRole()
 
         binding.btnBack.setOnClickListener {
             finish()
@@ -128,6 +131,16 @@ class MembersActivity : AppCompatActivity() {
     }
 
     private fun showAddMemberDialog() {
+        val canAdd = if (entityType == "business") {
+            currentUserRole == "owner" || currentUserRole == "partner"
+        } else {
+            currentUserRole == "owner" || currentUserRole == "admin"
+        }
+        if (!canAdd) {
+            Toast.makeText(this, "You do not have permission to add members", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val dialogBinding = DialogAddMemberBinding.inflate(layoutInflater)
         val dialog = com.google.android.material.dialog.MaterialAlertDialogBuilder(this, R.style.CashbkAlertDialog)
             .setView(dialogBinding.root)
@@ -237,6 +250,15 @@ class MembersActivity : AppCompatActivity() {
     }
 
     private fun deleteMember(member: Member) {
+        val canManage = if (entityType == "business") {
+            currentUserRole == "owner" || currentUserRole == "partner"
+        } else {
+            currentUserRole == "owner" || currentUserRole == "admin"
+        }
+        if (!canManage) {
+            Toast.makeText(this, "You do not have permission to remove members", Toast.LENGTH_SHORT).show()
+            return
+        }
         if (member.role == "admin" && currentUserRole != "owner") {
             Toast.makeText(this, "Only the business owner can remove an Admin", Toast.LENGTH_SHORT).show()
             return
@@ -249,6 +271,49 @@ class MembersActivity : AppCompatActivity() {
             }
             .setNegativeButton("No", null)
             .show()
+    }
+
+    private fun fetchCurrentUserRole() {
+        val currentUserId = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.uid ?: return
+        
+        // Check ownership first
+        val checkRef = if (entityType == "business") {
+            FirebaseDatabase.getInstance().reference.child("businesses").child(entityId!!)
+        } else {
+            FirebaseDatabase.getInstance().reference.child("notebooks").child(entityId!!)
+        }
+
+        checkRef.get().addOnSuccessListener { snapshot ->
+            val ownerId = snapshot.child("ownerId").value as? String
+            if (ownerId == currentUserId) {
+                currentUserRole = "owner"
+                updateUIForRole()
+                return@addOnSuccessListener
+            }
+
+            // Fallback to checking the member list
+            database.child(currentUserId).child("role").get()
+                .addOnSuccessListener { roleSnapshot ->
+                    currentUserRole = roleSnapshot.value as? String ?: "reader"
+                    updateUIForRole()
+                }
+                .addOnFailureListener {
+                    currentUserRole = "reader"
+                    updateUIForRole()
+                }
+        }.addOnFailureListener {
+            currentUserRole = "reader"
+            updateUIForRole()
+        }
+    }
+
+    private fun updateUIForRole() {
+        val canAdd = if (entityType == "business") {
+            currentUserRole == "owner" || currentUserRole == "partner"
+        } else {
+            currentUserRole == "owner" || currentUserRole == "admin"
+        }
+        binding.addMemberFab.visibility = if (canAdd) android.view.View.VISIBLE else android.view.View.GONE
     }
 
 

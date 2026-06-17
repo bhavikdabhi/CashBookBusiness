@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/_14sdp">
+
+    <!-- Icon Card Placeholder -->
+    <View
+        android:id="@+id/placeholderIcon"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:background="@drawable/bg_shimmer_placeholder"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <!-- Content Group -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginEnd="@dimen/_8sdp"
+        app:layout_constraintStart_toEndOf="@id/placeholderIcon"
+        app:layout_constraintEnd_toStartOf="@id/placeholderBalance"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- Title Placeholder -->
+        <View
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="@dimen/_14sdp"
+            android:background="@drawable/bg_shimmer_placeholder" />
+
+        <!-- Subtitle Placeholder -->
+        <View
+            android:layout_width="@dimen/_140sdp"
+            android:layout_height="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:background="@drawable/bg_shimmer_placeholder" />
+    </LinearLayout>
+
+    <!-- Balance Placeholder -->
+    <View
+        android:id="@+id/placeholderBalance"
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="@dimen/_12sdp"
+        android:layout_marginEnd="@dimen/_28sdp"
+        android:background="@drawable/bg_shimmer_placeholder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

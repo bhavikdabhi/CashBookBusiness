@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.App.GlassCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/_12sdp"
+    android:layout_marginHorizontal="@dimen/_20sdp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_16sdp">
+
+        <!-- Avatar Circular Placeholder -->
+        <View
+            android:id="@+id/placeholderAvatar"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
+            android:background="@drawable/bg_shimmer_placeholder"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <!-- Priority Tag Placeholder -->
+        <View
+            android:id="@+id/placeholderPriority"
+            android:layout_width="@dimen/_80sdp"
+            android:layout_height="@dimen/_12sdp"
+            android:background="@drawable/bg_shimmer_placeholder"
+            android:layout_marginTop="@dimen/_12sdp"
+            app:layout_constraintTop_toBottomOf="@id/placeholderAvatar"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <!-- Name Content Placeholder -->
+        <View
+            android:id="@+id/placeholderName"
+            android:layout_width="@dimen/_180sdp"
+            android:layout_height="@dimen/_16sdp"
+            android:background="@drawable/bg_shimmer_placeholder"
+            android:layout_marginTop="@dimen/_6sdp"
+            app:layout_constraintTop_toBottomOf="@id/placeholderPriority"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <!-- Contact Info Placeholder -->
+        <View
+            android:id="@+id/placeholderContact"
+            android:layout_width="@dimen/_120sdp"
+            android:layout_height="@dimen/_10sdp"
+            android:background="@drawable/bg_shimmer_placeholder"
+            android:layout_marginTop="@dimen/_6sdp"
+            app:layout_constraintTop_toBottomOf="@id/placeholderName"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <View
+            android:id="@+id/ViewLine"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="@color/glass_border"
+            android:layout_marginTop="@dimen/_12sdp"
+            app:layout_constraintTop_toBottomOf="@+id/placeholderContact" />
+
+        <!-- Footer Row Placeholder -->
+        <View
+            android:layout_width="@dimen/_90sdp"
+            android:layout_height="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:background="@drawable/bg_shimmer_placeholder"
+            app:layout_constraintTop_toBottomOf="@id/ViewLine"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

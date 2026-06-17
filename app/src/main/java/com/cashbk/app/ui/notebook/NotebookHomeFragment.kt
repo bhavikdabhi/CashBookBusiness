@@ -23,6 +23,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import com.cashbk.app.adapter.FilterAdapter
 import com.cashbk.app.adapter.FilterItem
+import com.cashbk.app.utils.startPulseAnimation
+import com.cashbk.app.utils.stopPulseAnimation
 
 class NotebookHomeFragment : Fragment() {
 
@@ -205,9 +207,17 @@ class NotebookHomeFragment : Fragment() {
     }
 
     private fun fetchTransactions() {
+        if (_binding != null) {
+            binding.layoutShimmerTransactions.visibility = View.VISIBLE
+            binding.layoutShimmerTransactions.startPulseAnimation()
+            binding.transactionsRecyclerView.visibility = View.GONE
+            binding.layoutEmptyTransactions.visibility = View.GONE
+        }
+
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (_binding == null) return // Safety check
+
                 val tempTransactions = mutableListOf<Transaction>()
                 if (snapshot.exists()) {
                     for (child in snapshot.children) {
@@ -244,13 +254,23 @@ class NotebookHomeFragment : Fragment() {
                 tempTransactions.reverse()
                 allTransactionsList.clear()
                 allTransactionsList.addAll(tempTransactions)
-                applyFilters()
+
+                // Artificially delay hiding the shimmer by 2 seconds so the effect is visible
+                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                    if (_binding == null) return@postDelayed
+                    binding.layoutShimmerTransactions.stopPulseAnimation()
+                    binding.layoutShimmerTransactions.visibility = View.GONE
+                    applyFilters()
+                }, 2000)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                if (_binding != null) {
+                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                    if (_binding == null) return@postDelayed
+                    binding.layoutShimmerTransactions.stopPulseAnimation()
+                    binding.layoutShimmerTransactions.visibility = View.GONE
                     Toast.makeText(requireContext(), "Failed to load: ${error.message}", Toast.LENGTH_SHORT).show()
-                }
+                }, 2000)
             }
         })
     }
