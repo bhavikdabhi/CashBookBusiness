@@ -340,6 +340,109 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <!-- Google Drive Card -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/card_googledrive"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:background="@drawable/bg_auth_card"
+            android:padding="@dimen/_16sdp"
+            app:layout_constraintTop_toBottomOf="@id/card_security">
+
+            <ImageView
+                android:id="@+id/ic_googledrive"
+                android:layout_width="@dimen/_18sdp"
+                android:layout_height="@dimen/_18sdp"
+                android:src="@drawable/ic_drive"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/auth_glow_1" />
+
+            <TextView
+                android:id="@+id/tv_drive_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:fontFamily="@font/roboto_bold"
+                android:text="Drive Management"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_12ssp"
+                app:layout_constraintBottom_toBottomOf="@id/ic_googledrive"
+                app:layout_constraintStart_toEndOf="@id/ic_googledrive"
+                app:layout_constraintTop_toTopOf="@id/ic_googledrive" />
+
+            <TextView
+                android:id="@+id/tv_drive_status"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Not Connected"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/_10ssp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ic_googledrive" />
+
+            <!-- Disconnected State: Connect Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_connect_drive"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:text="Connect Google Drive"
+                android:textColor="@color/white"
+                android:fontFamily="@font/roboto_bold"
+                android:textSize="@dimen/_10ssp"
+                app:icon="@drawable/ic_drive"
+                app:iconTint="@color/white"
+                app:backgroundTint="@color/primary_color"
+                app:cornerRadius="@dimen/_8sdp"
+                app:layout_constraintTop_toBottomOf="@id/tv_drive_status"
+                android:visibility="visible" />
+
+            <!-- Connected State: Disconnect and Switch Buttons -->
+            <LinearLayout
+                android:id="@+id/layout_drive_actions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/tv_drive_status"
+                android:visibility="gone">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_disconnect_drive"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Disconnect"
+                    android:textColor="@color/danger"
+                    android:fontFamily="@font/roboto_bold"
+                    android:textSize="@dimen/_9ssp"
+                    app:strokeColor="@color/danger"
+                    app:cornerRadius="@dimen/_8sdp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_switch_drive"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/_8sdp"
+                    android:text="Switch Account"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/roboto_bold"
+                    android:textSize="@dimen/_9ssp"
+                    app:backgroundTint="@color/primary_color"
+                    app:cornerRadius="@dimen/_8sdp" />
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <!-- Preferences Card -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/card_preferences"
@@ -349,7 +452,7 @@
             android:layout_marginTop="@dimen/_12sdp"
             android:background="@drawable/bg_auth_card"
             android:padding="@dimen/_16sdp"
-            app:layout_constraintTop_toBottomOf="@id/card_security">
+            app:layout_constraintTop_toBottomOf="@id/card_googledrive">
 
             <ImageView
                 android:id="@+id/ic_pref"

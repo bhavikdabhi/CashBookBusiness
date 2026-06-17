@@ -22,6 +22,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
 import androidx.core.content.ContextCompat
 import com.cashbk.app.utils.GoogleDriveManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.coroutines.CoroutineScope
@@ -29,8 +30,29 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import java.io.File
+import java.net.URL
+import java.net.HttpURLConnection
 
 class ProfileFragment : Fragment() {
+
+    enum class DriveFlowMode {
+        NONE,
+        CONNECT,
+        PROFILE_UPLOAD,
+        SWITCH_NO_MIGRATE,
+        SWITCH_WITH_MIGRATE
+    }
+
+    private data class MigrationItem(
+        val dbPath: String,
+        val oldUrl: String,
+        val fileName: String,
+        val folderName: String
+    )
 
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
@@ -42,6 +64,9 @@ class ProfileFragment : Fragment() {
     private var pendingImageUri: Uri? = null
     private var profileListener: ValueEventListener? = null
     private var registeredUid: String? = null
+
+    private var driveFlowMode = DriveFlowMode.NONE
+    private val pendingMigrationFiles = mutableListOf<Pair<MigrationItem, File>>()
 
     private val imagePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
@@ -55,12 +80,32 @@ class ProfileFragment : Fragment() {
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
             task.addOnSuccessListener { account ->
                 saveGoogleDriveEmail(account.email)
-                if (pendingImageUri != null) {
-                    uploadToGoogleDrive(account)
+                when (driveFlowMode) {
+                    DriveFlowMode.CONNECT -> {
+                        Toast.makeText(requireContext(), "Google Drive connected successfully!", Toast.LENGTH_SHORT).show()
+                    }
+                    DriveFlowMode.PROFILE_UPLOAD -> {
+                        if (pendingImageUri != null) {
+                            uploadToGoogleDrive(account)
+                        }
+                    }
+                    DriveFlowMode.SWITCH_NO_MIGRATE -> {
+                        Toast.makeText(requireContext(), "Google Account switched successfully!", Toast.LENGTH_SHORT).show()
+                    }
+                    DriveFlowMode.SWITCH_WITH_MIGRATE -> {
+                        uploadMigratedFiles(account)
+                    }
+                    else -> {}
                 }
+                driveFlowMode = DriveFlowMode.NONE
             }.addOnFailureListener {
                 Toast.makeText(requireContext(), "Drive Authorization Failed", Toast.LENGTH_SHORT).show()
+                cleanupTempMigrationFiles()
+                driveFlowMode = DriveFlowMode.NONE
             }
+        } else {
+            cleanupTempMigrationFiles()
+            driveFlowMode = DriveFlowMode.NONE
         }
     }
 
@@ -95,7 +140,6 @@ class ProfileFragment : Fragment() {
             binding.btnEditProfile.performClick()
         }
 
-        
         binding.icProfileEdit.setOnClickListener {
             val bottomSheet = EditProfileBottomSheet(
                 currentUser?.name,
@@ -154,13 +198,36 @@ class ProfileFragment : Fragment() {
             val status = if (isChecked) "Enabled" else "Disabled"
             Toast.makeText(requireContext(), "Notifications $status", Toast.LENGTH_SHORT).show()
         }
+
+        // Google Drive Card Click Listeners
+        binding.btnConnectDrive.setOnClickListener {
+            connectGoogleDrive()
+        }
+
+        binding.btnDisconnectDrive.setOnClickListener {
+            disconnectGoogleDrive()
+        }
+
+        binding.btnSwitchDrive.setOnClickListener {
+            switchGoogleDriveAccount()
+        }
     }
 
     private fun updateAppearanceUI(theme: String) {
-        // Set selected
         val white = ContextCompat.getColor(requireContext(), R.color.white)
         val gray = ContextCompat.getColor(requireContext(), R.color.gray)
 
+        // Reset backgrounds of all options
+        binding.btnAppearanceDark.setBackgroundResource(0)
+        binding.btnAppearanceLight.setBackgroundResource(0)
+        binding.btnAppearanceSystem.setBackgroundResource(0)
+
+        // Reset text colors of all options
+        binding.btnAppearanceDark.setTextColor(gray)
+        binding.btnAppearanceLight.setTextColor(gray)
+        binding.btnAppearanceSystem.setTextColor(gray)
+
+        // Set styles for selected option
         when (theme) {
             "dark" -> {
                 binding.btnAppearanceDark.setBackgroundResource(R.drawable.bg_segmented_selected)
@@ -175,15 +242,12 @@ class ProfileFragment : Fragment() {
                 binding.btnAppearanceSystem.setTextColor(white)
             }
         }
-        
-        if (theme != "dark") binding.btnAppearanceDark.setTextColor(gray)
-        if (theme != "light") binding.btnAppearanceLight.setTextColor(gray)
-        if (theme != "system") binding.btnAppearanceSystem.setTextColor(gray)
 
         Toast.makeText(requireContext(), "Theme set to: $theme", Toast.LENGTH_SHORT).show()
     }
 
     private fun startDriveAuthFlow() {
+        driveFlowMode = DriveFlowMode.PROFILE_UPLOAD
         val builder = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
             .requestScopes(Scope("https://www.googleapis.com/auth/drive.file"))
@@ -233,6 +297,20 @@ class ProfileFragment : Fragment() {
                             .placeholder(R.drawable.ic_default_avtar)
                             .override(600, 600)
                             .into(binding.ivProfile)
+                    }
+
+                    // Update Google Drive Card UI
+                    val driveEmail = user.googleDriveEmail
+                    if (!driveEmail.isNullOrEmpty()) {
+                        binding.tvDriveStatus.text = "Connected: $driveEmail"
+                        binding.tvDriveStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.success))
+                        binding.btnConnectDrive.visibility = View.GONE
+                        binding.layoutDriveActions.visibility = View.VISIBLE
+                    } else {
+                        binding.tvDriveStatus.text = "Not Connected"
+                        binding.tvDriveStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.gray))
+                        binding.btnConnectDrive.visibility = View.VISIBLE
+                        binding.layoutDriveActions.visibility = View.GONE
                     }
                 }
             }
@@ -378,6 +456,272 @@ class ProfileFragment : Fragment() {
         currentBusinessId = businessId
     }
 
+    private fun connectGoogleDrive() {
+        driveFlowMode = DriveFlowMode.CONNECT
+        val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .requestScopes(Scope("https://www.googleapis.com/auth/drive.file"))
+            .build()
+        val client = GoogleSignIn.getClient(requireActivity(), signInOptions)
+        driveSignInLauncher.launch(client.signInIntent)
+    }
+
+    private fun disconnectGoogleDrive() {
+        MaterialAlertDialogBuilder(requireContext(), R.style.CashbkAlertDialog)
+            .setTitle("Disconnect Google Drive")
+            .setMessage("Are you sure you want to disconnect Google Drive? Receipts will no longer be backed up to your Google account.")
+            .setPositiveButton("Disconnect") { _: android.content.DialogInterface, _: Int ->
+                val uid = auth.currentUser?.uid ?: return@setPositiveButton
+                database.child("users").child(uid).child("googleDriveEmail").setValue("")
+                    .addOnSuccessListener {
+                        val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
+                        GoogleSignIn.getClient(requireActivity(), signInOptions).signOut().addOnCompleteListener {
+                            if (isAdded) {
+                                Toast.makeText(context, "Google Drive disconnected.", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun switchGoogleDriveAccount() {
+        MaterialAlertDialogBuilder(requireContext(), R.style.CashbkAlertDialog)
+            .setTitle("Switch Google Drive Account")
+            .setMessage("Do you want to transfer your existing profile picture and receipts to the new account?")
+            .setPositiveButton("Migrate & Switch") { _: android.content.DialogInterface, _: Int ->
+                startMigrationAndSwitchFlow()
+            }
+            .setNegativeButton("Switch Only") { _: android.content.DialogInterface, _: Int ->
+                driveFlowMode = DriveFlowMode.SWITCH_NO_MIGRATE
+                performGoogleSignOutAndChooser()
+            }
+            .setNeutralButton("Cancel", null)
+            .show()
+    }
+
+    private fun startMigrationAndSwitchFlow() {
+        val progressDialog = MaterialAlertDialogBuilder(requireContext(), R.style.CashbkAlertDialog)
+            .setTitle("Data Migration")
+            .setMessage("Preparing data...")
+            .setCancelable(false)
+            .create()
+            
+        progressDialog.show()
+        
+        CoroutineScope(Dispatchers.Main).launch {
+            val success = scanAndDownloadMigrationData(progressDialog)
+            progressDialog.dismiss()
+            if (success) {
+                driveFlowMode = DriveFlowMode.SWITCH_WITH_MIGRATE
+                performGoogleSignOutAndChooser()
+            } else {
+                Toast.makeText(requireContext(), "Migration failed to prepare. Please check your connection and try again.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun performGoogleSignOutAndChooser() {
+        val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
+        GoogleSignIn.getClient(requireActivity(), signInOptions).signOut().addOnCompleteListener {
+            val builder = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .requestScopes(Scope("https://www.googleapis.com/auth/drive.file"))
+            val newClient = GoogleSignIn.getClient(requireActivity(), builder.build())
+            driveSignInLauncher.launch(newClient.signInIntent)
+        }
+    }
+
+    private suspend fun downloadFile(urlStr: String, outputFile: File): Boolean = withContext(Dispatchers.IO) {
+        try {
+            val url = URL(urlStr)
+            val connection = url.openConnection() as HttpURLConnection
+            connection.connectTimeout = 15000
+            connection.readTimeout = 15000
+            connection.instanceFollowRedirects = true
+            connection.connect()
+            
+            if (connection.responseCode == HttpURLConnection.HTTP_OK) {
+                connection.inputStream.use { input ->
+                    outputFile.outputStream().use { output ->
+                        input.copyTo(output)
+                    }
+                }
+                true
+            } else {
+                false
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    private suspend fun scanAndDownloadMigrationData(progressDialog: androidx.appcompat.app.AlertDialog): Boolean = withContext(Dispatchers.IO) {
+        val uid = auth.currentUser?.uid ?: return@withContext false
+        val db = database
+        
+        withContext(Dispatchers.Main) {
+            progressDialog.setMessage("Scanning database for files...")
+        }
+        
+        val itemsToMigrate = mutableListOf<MigrationItem>()
+        
+        // 1. Profile image
+        val profileUrl = currentUser?.profileImageUrl
+        if (!profileUrl.isNullOrEmpty() && profileUrl.contains("drive.google.com")) {
+            itemsToMigrate.add(MigrationItem(
+                dbPath = "users/$uid/profileImageUrl",
+                oldUrl = profileUrl,
+                fileName = "Profile_$uid.jpg",
+                folderName = "Profile"
+            ))
+        }
+        
+        try {
+            // 2. Fetch owned businesses
+            val ownedSnapshot = db.child("businesses").orderByChild("ownerId").equalTo(uid).awaitValue()
+            val businessIds = mutableSetOf<String>()
+            for (child in ownedSnapshot.children) {
+                businessIds.add(child.key ?: "")
+            }
+            
+            // 3. Fetch shared businesses
+            val membersSnapshot = db.child("business_members").awaitValue()
+            for (businessSnap in membersSnapshot.children) {
+                if (businessSnap.child(uid).exists()) {
+                    businessIds.add(businessSnap.key ?: "")
+                }
+            }
+            
+            // 4. Fetch notebooks for all these businesses
+            val notebookIds = mutableSetOf<String>()
+            for (businessId in businessIds) {
+                if (businessId.isEmpty()) continue
+                val notebooksSnap = db.child("notebooks").orderByChild("businessId").equalTo(businessId).awaitValue()
+                for (child in notebooksSnap.children) {
+                    notebookIds.add(child.key ?: "")
+                }
+            }
+            
+            // 5. Fetch transactions for these notebooks
+            for (notebookId in notebookIds) {
+                if (notebookId.isEmpty()) continue
+                val transactionsSnap = db.child("transactions").child(notebookId).awaitValue()
+                for (child in transactionsSnap.children) {
+                    val createdBy = child.child("createdBy").getValue(String::class.java)
+                    val receiptUrl = child.child("receiptUrl").getValue(String::class.java)
+                    val receiptName = child.child("receiptName").getValue(String::class.java) ?: "Receipt_${child.key}.jpg"
+                    if (createdBy == uid && !receiptUrl.isNullOrEmpty() && receiptUrl.contains("drive.google.com")) {
+                        itemsToMigrate.add(MigrationItem(
+                            dbPath = "transactions/$notebookId/${child.key}/receiptUrl",
+                            oldUrl = receiptUrl,
+                            fileName = receiptName,
+                            folderName = "Receipt"
+                        ))
+                    }
+                }
+            }
+            
+            if (itemsToMigrate.isEmpty()) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "No files found to migrate.", Toast.LENGTH_SHORT).show()
+                }
+                return@withContext true
+            }
+            
+            pendingMigrationFiles.clear()
+            val total = itemsToMigrate.size
+            for ((index, item) in itemsToMigrate.withIndex()) {
+                withContext(Dispatchers.Main) {
+                    progressDialog.setMessage("Downloading file ${index + 1} of $total...")
+                }
+                
+                val fileId = GoogleDriveManager.extractFileId(item.oldUrl)
+                if (fileId.isNullOrEmpty()) continue
+                
+                val downloadUrl = "https://drive.google.com/uc?export=download&id=$fileId"
+                val tempFile = File(requireContext().cacheDir, "migration_${System.currentTimeMillis()}_$fileId.jpg")
+                
+                val success = downloadFile(downloadUrl, tempFile)
+                if (success) {
+                    pendingMigrationFiles.add(Pair(item, tempFile))
+                } else {
+                    tempFile.delete()
+                }
+            }
+            
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    private fun uploadMigratedFiles(googleAccount: com.google.android.gms.auth.api.signin.GoogleSignInAccount) {
+        if (pendingMigrationFiles.isEmpty()) {
+            Toast.makeText(requireContext(), "No files to upload.", Toast.LENGTH_SHORT).show()
+            return
+        }
+        
+        val progressDialog = MaterialAlertDialogBuilder(requireContext(), R.style.CashbkAlertDialog)
+            .setTitle("Migrating Files")
+            .setMessage("Uploading files to new account...")
+            .setCancelable(false)
+            .create()
+            
+        progressDialog.show()
+        
+        val driveManager = GoogleDriveManager(requireContext(), googleAccount)
+        val total = pendingMigrationFiles.size
+        
+        CoroutineScope(Dispatchers.IO).launch {
+            var successCount = 0
+            val db = database
+            
+            for ((index, pair) in pendingMigrationFiles.withIndex()) {
+                val (item, file) = pair
+                withContext(Dispatchers.Main) {
+                    progressDialog.setMessage("Uploading file ${index + 1} of $total...")
+                }
+                
+                val fileUri = Uri.fromFile(file)
+                val newUrl = driveManager.uploadFile(
+                    fileUri = fileUri,
+                    fileName = item.fileName,
+                    folderName = item.folderName
+                )
+                
+                if (newUrl != null) {
+                    try {
+                        db.child(item.dbPath).setValue(newUrl).awaitTask()
+                        successCount++
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        // Fallback: write without await
+                        db.child(item.dbPath).setValue(newUrl)
+                        successCount++
+                    }
+                }
+                file.delete()
+            }
+            
+            withContext(Dispatchers.Main) {
+                progressDialog.dismiss()
+                pendingMigrationFiles.clear()
+                Toast.makeText(context, "Migration completed: $successCount of $total files migrated.", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun cleanupTempMigrationFiles() {
+        for (pair in pendingMigrationFiles) {
+            pair.second.delete()
+        }
+        pendingMigrationFiles.clear()
+    }
+
     override fun onDestroyView() {
         profileListener?.let { listener ->
             registeredUid?.let { uid ->
@@ -386,5 +730,29 @@ class ProfileFragment : Fragment() {
         }
         super.onDestroyView()
         _binding = null
+    }
+}
+
+// Extensions for suspending Firebase calls
+private suspend fun Query.awaitValue(): DataSnapshot = suspendCancellableCoroutine { cont ->
+    val listener = object : ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+            cont.resume(snapshot)
+        }
+        override fun onCancelled(error: DatabaseError) {
+            cont.resumeWithException(error.toException())
+        }
+    }
+    addListenerForSingleValueEvent(listener)
+    cont.invokeOnCancellation { removeEventListener(listener) }
+}
+
+private suspend fun <T> com.google.android.gms.tasks.Task<T>.awaitTask(): T = suspendCancellableCoroutine { cont ->
+    addOnCompleteListener { task ->
+        if (task.isSuccessful) {
+            cont.resume(task.result)
+        } else {
+            cont.resumeWithException(task.exception ?: Exception("Task failed"))
+        }
     }
 }
