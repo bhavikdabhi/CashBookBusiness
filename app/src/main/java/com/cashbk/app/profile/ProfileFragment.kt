@@ -1,6 +1,7 @@
 package com.cashbk.app.profile
 
 import android.app.Activity
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
@@ -198,6 +199,38 @@ class ProfileFragment : Fragment() {
         binding.switchNotifications.setOnCheckedChangeListener { _, isChecked ->
             val status = if (isChecked) "Enabled" else "Disabled"
             Toast.makeText(requireContext(), "Notifications $status", Toast.LENGTH_SHORT).show()
+        }
+
+        // App Lock PIN/Biometric Switch logic
+        val sharedPrefs = requireContext().getSharedPreferences("app_lock_prefs", Context.MODE_PRIVATE)
+        binding.switchBiometric.isChecked = sharedPrefs.getBoolean("app_lock_enabled", false)
+
+        binding.switchBiometric.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                val isEnabled = sharedPrefs.getBoolean("app_lock_enabled", false)
+                if (!isEnabled) {
+                    val bottomSheet = PinSetupBottomSheet { success ->
+                        binding.switchBiometric.isChecked = success
+                    }
+                    bottomSheet.show(parentFragmentManager, "PinSetupBottomSheet")
+                }
+            } else {
+                val isEnabled = sharedPrefs.getBoolean("app_lock_enabled", false)
+                if (isEnabled) {
+                    MaterialAlertDialogBuilder(requireContext(), R.style.CashbkAlertDialog)
+                        .setTitle("Disable App Lock")
+                        .setMessage("Are you sure you want to disable App Lock security?")
+                        .setPositiveButton("Disable") { _, _ ->
+                            sharedPrefs.edit().clear().apply()
+                            Toast.makeText(context, "App Lock disabled", Toast.LENGTH_SHORT).show()
+                        }
+                        .setNegativeButton("Cancel") { _, _ ->
+                            binding.switchBiometric.isChecked = true
+                        }
+                        .setCancelable(false)
+                        .show()
+                }
+            }
         }
 
         // Google Drive Card Click Listeners

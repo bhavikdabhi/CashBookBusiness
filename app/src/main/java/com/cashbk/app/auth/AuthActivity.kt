@@ -20,7 +20,13 @@ class AuthActivity : AppCompatActivity() {
 
         // Check already logged in
         if (FirebaseAuth.getInstance().currentUser != null) {
-            startActivity(Intent(this, BusinessDetailActivity::class.java))
+            val sharedPrefs = getSharedPreferences("app_lock_prefs", MODE_PRIVATE)
+            val isLockEnabled = sharedPrefs.getBoolean("app_lock_enabled", false)
+            if (isLockEnabled) {
+                startActivity(Intent(this, PinLockActivity::class.java))
+            } else {
+                startActivity(Intent(this, BusinessDetailActivity::class.java))
+            }
             finish()
             return
         }

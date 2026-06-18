@@ -94,6 +94,7 @@ dependencies {
         exclude(group = "org.apache.httpcomponents")
     }
     implementation("com.google.http-client:google-http-client-gson:1.41.0")
+    implementation("androidx.biometric:biometric:1.1.0")
 
     implementation("com.intuit.sdp:sdp-android:1.1.0")
     implementation("com.intuit.ssp:ssp-android:1.1.0")
