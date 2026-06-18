@@ -94,6 +94,7 @@ dependencies {
         exclude(group = "org.apache.httpcomponents")
     }
     implementation("com.google.http-client:google-http-client-gson:1.41.0")
+    implementation("com.github.Excelsior-Technologies-Community:biometric_authentication:1.0.0")
 
     implementation("com.intuit.sdp:sdp-android:1.1.0")
     implementation("com.intuit.ssp:ssp-android:1.1.0")
@@ -150,5 +151,12 @@ val generateReleaseKeystore = tasks.register("generateReleaseKeystore") {
 tasks.configureEach {
     if (name.contains("Sign") || name.contains("Package") || name.contains("processReleaseResources")) {
         dependsOn(generateReleaseKeystore)
+    }
+}
+
+configurations.all {
+    resolutionStrategy {
+        force("androidx.core:core-ktx:1.12.0")
+        force("androidx.core:core:1.12.0")
     }
 }

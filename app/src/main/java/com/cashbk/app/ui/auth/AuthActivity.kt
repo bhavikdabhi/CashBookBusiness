@@ -9,6 +9,8 @@ import com.cashbk.app.databinding.ActivityAuthBinding
 import com.cashbk.app.ui.business.BusinessDetailActivity
 import com.google.firebase.auth.FirebaseAuth
 
+import android.widget.Toast
+
 class AuthActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAuthBinding
@@ -19,9 +21,41 @@ class AuthActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Check already logged in
-        if (FirebaseAuth.getInstance().currentUser != null) {
-            startActivity(Intent(this, BusinessDetailActivity::class.java))
-            finish()
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            val prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
+            val isAppLockEnabled = prefs.getBoolean("app_lock_enabled", false)
+            if (isAppLockEnabled) {
+                val authManager = com.ext.biometric_auth.BiometricAuthManager(this)
+                val callback = object : com.ext.biometric_auth.BiometricCallback {
+                    override fun onResult(result: com.ext.biometric_auth.BiometricResult) {
+                        when (result) {
+                            is com.ext.biometric_auth.BiometricResult.AuthenticationSucceeded,
+                            is com.ext.biometric_auth.BiometricResult.PinAuthenticationSucceeded -> {
+                                startActivity(Intent(this@AuthActivity, BusinessDetailActivity::class.java))
+                                finish()
+                            }
+                            is com.ext.biometric_auth.BiometricResult.AuthenticationCancelled -> {
+                                finish()
+                            }
+                            is com.ext.biometric_auth.BiometricResult.LockoutActive -> {
+                                Toast.makeText(this@AuthActivity, "Too many failed attempts. Try again later.", Toast.LENGTH_LONG).show()
+                                finish()
+                            }
+                            is com.ext.biometric_auth.BiometricResult.AuthenticationFailed -> {
+                                Toast.makeText(this@AuthActivity, "Authentication failed: ${result.reason}", Toast.LENGTH_SHORT).show()
+                            }
+                            else -> {
+                                // retry
+                            }
+                        }
+                    }
+                }
+                authManager.authenticate(this, callback)
+            } else {
+                startActivity(Intent(this, BusinessDetailActivity::class.java))
+                finish()
+            }
             return
         }
 
