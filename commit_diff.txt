@@ -1,0 +1,252 @@
+commit f4f9e012358785573f8ec898e901fa72b6d90b99
+Author: bhavikdabhi <bhavikdabhi1910@gmail.com>
+Date:   Thu Jun 18 10:47:27 2026 +0530
+
+    app lock implemented
+
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+index 7bb9dc5..6a89490 100644
+--- a/app/build.gradle.kts
++++ b/app/build.gradle.kts
+@@ -94,6 +94,7 @@ dependencies {
+         exclude(group = "org.apache.httpcomponents")
+     }
+     implementation("com.google.http-client:google-http-client-gson:1.41.0")
++    implementation("com.github.Excelsior-Technologies-Community:biometric_authentication:1.0.0")
+ 
+     implementation("com.intuit.sdp:sdp-android:1.1.0")
+     implementation("com.intuit.ssp:ssp-android:1.1.0")
+@@ -151,4 +152,11 @@ tasks.configureEach {
+     if (name.contains("Sign") || name.contains("Package") || name.contains("processReleaseResources")) {
+         dependsOn(generateReleaseKeystore)
+     }
++}
++
++configurations.all {
++    resolutionStrategy {
++        force("androidx.core:core-ktx:1.12.0")
++        force("androidx.core:core:1.12.0")
++    }
+ }
+\ No newline at end of file
+diff --git a/app/src/main/java/com/cashbk/app/ui/auth/AuthActivity.kt b/app/src/main/java/com/cashbk/app/ui/auth/AuthActivity.kt
+index ce4a0ad..b1a6f20 100644
+--- a/app/src/main/java/com/cashbk/app/ui/auth/AuthActivity.kt
++++ b/app/src/main/java/com/cashbk/app/ui/auth/AuthActivity.kt
+@@ -9,6 +9,8 @@ import com.cashbk.app.databinding.ActivityAuthBinding
+ import com.cashbk.app.ui.business.BusinessDetailActivity
+ import com.google.firebase.auth.FirebaseAuth
+ 
++import android.widget.Toast
++
+ class AuthActivity : AppCompatActivity() {
+ 
+     private lateinit var binding: ActivityAuthBinding
+@@ -19,9 +21,41 @@ class AuthActivity : AppCompatActivity() {
+         setContentView(binding.root)
+ 
+         // Check already logged in
+-        if (FirebaseAuth.getInstance().currentUser != null) {
+-            startActivity(Intent(this, BusinessDetailActivity::class.java))
+-            finish()
++        val currentUser = FirebaseAuth.getInstance().currentUser
++        if (currentUser != null) {
++            val prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
++            val isAppLockEnabled = prefs.getBoolean("app_lock_enabled", false)
++            if (isAppLockEnabled) {
++                val authManager = com.ext.biometric_auth.BiometricAuthManager(this)
++                val callback = object : com.ext.biometric_auth.BiometricCallback {
++                    override fun onResult(result: com.ext.biometric_auth.BiometricResult) {
++                        when (result) {
++                            is com.ext.biometric_auth.BiometricResult.AuthenticationSucceeded,
++                            is com.ext.biometric_auth.BiometricResult.PinAuthenticationSucceeded -> {
++                                startActivity(Intent(this@AuthActivity, BusinessDetailActivity::class.java))
++                                finish()
++                            }
++                            is com.ext.biometric_auth.BiometricResult.AuthenticationCancelled -> {
++                                finish()
++                            }
++                            is com.ext.biometric_auth.BiometricResult.LockoutActive -> {
++                                Toast.makeText(this@AuthActivity, "Too many failed attempts. Try again later.", Toast.LENGTH_LONG).show()
++                                finish()
++                            }
++                            is com.ext.biometric_auth.BiometricResult.AuthenticationFailed -> {
++                                Toast.makeText(this@AuthActivity, "Authentication failed: ${result.reason}", Toast.LENGTH_SHORT).show()
++                            }
++                            else -> {
++                                // retry
++                            }
++                        }
++                    }
++                }
++                authManager.authenticate(this, callback)
++            } else {
++                startActivity(Intent(this, BusinessDetailActivity::class.java))
++                finish()
++            }
+             return
+         }
+ 
+diff --git a/app/src/main/java/com/cashbk/app/ui/business/ProfileFragment.kt b/app/src/main/java/com/cashbk/app/ui/business/ProfileFragment.kt
+index 851d3a2..51d40de 100644
+--- a/app/src/main/java/com/cashbk/app/ui/business/ProfileFragment.kt
++++ b/app/src/main/java/com/cashbk/app/ui/business/ProfileFragment.kt
+@@ -211,6 +211,64 @@ class ProfileFragment : Fragment() {
+         binding.btnSwitchDrive.setOnClickListener {
+             switchGoogleDriveAccount()
+         }
++
++        // Biometric App Lock Switch
++        val prefs = requireContext().getSharedPreferences("app_prefs", android.content.Context.MODE_PRIVATE)
++        binding.switchBiometric.isChecked = prefs.getBoolean("app_lock_enabled", false)
++
++        binding.switchBiometric.setOnCheckedChangeListener { _, isChecked ->
++            val currentVal = prefs.getBoolean("app_lock_enabled", false)
++            if (isChecked == currentVal) return@setOnCheckedChangeListener
++
++            if (isChecked) {
++                // Onboarding: Fallback PIN setup
++                val handler = com.ext.biometric_auth.PinAuthHandler(
++                    requireActivity(),
++                    com.ext.biometric_auth.BiometricConfig(
++                        title = "App Lock Setup",
++                        subtitle = "Create a security PIN fallback for App Lock"
++                    ),
++                    null,
++                    onActionCompleted = { mode ->
++                        if (mode == com.ext.biometric_auth.PinDialogMode.SETUP) {
++                            prefs.edit().putBoolean("app_lock_enabled", true).apply()
++                            Toast.makeText(context, "App Lock enabled successfully!", Toast.LENGTH_SHORT).show()
++                        } else {
++                            binding.switchBiometric.isChecked = false
++                        }
++                    }
++                )
++                handler.showPinDialog(com.ext.biometric_auth.PinDialogMode.SETUP)
++            } else {
++                // Verification: Authenticate before disabling
++                val callback = object : com.ext.biometric_auth.BiometricCallback {
++                    override fun onResult(result: com.ext.biometric_auth.BiometricResult) {
++                        if (result is com.ext.biometric_auth.BiometricResult.AuthenticationSucceeded ||
++                            result is com.ext.biometric_auth.BiometricResult.PinAuthenticationSucceeded) {
++                            
++                            val removeHandler = com.ext.biometric_auth.PinAuthHandler(
++                                requireActivity(),
++                                com.ext.biometric_auth.BiometricConfig(),
++                                null,
++                                onActionCompleted = { mode ->
++                                    if (mode == com.ext.biometric_auth.PinDialogMode.REMOVE) {
++                                        prefs.edit().putBoolean("app_lock_enabled", false).apply()
++                                        Toast.makeText(context, "App Lock disabled.", Toast.LENGTH_SHORT).show()
++                                    } else {
++                                        binding.switchBiometric.isChecked = true
++                                    }
++                                }
++                            )
++                            removeHandler.showPinDialog(com.ext.biometric_auth.PinDialogMode.REMOVE)
++                        } else {
++                            binding.switchBiometric.isChecked = true
++                        }
++                    }
++                }
++                val authManager = com.ext.biometric_auth.BiometricAuthManager(requireContext())
++                authManager.authenticate(requireActivity(), callback)
++            }
++        }
+     }
+ 
+     private fun updateAppearanceUI(theme: String) {
+diff --git a/app/src/main/res/layout/fragment_profile.xml b/app/src/main/res/layout/fragment_profile.xml
+index 79677bc..9ac20fd 100644
+--- a/app/src/main/res/layout/fragment_profile.xml
++++ b/app/src/main/res/layout/fragment_profile.xml
+@@ -302,41 +302,42 @@
+                     app:tint="@color/gray" />
+             </androidx.constraintlayout.widget.ConstraintLayout>
+ 
+-<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+-<!--                android:layout_width="match_parent"-->
+-<!--                android:layout_height="wrap_content"-->
+-<!--                android:layout_marginTop="@dimen/_12sdp"-->
+-<!--               android:padding="@dimen/_12sdp"-->
+-<!--                app:layout_constraintTop_toBottomOf="@id/btn_reset_password">-->
+-
+-<!--                <ImageView-->
+-<!--                    android:id="@+id/ic_bio"-->
+-<!--                    android:layout_width="@dimen/_16sdp"-->
+-<!--                    android:layout_height="@dimen/_16sdp"-->
+-<!--                    android:src="@drawable/ic_party_person"-->
+-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+-<!--                    app:layout_constraintStart_toStartOf="parent"-->
+-<!--                    app:layout_constraintTop_toTopOf="parent"-->
+-<!--                    app:tint="@color/gray" />-->
+-
+-<!--                <TextView-->
+-<!--                    android:layout_width="wrap_content"-->
+-<!--                    android:layout_height="wrap_content"-->
+-<!--                    android:layout_marginStart="@dimen/_12sdp"-->
+-<!--                    android:text="Biometric Login"-->
+-<!--                    android:textColor="@color/white"-->
+-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+-<!--                    app:layout_constraintStart_toEndOf="@id/ic_bio"-->
+-<!--                    app:layout_constraintTop_toTopOf="parent" />-->
+-
+-<!--                <com.google.android.material.switchmaterial.SwitchMaterial-->
+-<!--                    android:id="@+id/switch_biometric"-->
+-<!--                    android:layout_width="wrap_content"-->
+-<!--                    android:layout_height="wrap_content"-->
+-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+-<!--                    app:layout_constraintTop_toTopOf="parent" />-->
+-<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
++            <androidx.constraintlayout.widget.ConstraintLayout
++                android:id="@+id/row_biometric"
++                android:layout_width="match_parent"
++                android:layout_height="wrap_content"
++                android:layout_marginTop="@dimen/_12sdp"
++                android:padding="@dimen/_12sdp"
++                app:layout_constraintTop_toBottomOf="@id/btn_reset_password">
++
++                <ImageView
++                    android:id="@+id/ic_bio"
++                    android:layout_width="@dimen/_16sdp"
++                    android:layout_height="@dimen/_16sdp"
++                    android:src="@drawable/ic_auth_lock"
++                    app:layout_constraintBottom_toBottomOf="parent"
++                    app:layout_constraintStart_toStartOf="parent"
++                    app:layout_constraintTop_toTopOf="parent"
++                    app:tint="@color/gray" />
++
++                <TextView
++                    android:layout_width="wrap_content"
++                    android:layout_height="wrap_content"
++                    android:layout_marginStart="@dimen/_12sdp"
++                    android:text="Biometric Lock"
++                    android:textColor="@color/white"
++                    app:layout_constraintBottom_toBottomOf="parent"
++                    app:layout_constraintStart_toEndOf="@id/ic_bio"
++                    app:layout_constraintTop_toTopOf="parent" />
++
++                <com.google.android.material.switchmaterial.SwitchMaterial
++                    android:id="@+id/switch_biometric"
++                    android:layout_width="wrap_content"
++                    android:layout_height="wrap_content"
++                    app:layout_constraintBottom_toBottomOf="parent"
++                    app:layout_constraintEnd_toEndOf="parent"
++                    app:layout_constraintTop_toTopOf="parent" />
++            </androidx.constraintlayout.widget.ConstraintLayout>
+ 
+         </androidx.constraintlayout.widget.ConstraintLayout>
+ 
+diff --git a/settings.gradle.kts b/settings.gradle.kts
+index ff7aeb7..b7690e0 100644
+--- a/settings.gradle.kts
++++ b/settings.gradle.kts
+@@ -16,6 +16,7 @@ dependencyResolutionManagement {
+     repositories {
+         google()
+         mavenCentral()
++        maven { url = uri("https://jitpack.io") }
+     }
+ }
+ 

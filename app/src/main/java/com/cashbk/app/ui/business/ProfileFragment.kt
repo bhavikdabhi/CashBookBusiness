@@ -212,63 +212,7 @@ class ProfileFragment : Fragment() {
             switchGoogleDriveAccount()
         }
 
-        // Biometric App Lock Switch
-        val prefs = requireContext().getSharedPreferences("app_prefs", android.content.Context.MODE_PRIVATE)
-        binding.switchBiometric.isChecked = prefs.getBoolean("app_lock_enabled", false)
 
-        binding.switchBiometric.setOnCheckedChangeListener { _, isChecked ->
-            val currentVal = prefs.getBoolean("app_lock_enabled", false)
-            if (isChecked == currentVal) return@setOnCheckedChangeListener
-
-            if (isChecked) {
-                // Onboarding: Fallback PIN setup
-                val handler = com.ext.biometric_auth.PinAuthHandler(
-                    requireActivity(),
-                    com.ext.biometric_auth.BiometricConfig(
-                        title = "App Lock Setup",
-                        subtitle = "Create a security PIN fallback for App Lock"
-                    ),
-                    null,
-                    onActionCompleted = { mode ->
-                        if (mode == com.ext.biometric_auth.PinDialogMode.SETUP) {
-                            prefs.edit().putBoolean("app_lock_enabled", true).apply()
-                            Toast.makeText(context, "App Lock enabled successfully!", Toast.LENGTH_SHORT).show()
-                        } else {
-                            binding.switchBiometric.isChecked = false
-                        }
-                    }
-                )
-                handler.showPinDialog(com.ext.biometric_auth.PinDialogMode.SETUP)
-            } else {
-                // Verification: Authenticate before disabling
-                val callback = object : com.ext.biometric_auth.BiometricCallback {
-                    override fun onResult(result: com.ext.biometric_auth.BiometricResult) {
-                        if (result is com.ext.biometric_auth.BiometricResult.AuthenticationSucceeded ||
-                            result is com.ext.biometric_auth.BiometricResult.PinAuthenticationSucceeded) {
-                            
-                            val removeHandler = com.ext.biometric_auth.PinAuthHandler(
-                                requireActivity(),
-                                com.ext.biometric_auth.BiometricConfig(),
-                                null,
-                                onActionCompleted = { mode ->
-                                    if (mode == com.ext.biometric_auth.PinDialogMode.REMOVE) {
-                                        prefs.edit().putBoolean("app_lock_enabled", false).apply()
-                                        Toast.makeText(context, "App Lock disabled.", Toast.LENGTH_SHORT).show()
-                                    } else {
-                                        binding.switchBiometric.isChecked = true
-                                    }
-                                }
-                            )
-                            removeHandler.showPinDialog(com.ext.biometric_auth.PinDialogMode.REMOVE)
-                        } else {
-                            binding.switchBiometric.isChecked = true
-                        }
-                    }
-                }
-                val authManager = com.ext.biometric_auth.BiometricAuthManager(requireContext())
-                authManager.authenticate(requireActivity(), callback)
-            }
-        }
     }
 
     private fun updateAppearanceUI(theme: String) {
