@@ -21,7 +21,7 @@
             android:layout_marginBottom="@dimen/_12sdp"
             android:fontFamily="@font/roboto_medium"
             android:text="Create Business Event"
-            android:textColor="@color/text_color"
+            android:textColor="@color/text_secondary"
             android:textSize="@dimen/_16ssp"
             android:textStyle="bold" />
 
@@ -38,7 +38,7 @@
                 android:id="@+id/etEventName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_color"
+                android:textColor="@color/text_secondary"
                 android:fontFamily="@font/roboto_regular"
                 android:textSize="@dimen/_12ssp"
                 android:inputType="textCapWords" />
@@ -58,7 +58,7 @@
                 android:id="@+id/etEventDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_color"
+                android:textColor="@color/text_secondary"
                 android:fontFamily="@font/roboto_regular"
                 android:textSize="@dimen/_12ssp"
                 android:focusable="false"
@@ -84,7 +84,7 @@
                 android:id="@+id/actvNotebook"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_color"
+                android:textColor="@color/text_secondary"
                 android:fontFamily="@font/roboto_regular"
                 android:textSize="@dimen/_12ssp"
                 android:inputType="none"
@@ -109,7 +109,7 @@
                 android:id="@+id/actvVisibility"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_color"
+                android:textColor="@color/text_secondary"
                 android:fontFamily="@font/roboto_regular"
                 android:textSize="@dimen/_12ssp"
                 android:inputType="none"
@@ -132,7 +132,7 @@
                 android:background="@drawable/bg_glass_field"
                 android:fontFamily="@font/roboto_regular"
                 android:text="Choose Members"
-                android:textColor="@color/text_color"
+                android:textColor="@color/text_secondary"
                 android:textSize="@dimen/_12ssp"
                 android:textAllCaps="false" />
 
@@ -160,7 +160,7 @@
                 android:id="@+id/etEventDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_color"
+                android:textColor="@color/text_secondary"
                 android:fontFamily="@font/roboto_regular"
                 android:textSize="@dimen/_12ssp"
                 android:inputType="textMultiLine"

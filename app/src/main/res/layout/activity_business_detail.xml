@@ -59,7 +59,7 @@
                         android:fontFamily="@font/roboto_medium"
                         android:textStyle="bold"
                         android:textSize="@dimen/_16ssp"
-                        android:textColor="@color/text_color" />
+                        android:textColor="@color/text_secondary" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -74,7 +74,7 @@
                     android:layout_width="@dimen/_24sdp"
                     android:layout_height="@dimen/_24sdp"
                     android:src="@drawable/ic_expand_more"
-                    app:tint="@color/text_color"
+                    app:tint="@color/text_secondary"
                     android:layout_marginStart="@dimen/_10sdp"/>
 
             </LinearLayout>

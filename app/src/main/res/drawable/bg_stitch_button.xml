@@ -4,8 +4,8 @@
     <item>
         <shape android:shape="rectangle">
             <gradient
-                android:startColor="@color/stitch_primary"
-                android:endColor="@color/stitch_primary_container"
+                android:startColor="@color/auth_glow_2"
+                android:endColor="@color/auth_glow_1"
                 android:angle="135"
                 android:type="linear" />
             <corners android:radius="@dimen/_24sdp" />

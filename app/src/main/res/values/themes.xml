@@ -8,14 +8,14 @@
         <!-- App Primary Colors -->
         <item name="colorPrimary">@color/primary_color</item>
         <item name="colorPrimaryVariant">@color/primary_hover</item>
-        <item name="colorOnPrimary">@color/text_color</item>
+        <item name="colorOnPrimary">@color/text_secondary</item>
 
         <!-- Status bar / Nav bar -->
         <item name="android:statusBarColor">@color/bg_color</item>
         <item name="android:navigationBarColor">@color/bg_color</item>
 
         <!-- Default Text Color -->
-        <item name="android:textColor">@color/text_color</item>
+        <item name="android:textColor">@color/text_secondary</item>
 
     </style>
 
@@ -27,7 +27,7 @@
     <style name="Widget.App.GlassCard" parent="Widget.Material3.CardView.Elevated">
         <item name="cardBackgroundColor">@color/stitch_surface_container_high</item>
         <item name="cardCornerRadius">@dimen/_12sdp</item>
-        <item name="strokeColor">@color/glass_white_10</item>
+        <item name="strokeColor">@color/glass_border</item>
         <item name="strokeWidth">1dp</item>
         <item name="cardElevation">0dp</item>
     </style>

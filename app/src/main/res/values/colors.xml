@@ -9,24 +9,15 @@
 
     <!-- Background & Text -->
     <color name="bg_color">#0F172A</color>
-    <color name="text_color">#F8FAFC</color>
     <color name="text_secondary">#F8FAFC</color>
     <color name="text_disabled">#89d87f</color>
     <color name="text_entryBy">#00808b</color>
 
     <!-- Ethereal Ledger Design System Tokens (The Architectural Glasshouse) -->
-    <color name="stitch_primary">#C0C1FF</color>
-    <color name="stitch_primary_container">#8083FF</color>
-    <color name="stitch_background">#0B1326</color>
-    <color name="stitch_surface">#0B1326</color>
     <color name="stitch_surface_container_low">#131B2E</color>
     <color name="stitch_surface_container_high">#222A3D</color>
-    <color name="stitch_surface_container_highest">#2D3449</color>
     <color name="stitch_outline_variant">#464554</color>
-    <color name="stitch_on_surface_variant">#C7C4D7</color>
     <color name="stitch_tertiary">#77D5E0</color>
-    
-    <color name="glass_white_10">#1AFFFFFF</color>
     <color name="glass_white_20">#33FFFFFF</color>
     <color name="glass_white_5">#0DFFFFFF</color>
 

@@ -14,7 +14,7 @@
         android:fontFamily="@font/roboto_regular"
         android:textFontWeight="600"
         android:text="Demo"
-        android:textColor="@color/text_color"/>.
+        android:textColor="@color/text_secondary"/>.
 
     <ImageView
         android:id="@+id/menu_more"
@@ -23,7 +23,7 @@
         android:padding="@dimen/_3sdp"
         android:layout_alignParentEnd="true"
         android:src="@drawable/icon_threedots"
-        app:tint="@color/text_color"
+        app:tint="@color/text_secondary"
         />
 
 </RelativeLayout>

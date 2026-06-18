@@ -110,7 +110,7 @@
                 android:backgroundTint="@color/stitch_surface_container_high"
                 android:paddingHorizontal="@dimen/_8sdp"
                 android:paddingVertical="@dimen/_3sdp"
-                android:textColor="@color/stitch_on_surface_variant"
+                android:textColor="@color/auth_text_light"
                 android:textSize="@dimen/_9ssp"
                 android:fontFamily="@font/roboto_medium"
                 tools:text="Compliance" />
@@ -125,7 +125,7 @@
                 android:backgroundTint="@color/stitch_surface_container_high"
                 android:paddingHorizontal="@dimen/_8sdp"
                 android:paddingVertical="@dimen/_3sdp"
-                android:textColor="@color/stitch_on_surface_variant"
+                android:textColor="@color/auth_text_light"
                 android:textSize="@dimen/_9ssp"
                 android:fontFamily="@font/roboto_medium"
                 tools:text="Admin Only" />

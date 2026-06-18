@@ -10,4 +10,4 @@
     android:textFontWeight="600"
     android:layout_marginEnd="@dimen/_8sdp"
     app:chipBackgroundColor="@color/card_bg"
-    android:textColor="@color/text_color"/>
+    android:textColor="@color/text_secondary"/>

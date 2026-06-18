@@ -11,7 +11,7 @@
         android:id="@+id/action_report"
         android:title="Report"
         android:icon="@drawable/ic_book"
-        android:iconTint="@color/text_color" />
+        android:iconTint="@color/text_secondary" />
 
     <item
         android:id="@+id/action_member"

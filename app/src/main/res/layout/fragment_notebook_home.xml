@@ -23,7 +23,7 @@
             android:src="@drawable/ic_back"
             android:padding="@dimen/_8sdp"
             android:layout_centerVertical="true"
-            app:tint="@color/text_color"/>
+            app:tint="@color/text_secondary"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -42,7 +42,7 @@
                 android:textFontWeight="600"
                 android:textSize="@dimen/_16ssp"
                 android:textStyle="bold"
-                android:textColor="@color/text_color"/>
+                android:textColor="@color/text_secondary"/>
 
             <TextView
                 android:id="@+id/tvSubtitle"
@@ -64,7 +64,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:padding="@dimen/_6sdp"
-            app:tint="@color/text_color"/>
+            app:tint="@color/text_secondary"/>
 
         <ImageButton
             android:id="@+id/btn_pdf"
@@ -136,7 +136,7 @@
                             android:textSize="@dimen/_14ssp"
                             android:fontFamily="@font/roboto_regular"
                             android:textFontWeight="600"
-                            android:textColor="@color/text_color"/>
+                            android:textColor="@color/text_secondary"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -147,7 +147,7 @@
                             android:textFontWeight="600"
                             android:textStyle="bold"
                             android:textSize="@dimen/_14ssp"
-                            android:textColor="@color/text_color"/>
+                            android:textColor="@color/text_secondary"/>
                     </LinearLayout>
 
                     <View
@@ -171,7 +171,7 @@
                         android:textFontWeight="600"
                         android:textStyle="bold"
                         android:textSize="@dimen/_12ssp"
-                        android:textColor="@color/text_color"/>
+                        android:textColor="@color/text_secondary"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -200,7 +200,7 @@
                         android:textFontWeight="600"
                         android:textStyle="bold"
                         android:textSize="@dimen/_12ssp"
-                        android:textColor="@color/text_color"/>
+                        android:textColor="@color/text_secondary"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -281,7 +281,7 @@
                     android:layout_height="@dimen/_60sdp"
                     android:src="@drawable/ic_book"
                     android:alpha="0.2"
-                    app:tint="@color/text_color"/>
+                    app:tint="@color/text_secondary"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -289,7 +289,7 @@
                     android:layout_marginTop="@dimen/_16sdp"
                     android:fontFamily="@font/roboto_medium"
                     android:text="No Transactions Yet"
-                    android:textColor="@color/text_color"
+                    android:textColor="@color/text_secondary"
                     android:textSize="@dimen/_14ssp" />
 
                 <TextView
@@ -298,7 +298,7 @@
                     android:layout_marginTop="@dimen/_4sdp"
                     android:fontFamily="@font/roboto_regular"
                     android:text="Tap CASH IN or CASH OUT to start"
-                    android:textColor="@color/text_color"
+                    android:textColor="@color/text_secondary"
                     android:alpha="0.5"
                     android:textSize="@dimen/_12ssp" />
             </LinearLayout>

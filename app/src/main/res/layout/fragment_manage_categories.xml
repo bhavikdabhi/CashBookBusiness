@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/stitch_background"
+    android:background="@color/auth_bg"
     android:clickable="true"
     android:focusable="true">
 
@@ -119,14 +119,14 @@
                                     android:layout_width="@dimen/_16sdp"
                                     android:layout_height="@dimen/_16sdp"
                                     android:src="@drawable/ic_search"
-                                    app:tint="@color/stitch_on_surface_variant" />
+                                    app:tint="@color/auth_text_light" />
                                 <EditText
                                     android:id="@+id/etSearch"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:background="@null"
                                     android:hint="Search categories..."
-                                    android:textColorHint="@color/stitch_on_surface_variant"
+                                    android:textColorHint="@color/auth_text_light"
                                     android:textColor="@android:color/white"
                                     android:textSize="@dimen/_12ssp"
                                     android:layout_marginStart="@dimen/_8sdp"

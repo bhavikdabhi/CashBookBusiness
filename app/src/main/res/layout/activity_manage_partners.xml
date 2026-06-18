@@ -28,7 +28,7 @@
                 android:layout_height="@dimen/_40sdp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_back"
-                app:tint="@color/text_color"
+                app:tint="@color/text_secondary"
                 android:padding="@dimen/_8sdp"/>
 
             <TextView
@@ -39,7 +39,7 @@
                 android:textFontWeight="600"
                 android:textStyle="bold"
                 android:textSize="@dimen/_16ssp"
-                android:textColor="@color/text_color"
+                android:textColor="@color/text_secondary"
                 android:layout_marginStart="@dimen/_16sdp"/>
         </LinearLayout>
 

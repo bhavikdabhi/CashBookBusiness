@@ -253,7 +253,7 @@ class AddTransactionFragment : Fragment() {
                             androidx.core.content.ContextCompat.getColor(requireContext(), com.cashbk.app.R.color.white)
                         )
                         // Show border only when selected, transparent when unselected
-                        val primaryColor = androidx.core.content.ContextCompat.getColor(requireContext(), com.cashbk.app.R.color.stitch_primary)
+                        val primaryColor = androidx.core.content.ContextCompat.getColor(requireContext(), com.cashbk.app.R.color.auth_glow_2)
                         chip.chipStrokeColor = android.content.res.ColorStateList(
                             arrayOf(
                                 intArrayOf(android.R.attr.state_checked),

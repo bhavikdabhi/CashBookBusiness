@@ -21,7 +21,7 @@
             android:layout_width="@dimen/_36sdp"
             android:layout_height="@dimen/_36sdp"
             app:cardCornerRadius="@dimen/_18sdp"
-            app:cardBackgroundColor="@color/stitch_surface_container_highest"
+            app:cardBackgroundColor="@color/auth_surface_high"
             app:cardElevation="0dp">
 
             <ImageView
@@ -30,7 +30,7 @@
                 android:layout_height="@dimen/_20sdp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_action_group"
-                app:tint="@color/stitch_primary" />
+                app:tint="@color/auth_glow_2" />
         </com.google.android.material.card.MaterialCardView>
 
         <LinearLayout
@@ -56,7 +56,7 @@
                 android:fontFamily="@font/roboto_regular"
                 android:text="Role / Description"
                 android:textSize="@dimen/_10ssp"
-                android:textColor="@color/stitch_on_surface_variant"
+                android:textColor="@color/auth_text_light"
                 android:visibility="gone"
                 tools:visibility="visible" />
         </LinearLayout>

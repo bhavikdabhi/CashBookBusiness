@@ -8,17 +8,17 @@
 
     <style name="PrimaryButton">
         <item name="android:backgroundTint">@color/primary_color</item>
-        <item name="android:textColor">@color/text_color</item>
+        <item name="android:textColor">@color/text_secondary</item>
     </style>
 
     <style name="DangerButton">
         <item name="android:backgroundTint">@color/danger</item>
-        <item name="android:textColor">@color/text_color</item>
+        <item name="android:textColor">@color/text_secondary</item>
     </style>
 
     <style name="SuccessButton">
         <item name="android:backgroundTint">@color/success</item>
-        <item name="android:textColor">@color/text_color</item>
+        <item name="android:textColor">@color/text_secondary</item>
     </style>
 
     <style name="GlassInput" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -28,8 +28,8 @@
         <item name="boxCornerRadiusTopEnd">14dp</item>
         <item name="boxCornerRadiusBottomStart">14dp</item>
         <item name="boxCornerRadiusBottomEnd">14dp</item>
-        <item name="hintTextColor">@color/text_color</item>
-        <item name="android:textColor">@color/text_color</item>
+        <item name="hintTextColor">@color/text_secondary</item>
+        <item name="android:textColor">@color/text_secondary</item>
     </style>
 
     <style name="GlassInput.ExposedDropdownMenu" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
@@ -39,27 +39,27 @@
         <item name="boxCornerRadiusTopEnd">14dp</item>
         <item name="boxCornerRadiusBottomStart">14dp</item>
         <item name="boxCornerRadiusBottomEnd">14dp</item>
-        <item name="hintTextColor">@color/text_color</item>
-        <item name="android:textColor">@color/text_color</item>
+        <item name="hintTextColor">@color/text_secondary</item>
+        <item name="android:textColor">@color/text_secondary</item>
     </style>
 
 
     <style name="PopupMenuTheme" parent="ThemeOverlay.Material3.Light">
         <item name="popupMenuBackground">@drawable/bg_popup_menu</item>
-        <item name="android:textColor">@color/text_color</item>
-        <item name="iconTint">@color/text_color</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="iconTint">@color/text_secondary</item>
     </style>
 
 
 
     <style name="PopupMenuStyle.Custom" parent="Widget.Material3.PopupMenu">
         <item name="popupMenuBackground">@drawable/bg_popup_menu</item>
-        <item name="android:textColor">@color/text_color</item>
+        <item name="android:textColor">@color/text_secondary</item>
     </style>
 
 
     <style name="PopupMenuItemText">
-        <item name="android:textColor">@color/text_color</item>
+        <item name="android:textColor">@color/text_secondary</item>
         <item name="android:textSize">14sp</item>
     </style>
     <style name="GlassSpinner">
@@ -70,19 +70,19 @@
     </style>
 
     <style name="GlassSpinnerItem">
-        <item name="android:textColor">@color/text_color</item>
+        <item name="android:textColor">@color/text_secondary</item>
         <item name="android:textSize">14sp</item>
     </style>
 
     <style name="GlassSpinnerDropDownItem">
-        <item name="android:textColor">@color/text_color</item>
+        <item name="android:textColor">@color/text_secondary</item>
         <item name="android:padding">14dp</item>
         <item name="android:background">@color/card_bg</item>
     </style>
 
     <style name="CashbkAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
         <item name="android:background">@drawable/bg_popup_menu</item>
-        <item name="android:textColor">@color/text_color</item>
+        <item name="android:textColor">@color/text_secondary</item>
         <item name="colorPrimary">@color/primary_color</item>
     </style>
 

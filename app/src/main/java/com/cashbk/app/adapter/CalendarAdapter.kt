@@ -64,7 +64,7 @@ class CalendarAdapter(
                     if (item.isToday) {
                         holder.binding.tvDayNumber.setTextColor(ContextCompat.getColor(context, R.color.primary_color))
                     } else {
-                        holder.binding.tvDayNumber.setTextColor(ContextCompat.getColor(context, R.color.text_color))
+                        holder.binding.tvDayNumber.setTextColor(ContextCompat.getColor(context, R.color.text_secondary))
                     }
                 } else {
                     holder.binding.tvDayNumber.setTextColor(ContextCompat.getColor(context, R.color.gray))

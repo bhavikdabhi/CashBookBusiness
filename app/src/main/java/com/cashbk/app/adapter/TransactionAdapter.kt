@@ -137,7 +137,7 @@ class TransactionAdapter(
                 Glide.with(context).clear(thumb)
                 thumb.setImageResource(R.drawable.ic_book)
                 thumb.setColorFilter(
-                    ContextCompat.getColor(context, R.color.stitch_primary)
+                    ContextCompat.getColor(context, R.color.auth_glow_2)
                 )
             }
 

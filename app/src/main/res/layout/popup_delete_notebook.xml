@@ -19,7 +19,7 @@
             android:fontFamily="@font/roboto_bold"
             android:textFontWeight="600"
             android:textSize="@dimen/_16ssp"
-            android:textColor="@color/text_color" />
+            android:textColor="@color/text_secondary" />
 
         <ImageView
             android:id="@+id/btnClose"
@@ -27,7 +27,7 @@
             android:layout_height="@dimen/_20sdp"
             android:layout_alignParentEnd="true"
             android:src="@drawable/ic_close"
-            app:tint="@color/text_color" />
+            app:tint="@color/text_secondary" />
     </RelativeLayout>
 
     <!-- Notebook Name -->

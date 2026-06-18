@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/stitch_background"
+    android:background="@color/auth_bg"
     android:clickable="true"
     android:focusable="true">
 
@@ -26,7 +26,7 @@
                 android:layout_gravity="center_vertical"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_back"
-                app:tint="@color/stitch_primary"
+                app:tint="@color/auth_glow_2"
                 android:padding="@dimen/_8sdp" />
 
             <TextView
@@ -76,7 +76,7 @@
                         android:text="Organize your business network, track vendor relationships, and manage client profiles from a centralized glass-architectural interface."
                         android:fontFamily="@font/roboto_regular"
                         android:textSize="@dimen/_12ssp"
-                        android:textColor="@color/stitch_on_surface_variant"
+                        android:textColor="@color/auth_text_light"
                         android:layout_marginTop="@dimen/_6sdp"
                         android:lineSpacingExtra="2dp" />
 
@@ -111,7 +111,7 @@
                                     android:layout_width="@dimen/_20sdp"
                                     android:layout_height="@dimen/_20sdp"
                                     android:src="@drawable/ic_search"
-                                    app:tint="@color/stitch_on_surface_variant" />
+                                    app:tint="@color/auth_text_light" />
 
                                 <EditText
                                     android:id="@+id/etSearch"
@@ -119,7 +119,7 @@
                                     android:layout_height="wrap_content"
                                     android:background="@null"
                                     android:hint="Search partners, vendors or clients..."
-                                    android:textColorHint="@color/stitch_on_surface_variant"
+                                    android:textColorHint="@color/auth_text_light"
                                     android:textColor="@android:color/white"
                                     android:textSize="@dimen/_12ssp"
                                     android:layout_marginStart="@dimen/_12sdp"
@@ -194,20 +194,20 @@
                             android:layout_width="@dimen/_24sdp"
                             android:layout_height="@dimen/_24sdp"
                             android:src="@drawable/ic_add"
-                            app:tint="@color/stitch_on_surface_variant" />
+                            app:tint="@color/auth_text_light" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Add New Partner"
                             android:fontFamily="@font/roboto_medium"
-                            android:textColor="@color/stitch_on_surface_variant"
+                            android:textColor="@color/auth_text_light"
                             android:layout_marginTop="@dimen/_8sdp" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Connect a new entity to your ledger"
                             android:fontFamily="@font/roboto_regular"
-                            android:textColor="@color/stitch_on_surface_variant"
+                            android:textColor="@color/auth_text_light"
                             android:textSize="@dimen/_8ssp"
                             android:alpha="0.7" />
                     </LinearLayout>

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/stitch_background"
+    android:background="@color/auth_bg"
     android:clickable="true"
     android:focusable="true">
 
@@ -99,7 +99,7 @@
                     android:layout_marginTop="@dimen/_16sdp"
                     android:fontFamily="@font/roboto_bold"
                     android:text="Create Category"
-                    android:textColor="@color/text_color"
+                    android:textColor="@color/text_secondary"
                     android:textSize="@dimen/_16ssp" />
 
                 <TextView
@@ -152,7 +152,7 @@
                                 android:id="@+id/et_name"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/text_color"
+                                android:textColor="@color/text_secondary"
                                 android:inputType="textPersonName"
                                 android:textSize="@dimen/_12ssp"
                                 android:fontFamily="@font/roboto_regular"
