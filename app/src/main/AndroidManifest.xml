@@ -16,18 +16,18 @@
         android:extractNativeLibs="false"
         tools:ignore="GoogleAppIndexingWarning"
         android:theme="@style/Theme.CashBookBusiness" >
-        <activity android:name="com.cashbk.app.ui.auth.AuthActivity" android:exported="true">
+        <activity android:name="com.cashbk.app.auth.AuthActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name="com.cashbk.app.ui.business.BusinessDetailActivity" />
-        <activity android:name="com.cashbk.app.ui.business.ManagePartnersActivity" />
-        <activity android:name="com.cashbk.app.ui.notebook.NotebookActivity" />
-        <activity android:name="com.cashbk.app.ui.members.MembersActivity" />
-        <activity android:name="com.cashbk.app.ui.auth.ForgotPasswordActivity" />
+        <activity android:name="com.cashbk.app.business.BusinessDetailActivity" />
+        <activity android:name="com.cashbk.app.party.ManagePartnersActivity" />
+        <activity android:name="com.cashbk.app.notebook.NotebookActivity" />
+        <activity android:name="com.cashbk.app.members.MembersActivity" />
+        <activity android:name="com.cashbk.app.auth.ForgotPasswordActivity" />
 
         <meta-data
             android:name="preloaded_fonts"
