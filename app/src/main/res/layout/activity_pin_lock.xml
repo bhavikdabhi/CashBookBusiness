@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_color">
+
+    <!-- Glowing Background Top Left -->
+    <ImageView
+        android:id="@+id/imgSmoke"
+        android:layout_width="@dimen/_200sdp"
+        android:layout_height="@dimen/_200sdp"
+        android:src="@drawable/smoke_bg_top"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="-80dp"
+        android:layout_marginStart="-80dp" />
+
+    <!-- Glowing Background Bottom Right -->
+    <ImageView
+        android:id="@+id/imgSmokebottom"
+        android:layout_width="@dimen/_200sdp"
+        android:layout_height="@dimen/_200sdp"
+        android:src="@drawable/smoke_bg_bottom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="-80dp"
+        android:layout_marginBottom="-80dp" />
+
+    <!-- Content Container -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="@dimen/_24sdp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Padlock Logo Header -->
+        <ImageView
+            android:id="@+id/iv_lock_logo"
+            android:layout_width="@dimen/_54sdp"
+            android:layout_height="@dimen/_54sdp"
+            android:src="@drawable/ic_auth_lock"
+            app:tint="@color/auth_glow_1"
+            android:layout_marginBottom="@dimen/_16sdp" />
+
+        <TextView
+            android:id="@+id/tv_app_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CashBook Business"
+            android:fontFamily="@font/roboto_bold"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_18ssp"
+            android:layout_marginBottom="@dimen/_8sdp" />
+
+        <TextView
+            android:id="@+id/tv_lock_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter PIN to Unlock"
+            android:fontFamily="@font/roboto_regular"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/_11ssp"
+            android:layout_marginBottom="@dimen/_24sdp" />
+
+        <!-- PIN Dots Container -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="@dimen/_32sdp">
+
+            <View
+                android:id="@+id/dot1"
+                android:layout_width="@dimen/_12sdp"
+                android:layout_height="@dimen/_12sdp"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:background="@drawable/bg_calendar_dot"
+                android:backgroundTint="@color/gray" />
+
+            <View
+                android:id="@+id/dot2"
+                android:layout_width="@dimen/_12sdp"
+                android:layout_height="@dimen/_12sdp"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:background="@drawable/bg_calendar_dot"
+                android:backgroundTint="@color/gray" />
+
+            <View
+                android:id="@+id/dot3"
+                android:layout_width="@dimen/_12sdp"
+                android:layout_height="@dimen/_12sdp"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:background="@drawable/bg_calendar_dot"
+                android:backgroundTint="@color/gray" />
+
+            <View
+                android:id="@+id/dot4"
+                android:layout_width="@dimen/_12sdp"
+                android:layout_height="@dimen/_12sdp"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:background="@drawable/bg_calendar_dot"
+                android:backgroundTint="@color/gray" />
+        </LinearLayout>
+
+        <!-- Numeric Keypad Grid -->
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="3"
+            android:rowCount="4"
+            android:alignmentMode="alignBounds"
+            android:columnOrderPreserved="false"
+            android:useDefaultMargins="true"
+            android:layout_marginBottom="@dimen/_16sdp">
+
+            <!-- Row 1 -->
+            <TextView android:id="@+id/btn1" style="@style/PinKeypadButton" android:text="1" />
+            <TextView android:id="@+id/btn2" style="@style/PinKeypadButton" android:text="2" />
+            <TextView android:id="@+id/btn3" style="@style/PinKeypadButton" android:text="3" />
+
+            <!-- Row 2 -->
+            <TextView android:id="@+id/btn4" style="@style/PinKeypadButton" android:text="4" />
+            <TextView android:id="@+id/btn5" style="@style/PinKeypadButton" android:text="5" />
+            <TextView android:id="@+id/btn6" style="@style/PinKeypadButton" android:text="6" />
+
+            <!-- Row 3 -->
+            <TextView android:id="@+id/btn7" style="@style/PinKeypadButton" android:text="7" />
+            <TextView android:id="@+id/btn8" style="@style/PinKeypadButton" android:text="8" />
+            <TextView android:id="@+id/btn9" style="@style/PinKeypadButton" android:text="9" />
+
+            <!-- Row 4 -->
+            <ImageView
+                android:id="@+id/btn_biometric"
+                style="@style/PinKeypadButtonImage"
+                android:src="@drawable/ic_fingerprint"
+                android:padding="@dimen/_14sdp"
+                app:tint="@color/white"
+                android:visibility="invisible" />
+
+            <TextView android:id="@+id/btn0" style="@style/PinKeypadButton" android:text="0" />
+
+            <ImageView
+                android:id="@+id/btn_delete"
+                style="@style/PinKeypadButtonImage"
+                android:src="@drawable/ic_back"
+                android:padding="@dimen/_14sdp"
+                app:tint="@color/white" />
+        </GridLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Forgot PIN / Sign Out Backup option -->
+        <TextView
+            android:id="@+id/btn_switch_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sign Out / Switch Account"
+            android:fontFamily="@font/roboto_medium"
+            android:textColor="@color/color_ffb3b3"
+            android:textSize="@dimen/_11ssp"
+            android:padding="@dimen/_8sdp"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginBottom="@dimen/_8sdp" />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
