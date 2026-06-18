@@ -8,6 +8,8 @@ import com.cashbk.app.databinding.AddPartyBottomSheetBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import androidx.core.content.ContextCompat
+import com.cashbk.app.R
 import com.cashbk.app.dataclass.Party
 
 class AddPartyBottomSheet : BottomSheetDialogFragment() {
@@ -43,12 +45,14 @@ class AddPartyBottomSheet : BottomSheetDialogFragment() {
 
             val id = FirebaseDatabase.getInstance().reference.push().key!!
 
+            val defaultColorHex = String.format("#%06X", 0xFFFFFF and ContextCompat.getColor(requireContext(), R.color.color_80deea))
+
             val party = Party(
                 id = id,
                 name = name,
                 contact = phone,
                 role = "CUSTOMER",
-                colorHex = "#80DEEA",
+                colorHex = defaultColorHex,
                 iconResName = "ic_party_person"
             )
 

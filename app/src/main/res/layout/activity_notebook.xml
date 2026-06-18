@@ -11,8 +11,8 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_70sdp"
-        android:paddingBottom="@dimen/_5sdp"
+        android:layout_height="@dimen/_80sdp"
+        android:paddingBottom="@dimen/_8sdp"
         android:background="@drawable/bg_bottom_nav_pill_20"
         style="@style/Widget.App.BottomNav"
         app:itemBackground="@drawable/bg_bottom_nav_item_selected_20"

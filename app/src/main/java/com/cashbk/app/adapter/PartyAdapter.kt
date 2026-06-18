@@ -2,9 +2,11 @@ package com.cashbk.app.adapter
 
 import android.content.res.ColorStateList
 import android.graphics.Color
+import androidx.core.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.cashbk.app.R
 import com.cashbk.app.databinding.ItemPartyPremiumBinding
 import com.cashbk.app.dataclass.Party
 
@@ -32,14 +34,14 @@ class PartyAdapter(
         holder.binding.tvPartyName.text = party.name ?: "Unknown"
         holder.binding.tvPartyRole.text = party.role ?: "VENDOR"
 
-        // Apply dynamic color tint to the icon container
         try {
-            val colorStr = party.colorHex ?: "#80DEEA"
+            val defaultColorHex = String.format("#%06X", 0xFFFFFF and ContextCompat.getColor(context, R.color.color_80deea))
+            val colorStr = party.colorHex ?: defaultColorHex
             val color = Color.parseColor(colorStr)
             holder.binding.ivPartyIcon.backgroundTintList = ColorStateList.valueOf(color)
             holder.binding.tvPartyName.setTextColor(color)
         } catch (e: Exception) {
-            holder.binding.ivPartyIcon.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#80DEEA"))
+            holder.binding.ivPartyIcon.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.color_80deea))
         }
 
         // Load custom icon

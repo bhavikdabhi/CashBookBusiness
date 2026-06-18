@@ -12,7 +12,7 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="@dimen/_35sdp"
         android:layout_height="@dimen/_35sdp"
-        android:backgroundTint="#E3F2FD"
+        android:backgroundTint="@color/color_e3f2fd"
         app:cardCornerRadius="@dimen/_8sdp"
         app:cardElevation="0dp">
 

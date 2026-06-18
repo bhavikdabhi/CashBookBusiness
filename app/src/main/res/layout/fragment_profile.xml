@@ -106,12 +106,12 @@
 <!--            android:layout_height="wrap_content"-->
 <!--            android:layout_marginTop="@dimen/_4sdp"-->
 <!--            android:background="@drawable/bg_badge_active"-->
-<!--            android:backgroundTint="#1A4DB6AC"-->
+<!--            android:backgroundTint="@color/color_1a4db6ac"-->
 <!--            android:fontFamily="@font/roboto_bold"-->
 <!--            android:paddingHorizontal="@dimen/_12sdp"-->
 <!--            android:paddingVertical="@dimen/_2sdp"-->
 <!--            android:text="GOLD MEMBER"-->
-<!--            android:textColor="#4DB6AC"-->
+<!--            android:textColor="@color/color_4db6ac"-->
 <!--            android:textSize="@dimen/_8ssp"-->
 <!--            app:layout_constraintEnd_toEndOf="parent"-->
 <!--            app:layout_constraintStart_toStartOf="parent"-->
@@ -585,13 +585,13 @@
             android:layout_marginHorizontal="@dimen/_16sdp"
             android:layout_marginTop="@dimen/_24sdp"
             android:text="Sign Out"
-            android:textColor="#FFB3B3"
+            android:textColor="@color/color_ffb3b3"
             android:fontFamily="@font/roboto_bold"
             app:icon="@drawable/ic_logout"
             app:iconGravity="textStart"
-            app:iconTint="#FFB3B3"
+            app:iconTint="@color/color_ffb3b3"
             app:layout_constraintTop_toBottomOf="@id/card_preferences"
-            app:strokeColor="#1AFFFFFF"
+            app:strokeColor="@color/glass_border"
             app:cornerRadius="@dimen/_12sdp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

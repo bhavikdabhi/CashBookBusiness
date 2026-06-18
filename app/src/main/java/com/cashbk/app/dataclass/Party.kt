@@ -8,6 +8,6 @@ data class Party(
     val email: String = "",
     val website: String = "",
     val priorityTag: String = "", // e.g., INTERNAL, TECH, PRIMARY
-    val colorHex: String = "#80DEEA", // Default Cyan
+    val colorHex: String? = null, // Dynamically loaded default in UI
     val iconResName: String = "ic_party_person" // Default icon
 )

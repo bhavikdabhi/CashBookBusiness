@@ -27,12 +27,14 @@ class AddCategoryFragment : Fragment() {
     private var notebookId: String? = null
 
     private var selectedType = "expense"
-    private var selectedColorHex = "#EF5350"
+    private var selectedColorHex: String? = null
     private var selectedIconName = "ic_cat_money"
 
-    private val colorOptions = listOf(
-        "#B5BDFF", "#80DEEA", "#1DE9B6", "#FFA726", "#EF5350",
-        "#EC407A", "#AB47BC", "#5C6BC0", "#90A4AE", "#FFFFFF"
+    private val colorResOptions = listOf(
+        R.color.color_b5bdff, R.color.color_80deea, R.color.color_1de9b6,
+        R.color.color_ffa726, R.color.color_ef5350, R.color.color_ec407a,
+        R.color.color_ab47bc, R.color.color_5c6bc0, R.color.color_90a4ae,
+        R.color.white
     )
 
     private val iconOptions = listOf(
@@ -56,6 +58,10 @@ class AddCategoryFragment : Fragment() {
             Toast.makeText(requireContext(), "Notebook configuration error", Toast.LENGTH_SHORT).show()
             parentFragmentManager.popBackStack()
             return
+        }
+
+        if (selectedColorHex == null) {
+            selectedColorHex = String.format("#%06X", 0xFFFFFF and ContextCompat.getColor(requireContext(), R.color.color_ef5350))
         }
 
         setupTypeSelection()
@@ -91,7 +97,7 @@ class AddCategoryFragment : Fragment() {
         val inactiveColor = ContextCompat.getColor(requireContext(), R.color.text_disabled)
         val glassBorder = ContextCompat.getColor(requireContext(), R.color.glass_border)
         val dangerColor = ContextCompat.getColor(requireContext(), R.color.danger)
-        val successColor = Color.parseColor("#00E676")
+        val successColor = ContextCompat.getColor(requireContext(), R.color.color_00e676)
 
         if (selectedType == "income") {
             binding.btnTypeIncome.strokeColor = ColorStateList.valueOf(successColor)
@@ -117,7 +123,9 @@ class AddCategoryFragment : Fragment() {
         val size = (context.resources.displayMetrics.density * 40).toInt()
         val margin = (context.resources.displayMetrics.density * 8).toInt()
 
-        colorOptions.forEach { hex ->
+        colorResOptions.forEach { resId ->
+            val colorVal = ContextCompat.getColor(context, resId)
+            val hex = String.format("#%06X", 0xFFFFFF and colorVal)
             val frame = FrameLayout(context)
             val params = GridLayout.LayoutParams()
             params.width = size
@@ -130,7 +138,7 @@ class AddCategoryFragment : Fragment() {
             val ringDrawable = MaterialShapeDrawable(ShapeAppearanceModel.builder().setAllCornerSizes(size / 2f).build())
             ringDrawable.fillColor = ColorStateList.valueOf(Color.TRANSPARENT)
             ringDrawable.strokeWidth = 4f
-            ringDrawable.strokeColor = ColorStateList.valueOf(Color.parseColor(hex))
+            ringDrawable.strokeColor = ColorStateList.valueOf(colorVal)
             ring.background = ringDrawable
             ring.visibility = if (selectedColorHex == hex) View.VISIBLE else View.GONE
             ring.tag = "ring_$hex"
@@ -142,7 +150,7 @@ class AddCategoryFragment : Fragment() {
             val circleParams = FrameLayout.LayoutParams(circleSize, circleSize, Gravity.CENTER)
             circle.layoutParams = circleParams
             val circleDrawable = MaterialShapeDrawable(ShapeAppearanceModel.builder().setAllCornerSizes(circleSize / 2f).build())
-            circleDrawable.fillColor = ColorStateList.valueOf(Color.parseColor(hex))
+            circleDrawable.fillColor = ColorStateList.valueOf(colorVal)
             circle.background = circleDrawable
             frame.addView(circle)
 
@@ -158,7 +166,8 @@ class AddCategoryFragment : Fragment() {
         for (i in 0 until binding.colorGrid.childCount) {
             val frame = binding.colorGrid.getChildAt(i) as FrameLayout
             val ring = frame.getChildAt(0)
-            val hex = colorOptions[i]
+            val colorVal = ContextCompat.getColor(requireContext(), colorResOptions[i])
+            val hex = String.format("#%06X", 0xFFFFFF and colorVal)
             ring.visibility = if (selectedColorHex == hex) View.VISIBLE else View.GONE
         }
     }
@@ -180,7 +189,7 @@ class AddCategoryFragment : Fragment() {
             frame.layoutParams = params
             frame.background = ContextCompat.getDrawable(context, R.drawable.bg_glass_field)
             frame.backgroundTintList = ColorStateList.valueOf(
-                if (selectedIconName == iconName) Color.parseColor("#40FFFFFF") else Color.parseColor("#10FFFFFF")
+                if (selectedIconName == iconName) ContextCompat.getColor(context, R.color.color_40ffffff) else ContextCompat.getColor(context, R.color.color_10ffffff)
             )
 
             val icon = ImageView(context)
@@ -208,7 +217,7 @@ class AddCategoryFragment : Fragment() {
             val frame = binding.iconGrid.getChildAt(i) as FrameLayout
             val iconName = iconOptions[i]
             frame.backgroundTintList = ColorStateList.valueOf(
-                if (selectedIconName == iconName) Color.parseColor("#40FFFFFF") else Color.parseColor("#10FFFFFF")
+                if (selectedIconName == iconName) ContextCompat.getColor(requireContext(), R.color.color_40ffffff) else ContextCompat.getColor(requireContext(), R.color.color_10ffffff)
             )
             // Add a border if selected
             if (frame.background is MaterialShapeDrawable) {

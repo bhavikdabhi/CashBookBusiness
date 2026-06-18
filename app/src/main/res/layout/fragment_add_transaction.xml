@@ -156,7 +156,7 @@
                         android:layout_height="wrap_content"
                         android:background="@null"
                         android:hint="0.00"
-                        android:textColorHint="#40ffffff"
+                        android:textColorHint="@color/color_40ffffff"
                         android:textColor="@color/white"
                         android:fontFamily="@font/roboto_bold"
                         android:textSize="@dimen/_36ssp"

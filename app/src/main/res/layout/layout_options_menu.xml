@@ -41,7 +41,7 @@
                     android:layout_height="20dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_menu_rename"
-                    app:tint="#A19DF7" />
+                    app:tint="@color/color_a19df7" />
             </FrameLayout>
 
             <TextView
@@ -75,7 +75,7 @@
                     android:layout_height="20dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_menu_report"
-                    app:tint="#C6CCDF" />
+                    app:tint="@color/color_c6ccdf" />
             </FrameLayout>
 
             <TextView
@@ -109,7 +109,7 @@
                     android:layout_height="20dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_menu_member"
-                    app:tint="#3CE3A5" />
+                    app:tint="@color/color_3ce3a5" />
             </FrameLayout>
 
             <TextView
@@ -128,7 +128,7 @@
             android:layout_height="0.5dp"
             android:layout_marginHorizontal="24dp"
             android:layout_marginVertical="6dp"
-            android:background="#1AFFFFFF"/>
+            android:background="@color/glass_border"/>
 
         <!-- Settings Item -->
         <LinearLayout
@@ -151,7 +151,7 @@
                     android:layout_height="20dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_menu_settings"
-                    app:tint="#9EA1AE" />
+                    app:tint="@color/color_9ea1ae" />
             </FrameLayout>
 
             <TextView
@@ -185,7 +185,7 @@
                     android:layout_height="20dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_action_delete"
-                    app:tint="#EF4444" />
+                    app:tint="@color/danger" />
             </FrameLayout>
 
             <TextView

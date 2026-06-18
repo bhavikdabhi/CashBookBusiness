@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.cashbk.app.R
 import com.cashbk.app.databinding.FragmentAddPartyBinding
@@ -31,8 +32,8 @@ class AddPartyFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         notebookId = arguments?.getString("notebookId")
-        if (notebookId == null) {
-            Toast.makeText(requireContext(), "Notebook ID missing", Toast.LENGTH_SHORT).show()
+        if (notebookId.isNullOrEmpty()) {
+            Toast.makeText(requireContext(), "Notebook error", Toast.LENGTH_SHORT).show()
             parentFragmentManager.popBackStack()
             return
         }
@@ -103,12 +104,14 @@ class AddPartyFragment : Fragment() {
         val database = FirebaseDatabase.getInstance().reference.child("parties").child(notebookId!!)
         val partyId = database.push().key ?: ""
 
+        val defaultColorHex = String.format("#%06X", 0xFFFFFF and ContextCompat.getColor(requireContext(), R.color.color_80deea))
+
         val party = Party(
             id = partyId,
             name = name,
             contact = contact,
             role = selectedRole,
-            colorHex = "#80DEEA", // Keep default color or map from role
+            colorHex = defaultColorHex,
             iconResName = when(selectedRole) {
                 "VENDOR" -> "ic_party_shop"
                 "CUSTOMER" -> "ic_party_person"

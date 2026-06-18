@@ -130,7 +130,7 @@
             android:fontFamily="@font/roboto_regular"
             android:textSize="@dimen/_10ssp"
             android:padding="@dimen/_2sdp"
-            android:textColor="#77D5E0"
+            android:textColor="@color/stitch_tertiary"
             app:layout_constraintBaseline_toBaselineOf="@id/lbl_password"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -174,7 +174,7 @@
         <View
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:background="#2C365E"
+            android:background="@color/auth_input_border"
             android:layout_marginEnd="@dimen/_15sdp"
             app:layout_constraintBottom_toBottomOf="@+id/tv_or"
             app:layout_constraintEnd_toStartOf="@+id/tv_or"
@@ -198,7 +198,7 @@
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_marginStart="@dimen/_15sdp"
-            android:background="#2C365E"
+            android:background="@color/auth_input_border"
             app:layout_constraintBottom_toBottomOf="@+id/tv_or"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_or"

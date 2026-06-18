@@ -5,5 +5,5 @@
     android:viewportHeight="12">
   <path
       android:pathData="M4.6,6L0,1.4L1.4,0L7.4,6L1.4,12L0,10.6L4.6,6Z"
-      android:fillColor="#908FA0"/>
+      android:fillColor="@color/auth_ic"/>
 </vector>
