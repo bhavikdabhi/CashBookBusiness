@@ -16,7 +16,9 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:paddingHorizontal="@dimen/_16sdp">
+            android:paddingHorizontal="@dimen/_16sdp"
+            android:paddingBottom="@dimen/_76sdp"
+            android:clipToPadding="false">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -126,14 +128,14 @@
         android:id="@+id/add_notebook_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_16sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:layout_marginBottom="@dimen/_80sdp"
         android:layout_gravity="bottom|end"
         android:fontFamily="@font/roboto_medium"
         android:textFontWeight="600"
-        android:src="@android:drawable/ic_input_add"
+        android:src="@drawable/ic_add"
         app:tint="@color/auth_bg"
         app:backgroundTint="@color/auth_glow_2"
-        android:icon="@drawable/ic_add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:contentDescription="Add Book" />

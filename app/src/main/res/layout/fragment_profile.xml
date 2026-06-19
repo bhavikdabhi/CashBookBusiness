@@ -4,8 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_color"
-    android:fillViewport="true">
+    android:background="@color/auth_bg"
+    android:fillViewport="true"
+    android:paddingBottom="@dimen/_76sdp"
+    android:clipToPadding="false">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -118,15 +120,19 @@
 <!--            app:layout_constraintTop_toBottomOf="@id/tv_profile_name" />-->
 
         <!-- Personal Information Card -->
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_personal_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/_16sdp"
             android:layout_marginTop="@dimen/_24sdp"
-            android:background="@drawable/bg_auth_card"
-            android:padding="@dimen/_16sdp"
+            style="@style/Widget.App.GlassCard"
             app:layout_constraintTop_toBottomOf="@id/tv_profile_name">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_16sdp">
 
             <ImageView
                 android:id="@+id/ic_person"
@@ -167,21 +173,34 @@
                 android:layout_marginTop="@dimen/_12sdp"
                 android:text="FULL NAME"
                 android:textColor="@color/gray"
-                android:textSize="@dimen/_8ssp"
+                android:fontFamily="@font/roboto_bold"
+                android:textSize="@dimen/_10ssp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ic_person" />
 
-            <TextView
-                android:id="@+id/tv_full_name"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_full_name"
+                style="@style/GlassInput"
+                android:layout_marginTop="@dimen/_6sdp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_4sdp"
-                android:background="@drawable/bg_input_field"
-                android:fontFamily="@font/roboto_regular"
-                android:padding="@dimen/_12sdp"
-                android:text="Loading..."
-                android:textColor="@color/white"
-                app:layout_constraintTop_toBottomOf="@id/lbl_full_name" />
+                android:textColorHint="@color/auth_glow_2"
+                app:layout_constraintTop_toBottomOf="@id/lbl_full_name">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tv_full_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/_12ssp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textFontWeight="600"
+                    android:focusable="false"
+                    android:longClickable="false"
+                    android:cursorVisible="false"
+                    android:text="Loading..."
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:id="@+id/lbl_email"
@@ -190,21 +209,34 @@
                 android:layout_marginTop="@dimen/_12sdp"
                 android:text="EMAIL ADDRESS"
                 android:textColor="@color/gray"
-                android:textSize="@dimen/_8ssp"
+                android:fontFamily="@font/roboto_bold"
+                android:textSize="@dimen/_10ssp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_full_name" />
+                app:layout_constraintTop_toBottomOf="@id/til_full_name" />
 
-            <TextView
-                android:id="@+id/tv_email"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_email"
+                style="@style/GlassInput"
+                android:layout_marginTop="@dimen/_6sdp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_4sdp"
-                android:background="@drawable/bg_input_field"
-                android:fontFamily="@font/roboto_regular"
-                android:padding="@dimen/_12sdp"
-                android:text="Loading..."
-                android:textColor="@color/white"
-                app:layout_constraintTop_toBottomOf="@id/lbl_email" />
+                android:textColorHint="@color/auth_glow_2"
+                app:layout_constraintTop_toBottomOf="@id/lbl_email">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tv_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/_12ssp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textFontWeight="600"
+                    android:focusable="false"
+                    android:longClickable="false"
+                    android:cursorVisible="false"
+                    android:text="Loading..."
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:id="@+id/lbl_mobile"
@@ -213,23 +245,37 @@
                 android:layout_marginTop="@dimen/_12sdp"
                 android:text="MOBILE NUMBER"
                 android:textColor="@color/gray"
-                android:textSize="@dimen/_8ssp"
+                android:fontFamily="@font/roboto_bold"
+                android:textSize="@dimen/_10ssp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_email" />
+                app:layout_constraintTop_toBottomOf="@id/til_email" />
 
-            <TextView
-                android:id="@+id/tv_mobile"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_mobile"
+                style="@style/GlassInput"
+                android:layout_marginTop="@dimen/_6sdp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_4sdp"
-                android:background="@drawable/bg_input_field"
-                android:fontFamily="@font/roboto_regular"
-                android:padding="@dimen/_12sdp"
-                android:text="Loading..."
-                android:textColor="@color/white"
-                app:layout_constraintTop_toBottomOf="@id/lbl_mobile" />
+                android:textColorHint="@color/auth_glow_2"
+                app:layout_constraintTop_toBottomOf="@id/lbl_mobile">
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tv_mobile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/_12ssp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textFontWeight="600"
+                    android:focusable="false"
+                    android:longClickable="false"
+                    android:cursorVisible="false"
+                    android:text="Loading..."
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Security Card -->
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -402,15 +448,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_12sdp"
                 android:text="Connect Google Drive"
-                android:textColor="@color/white"
                 android:fontFamily="@font/roboto_bold"
                 android:textSize="@dimen/_10ssp"
                 app:icon="@drawable/ic_drive"
-                app:iconTint="@color/white"
-                app:backgroundTint="@color/primary_color"
-                app:cornerRadius="@dimen/_8sdp"
+                app:iconTint="@color/auth_bg"
                 app:layout_constraintTop_toBottomOf="@id/tv_drive_status"
-                android:visibility="visible" />
+                android:visibility="visible"
+                app:backgroundTint="@null"
+                android:textColor="@color/auth_bg"
+                android:elevation="@dimen/_16sdp"
+                android:background="@drawable/bg_gradient_button"
+                app:cornerRadius="@dimen/_12sdp" />
 
             <!-- Connected State: Disconnect and Switch Buttons -->
             <LinearLayout
@@ -442,11 +490,13 @@
                     android:layout_weight="1"
                     android:layout_marginStart="@dimen/_8sdp"
                     android:text="Switch Account"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/roboto_bold"
                     android:textSize="@dimen/_9ssp"
-                    app:backgroundTint="@color/primary_color"
-                    app:cornerRadius="@dimen/_8sdp" />
+                    android:fontFamily="@font/roboto_bold"
+                    app:backgroundTint="@null"
+                    android:textColor="@color/auth_bg"
+                    android:elevation="@dimen/_16sdp"
+                    android:background="@drawable/bg_gradient_button"
+                    app:cornerRadius="@dimen/_12sdp"/>
 
             </LinearLayout>
 

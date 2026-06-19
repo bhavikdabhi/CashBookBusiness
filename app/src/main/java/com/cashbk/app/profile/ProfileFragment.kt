@@ -327,9 +327,9 @@ class ProfileFragment : Fragment() {
                 currentUser = snapshot.getValue(User::class.java)
                 currentUser?.let { user ->
                     binding.tvProfileName.text = user.name ?: "Unknown User"
-                    binding.tvFullName.text = user.name ?: "N/A"
-                    binding.tvEmail.text = user.email ?: "N/A"
-                    binding.tvMobile.text = user.phone ?: "N/A"
+                    binding.tvFullName.setText(user.name ?: "N/A")
+                    binding.tvEmail.setText(user.email ?: "N/A")
+                    binding.tvMobile.setText(user.phone ?: "N/A")
 //                    binding.tvBadgeTier.text = user.membershipTier ?: "GOLD MEMBER"
 
                     if (!user.profileImageUrl.isNullOrEmpty()) {
