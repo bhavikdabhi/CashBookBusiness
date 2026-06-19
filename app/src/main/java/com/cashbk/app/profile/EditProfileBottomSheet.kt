@@ -7,14 +7,26 @@ import android.view.ViewGroup
 import com.cashbk.app.databinding.DialogEditProfileBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class EditProfileBottomSheet(
-    private val currentName: String?,
-    private val currentPhone: String?,
-    private val onUpdate: (String, String) -> Unit
-) : BottomSheetDialogFragment() {
+class EditProfileBottomSheet : BottomSheetDialogFragment() {
 
     private var _binding: DialogEditProfileBinding? = null
     private val binding get() = _binding!!
+
+    private var currentName: String? = null
+    private var currentPhone: String? = null
+    private var onUpdate: ((String, String) -> Unit)? = null
+
+    fun setOnUpdateListener(listener: (String, String) -> Unit) {
+        this.onUpdate = listener
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            currentName = it.getString("currentName")
+            currentPhone = it.getString("currentPhone")
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,7 +48,7 @@ class EditProfileBottomSheet(
 
         binding.btnUpdate.setOnClickListener {
             val name = binding.etName.text.toString().trim()
-            var phone = binding.etPhone.text.toString().trim()
+            val phone = binding.etPhone.text.toString().trim()
 
             if (name.isEmpty()) {
                 binding.tilName.error = "Name cannot be empty"
@@ -56,7 +68,7 @@ class EditProfileBottomSheet(
             binding.btnUpdate.isEnabled = false
             binding.progressBar.visibility = View.VISIBLE
 
-            onUpdate(name, finalPhone)
+            onUpdate?.invoke(name, finalPhone)
             dismiss()
         }
     }
@@ -64,5 +76,16 @@ class EditProfileBottomSheet(
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        fun newInstance(currentName: String?, currentPhone: String?): EditProfileBottomSheet {
+            val fragment = EditProfileBottomSheet()
+            val args = Bundle()
+            args.putString("currentName", currentName)
+            args.putString("currentPhone", currentPhone)
+            fragment.arguments = args
+            return fragment
+        }
     }
 }

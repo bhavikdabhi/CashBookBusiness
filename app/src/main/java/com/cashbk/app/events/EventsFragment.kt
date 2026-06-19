@@ -11,7 +11,9 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.core.content.ContextCompat
 import com.cashbk.app.R
+import com.cashbk.app.utils.CustomAlertDialog
 import com.cashbk.app.events.adapter.CalendarAdapter
 import com.cashbk.app.events.adapter.CalendarDay
 import com.cashbk.app.events.adapter.EventAdapter
@@ -708,10 +710,11 @@ class EventsFragment : Fragment() {
 
     private fun deleteEvent(event: EventItem) {
         val businessId = currentBusinessId ?: return
-        MaterialAlertDialogBuilder(requireContext(), R.style.CashbkAlertDialog)
+        CustomAlertDialog(requireContext())
             .setTitle("Delete Event")
             .setMessage("Are you sure you want to delete this event?")
-            .setPositiveButton("Delete") { _, _ ->
+            .setIcon(R.drawable.ic_action_delete, ContextCompat.getColor(requireContext(), R.color.danger))
+            .setPositiveButton("Delete") {
                 FirebaseDatabase.getInstance().reference.child("events").child(businessId).child(event.id)
                     .removeValue()
                     .addOnSuccessListener {

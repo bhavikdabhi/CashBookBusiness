@@ -13,6 +13,7 @@ import com.cashbk.app.R
 import com.cashbk.app.databinding.DialogPinSetupBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.cashbk.app.utils.CustomAlertDialog
 
 class PinSetupBottomSheet(
     private val onComplete: (Boolean) -> Unit
@@ -126,16 +127,17 @@ class PinSetupBottomSheet(
         val canAuthenticate = biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG)
         
         if (canAuthenticate == BiometricManager.BIOMETRIC_SUCCESS) {
-            MaterialAlertDialogBuilder(requireContext(), R.style.CashbkAlertDialog)
+            CustomAlertDialog(requireContext())
                 .setTitle("Enable Biometrics")
                 .setMessage("Would you like to enable Fingerprint/Face biometric unlock for quicker access?")
-                .setPositiveButton("Yes") { _, _ ->
+                .setIcon(R.drawable.ic_fingerprint, ContextCompat.getColor(requireContext(), R.color.primary_color))
+                .setPositiveButton("Yes") {
                     sharedPrefs.edit().putBoolean("app_lock_biometrics", true).apply()
                     Toast.makeText(context, "App Lock enabled with PIN & Biometrics", Toast.LENGTH_SHORT).show()
                     onComplete(true)
                     dismiss()
                 }
-                .setNegativeButton("No") { _, _ ->
+                .setNegativeButton("No") {
                     sharedPrefs.edit().putBoolean("app_lock_biometrics", false).apply()
                     Toast.makeText(context, "App Lock enabled with PIN only", Toast.LENGTH_SHORT).show()
                     onComplete(true)

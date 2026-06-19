@@ -7,18 +7,19 @@
     android:layout_gravity="end">
 
     <ImageView
-        android:layout_width="@dimen/_20sdp"
-        android:layout_height="@dimen/_10sdp"
+        android:layout_width="@dimen/_16sdp"
+        android:layout_height="@dimen/_8sdp"
         android:layout_gravity="end"
-        android:layout_marginEnd="@dimen/_36sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
         android:src="@drawable/ic_popup_arrow" />
 
     <LinearLayout
-        android:layout_width="@dimen/_220sdp"
+        android:layout_width="@dimen/_150sdp"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_popup_container"
         android:orientation="vertical"
-        android:paddingVertical="@dimen/_12sdp">
+        android:paddingHorizontal="@dimen/_12sdp"
+        android:paddingVertical="@dimen/_6sdp">
 
         <!-- Rename Item -->
         <LinearLayout
@@ -29,16 +30,15 @@
             android:focusable="true"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingHorizontal="@dimen/_24sdp"
-            android:paddingVertical="@dimen/_8sdp">
+            android:paddingVertical="@dimen/_4sdp">
 
             <FrameLayout
-                android:layout_width="40dp"
-                android:layout_height="@dimen/_30sdp"
+                android:layout_width="@dimen/_24sdp"
+                android:layout_height="@dimen/_24sdp"
                 android:background="@drawable/bg_icon_rename">
                 <ImageView
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
+                    android:layout_width="@dimen/_13sdp"
+                    android:layout_height="@dimen/_13sdp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_menu_rename"
                     app:tint="@color/color_a19df7" />
@@ -47,10 +47,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_14sdp"
+                android:layout_marginStart="@dimen/_10sdp"
                 android:text="Rename"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_12ssp"
+                android:textSize="@dimen/_11ssp"
                 android:fontFamily="sans-serif-medium"/>
         </LinearLayout>
 
@@ -63,16 +63,15 @@
             android:focusable="true"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-           android:paddingHorizontal="@dimen/_24sdp"
-           android:paddingVertical="@dimen/_8sdp">
+            android:paddingVertical="@dimen/_4sdp">
 
             <FrameLayout
-                android:layout_width="@dimen/_30sdp"
-                android:layout_height="@dimen/_30sdp"
+                android:layout_width="@dimen/_24sdp"
+                android:layout_height="@dimen/_24sdp"
                 android:background="@drawable/bg_icon_report">
                 <ImageView
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
+                    android:layout_width="@dimen/_13sdp"
+                    android:layout_height="@dimen/_13sdp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_menu_report"
                     app:tint="@color/color_c6ccdf" />
@@ -81,10 +80,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_14sdp"
+                android:layout_marginStart="@dimen/_10sdp"
                 android:text="Report"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_12ssp"
+                android:textSize="@dimen/_11ssp"
                 android:fontFamily="sans-serif-medium"/>
         </LinearLayout>
 
@@ -97,16 +96,16 @@
             android:focusable="true"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-           android:paddingHorizontal="@dimen/_24sdp"
-           android:paddingVertical="@dimen/_8sdp">
+
+            android:paddingVertical="@dimen/_4sdp">
 
             <FrameLayout
-                android:layout_width="@dimen/_30sdp"
-                android:layout_height="@dimen/_30sdp"
+                android:layout_width="@dimen/_24sdp"
+                android:layout_height="@dimen/_24sdp"
                 android:background="@drawable/bg_icon_member">
                 <ImageView
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
+                    android:layout_width="@dimen/_13sdp"
+                    android:layout_height="@dimen/_13sdp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_menu_member"
                     app:tint="@color/color_3ce3a5" />
@@ -115,19 +114,19 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_14sdp"
+                android:layout_marginStart="@dimen/_10sdp"
                 android:text="Member"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_12ssp"
+                android:textSize="@dimen/_11ssp"
                 android:fontFamily="sans-serif-medium"/>
         </LinearLayout>
 
         <!-- Spacer / Divider -->
         <View
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginHorizontal="24dp"
-            android:layout_marginVertical="6dp"
+            android:layout_height="@dimen/_1sdp"
+            android:layout_marginHorizontal="@dimen/_12sdp"
+            android:layout_marginVertical="@dimen/_4sdp"
             android:background="@color/glass_border"/>
 
         <!-- Settings Item -->
@@ -139,16 +138,16 @@
             android:focusable="true"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-           android:paddingHorizontal="@dimen/_24sdp"
-           android:paddingVertical="@dimen/_8sdp">
+
+            android:paddingVertical="@dimen/_4sdp">
 
             <FrameLayout
-                android:layout_width="@dimen/_30sdp"
-                android:layout_height="@dimen/_30sdp"
+                android:layout_width="@dimen/_24sdp"
+                android:layout_height="@dimen/_24sdp"
                 android:background="@drawable/bg_icon_settings">
                 <ImageView
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
+                    android:layout_width="@dimen/_13sdp"
+                    android:layout_height="@dimen/_13sdp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_menu_settings"
                     app:tint="@color/color_9ea1ae" />
@@ -157,10 +156,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_14sdp"
+                android:layout_marginStart="@dimen/_10sdp"
                 android:text="Settings"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_12ssp"
+                android:textSize="@dimen/_11ssp"
                 android:fontFamily="sans-serif-medium"/>
         </LinearLayout>
 
@@ -173,16 +172,16 @@
             android:focusable="true"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-           android:paddingHorizontal="@dimen/_24sdp"
-            android:paddingVertical="@dimen/_8sdp">
+
+            android:paddingVertical="@dimen/_4sdp">
 
             <FrameLayout
-                android:layout_width="@dimen/_30sdp"
-                android:layout_height="@dimen/_30sdp"
+                android:layout_width="@dimen/_24sdp"
+                android:layout_height="@dimen/_24sdp"
                 android:background="@drawable/bg_icon_delete">
                 <ImageView
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
+                    android:layout_width="@dimen/_13sdp"
+                    android:layout_height="@dimen/_13sdp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_action_delete"
                     app:tint="@color/danger" />
@@ -191,10 +190,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_14sdp"
+                android:layout_marginStart="@dimen/_10sdp"
                 android:text="Delete"
                 android:textColor="@color/danger"
-                android:textSize="@dimen/_12ssp"
+                android:textSize="@dimen/_11ssp"
                 android:fontFamily="sans-serif-medium"/>
         </LinearLayout>
 

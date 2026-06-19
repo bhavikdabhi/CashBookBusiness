@@ -9,6 +9,8 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import com.cashbk.app.utils.CustomAlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cashbk.app.R
@@ -267,10 +269,11 @@ class MembersActivity : AppCompatActivity() {
             Toast.makeText(this, "Only the business owner can remove an Admin", Toast.LENGTH_SHORT).show()
             return
         }
-        AlertDialog.Builder(this)
+        CustomAlertDialog(this)
             .setTitle("Remove Member")
             .setMessage("Are you sure you want to remove ${member.name}?")
-            .setPositiveButton("Yes") { _, _ ->
+            .setIcon(R.drawable.ic_action_delete, ContextCompat.getColor(this, R.color.danger))
+            .setPositiveButton("Yes") {
                 database.child(member.id).removeValue()
             }
             .setNegativeButton("No", null)

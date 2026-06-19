@@ -164,7 +164,7 @@
                 android:id="@+id/lbl_full_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_16sdp"
+                android:layout_marginTop="@dimen/_12sdp"
                 android:text="FULL NAME"
                 android:textColor="@color/gray"
                 android:textSize="@dimen/_8ssp"
@@ -246,7 +246,7 @@
                 android:id="@+id/ic_security"
                 android:layout_width="@dimen/_18sdp"
                 android:layout_height="@dimen/_18sdp"
-                android:src="@drawable/ic_auth_lock"
+                android:src="@drawable/ic_security_enc"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:tint="@color/auth_glow_1" />
@@ -263,52 +263,14 @@
                 app:layout_constraintStart_toEndOf="@id/ic_security"
                 app:layout_constraintTop_toTopOf="@id/ic_security" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/btn_reset_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_16sdp"
-                android:padding="@dimen/_12sdp"
-                app:layout_constraintTop_toBottomOf="@id/ic_security">
-
-                <ImageView
-                    android:id="@+id/ic_reset"
-                    android:layout_width="@dimen/_16sdp"
-                    android:layout_height="@dimen/_16sdp"
-                    android:src="@drawable/ic_auth_lock"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/gray" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_12sdp"
-                    android:text="Reset Password"
-                    android:textColor="@color/white"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/ic_reset"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:layout_width="@dimen/_16sdp"
-                    android:layout_height="@dimen/_16sdp"
-                    android:src="@drawable/ic_arrow_right"
-                    android:padding="@dimen/_4sdp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/gray" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/row_biometric"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_12sdp"
                 android:padding="@dimen/_12sdp"
-                app:layout_constraintTop_toBottomOf="@id/btn_reset_password">
+                app:layout_constraintTop_toBottomOf="@id/ic_security">
 
                 <ImageView
                     android:id="@+id/ic_biometric"
@@ -326,6 +288,7 @@
                     android:layout_marginStart="@dimen/_12sdp"
                     android:text="App Lock (PIN / Biometric)"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11ssp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/ic_biometric"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -333,11 +296,54 @@
                 <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/switch_biometric"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/_17sdp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/btn_reset_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:padding="@dimen/_12sdp"
+                app:layout_constraintTop_toBottomOf="@id/row_biometric">
+
+                <ImageView
+                    android:id="@+id/ic_reset"
+                    android:layout_width="@dimen/_16sdp"
+                    android:layout_height="@dimen/_16sdp"
+                    android:src="@drawable/ic_auth_lock"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/gray" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_12sdp"
+                    android:text="Reset Password"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_11ssp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/ic_reset"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:layout_width="@dimen/_16sdp"
+                    android:layout_height="@dimen/_16sdp"
+                    android:src="@drawable/ic_arrow_right"
+                    android:padding="@dimen/_4sdp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/gray" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 
 
@@ -380,7 +386,7 @@
                 android:id="@+id/tv_drive_status"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_12sdp"
                 android:fontFamily="@font/roboto_regular"
                 android:text="Not Connected"
                 android:textColor="@color/gray"

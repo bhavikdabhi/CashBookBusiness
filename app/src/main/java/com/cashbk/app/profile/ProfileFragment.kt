@@ -27,6 +27,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
+import com.cashbk.app.utils.CustomAlertDialog
 import com.google.firebase.database.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -143,33 +144,42 @@ class ProfileFragment : Fragment() {
         }
 
         binding.icProfileEdit.setOnClickListener {
-            val bottomSheet = EditProfileBottomSheet(
+            val bottomSheet = EditProfileBottomSheet.newInstance(
                 currentUser?.name,
                 currentUser?.phone
-            ) { newName, newPhone ->
+            )
+            bottomSheet.setOnUpdateListener { newName, newPhone ->
                 performProfileUpdate(newName, newPhone)
             }
             bottomSheet.show(parentFragmentManager, "EditProfileBottomSheet")
         }
 
         binding.btnSignOut.setOnClickListener {
-            profileListener?.let { listener ->
-                registeredUid?.let { uid ->
-                    database.child("users").child(uid).removeEventListener(listener)
-                }
-            }
-            profileListener = null
+            CustomAlertDialog(requireContext())
+                .setTitle("Sign Out")
+                .setMessage("Are you sure you want to sign out from your account?")
+                .setIcon(R.drawable.ic_logout, ContextCompat.getColor(requireContext(), R.color.danger))
+                .setPositiveButton("Sign Out") {
+                    profileListener?.let { listener ->
+                        registeredUid?.let { uid ->
+                            database.child("users").child(uid).removeEventListener(listener)
+                        }
+                    }
+                    profileListener = null
 
-            auth.signOut()
-            val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
-            GoogleSignIn.getClient(requireActivity(), signInOptions).signOut().addOnCompleteListener {
-                if (isAdded) {
-                    val intent = Intent(context, AuthActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
-                    requireActivity().finish()
+                    auth.signOut()
+                    val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
+                    GoogleSignIn.getClient(requireActivity(), signInOptions).signOut().addOnCompleteListener {
+                        if (isAdded) {
+                            val intent = Intent(context, AuthActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                            requireActivity().finish()
+                        }
+                    }
                 }
-            }
+                .setNegativeButton("Cancel", null)
+                .show()
         }
 
         binding.btnResetPassword.setOnClickListener {
@@ -217,14 +227,15 @@ class ProfileFragment : Fragment() {
             } else {
                 val isEnabled = sharedPrefs.getBoolean("app_lock_enabled", false)
                 if (isEnabled) {
-                    MaterialAlertDialogBuilder(requireContext(), R.style.CashbkAlertDialog)
+                    CustomAlertDialog(requireContext())
                         .setTitle("Disable App Lock")
                         .setMessage("Are you sure you want to disable App Lock security?")
-                        .setPositiveButton("Disable") { _, _ ->
+                        .setIcon(R.drawable.ic_auth_lock, ContextCompat.getColor(requireContext(), R.color.primary_color))
+                        .setPositiveButton("Disable") {
                             sharedPrefs.edit().clear().apply()
                             Toast.makeText(context, "App Lock disabled", Toast.LENGTH_SHORT).show()
                         }
-                        .setNegativeButton("Cancel") { _, _ ->
+                        .setNegativeButton("Cancel") {
                             binding.switchBiometric.isChecked = true
                         }
                         .setCancelable(false)
@@ -503,10 +514,11 @@ class ProfileFragment : Fragment() {
     }
 
     private fun disconnectGoogleDrive() {
-        MaterialAlertDialogBuilder(requireContext(), R.style.CashbkAlertDialog)
+        CustomAlertDialog(requireContext())
             .setTitle("Disconnect Google Drive")
             .setMessage("Are you sure you want to disconnect Google Drive? Receipts will no longer be backed up to your Google account.")
-            .setPositiveButton("Disconnect") { _: DialogInterface, _: Int ->
+            .setIcon(R.drawable.ic_drive, ContextCompat.getColor(requireContext(), R.color.danger))
+            .setPositiveButton("Disconnect") {
                 val uid = auth.currentUser?.uid ?: return@setPositiveButton
                 database.child("users").child(uid).child("googleDriveEmail").setValue("")
                     .addOnSuccessListener {
@@ -523,13 +535,14 @@ class ProfileFragment : Fragment() {
     }
 
     private fun switchGoogleDriveAccount() {
-        MaterialAlertDialogBuilder(requireContext(), R.style.CashbkAlertDialog)
+        CustomAlertDialog(requireContext())
             .setTitle("Switch Google Drive Account")
             .setMessage("Do you want to transfer your existing profile picture and receipts to the new account?")
-            .setPositiveButton("Migrate & Switch") { _: DialogInterface, _: Int ->
+            .setIcon(R.drawable.ic_drive, ContextCompat.getColor(requireContext(), R.color.primary_color))
+            .setPositiveButton("Migrate & Switch") {
                 startMigrationAndSwitchFlow()
             }
-            .setNegativeButton("Switch Only") { _: DialogInterface, _: Int ->
+            .setNegativeButton("Switch Only") {
                 driveFlowMode = DriveFlowMode.SWITCH_NO_MIGRATE
                 performGoogleSignOutAndChooser()
             }

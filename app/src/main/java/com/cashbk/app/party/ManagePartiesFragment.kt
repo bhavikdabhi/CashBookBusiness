@@ -12,6 +12,8 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import com.cashbk.app.utils.CustomAlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cashbk.app.R
@@ -157,10 +159,11 @@ class ManagePartiesFragment : Fragment() {
     }
 
     private fun showDeleteConfirmation(party: Party) {
-        AlertDialog.Builder(requireContext())
+        CustomAlertDialog(requireContext())
             .setTitle("Delete Party")
             .setMessage("Are you sure you want to delete ${party.name}?")
-            .setPositiveButton("Delete") { _, _ ->
+            .setIcon(R.drawable.ic_action_delete, ContextCompat.getColor(requireContext(), R.color.danger))
+            .setPositiveButton("Delete") {
                 database.child(party.id).removeValue()
                     .addOnSuccessListener {
                         Toast.makeText(requireContext(), "Deleted", Toast.LENGTH_SHORT).show()

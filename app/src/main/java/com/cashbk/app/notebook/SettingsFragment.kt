@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import com.cashbk.app.utils.CustomAlertDialog
 import androidx.fragment.app.Fragment
 import com.cashbk.app.databinding.FragmentNotebookSettingBinding
 import com.cashbk.app.members.MembersActivity
@@ -190,10 +192,11 @@ class SettingsFragment : Fragment() {
     }
 
     private fun showDeleteConfirmation() {
-        AlertDialog.Builder(requireContext())
+        CustomAlertDialog(requireContext())
             .setTitle("Delete Notebook")
             .setMessage("Are you sure you want to permanently delete this notebook? This will erase all categories, parties, and transactions.")
-            .setPositiveButton("Delete Everything") { _, _ -> deleteNotebook() }
+            .setIcon(com.cashbk.app.R.drawable.ic_action_delete, ContextCompat.getColor(requireContext(), com.cashbk.app.R.color.danger))
+            .setPositiveButton("Delete Everything") { deleteNotebook() }
             .setNegativeButton("Cancel", null)
             .show()
     }

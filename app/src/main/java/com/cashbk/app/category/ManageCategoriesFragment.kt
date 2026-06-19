@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import com.cashbk.app.utils.CustomAlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cashbk.app.R
@@ -188,10 +190,11 @@ class ManageCategoriesFragment : Fragment() {
     }
 
     private fun showDeleteConfirmation(category: Category) {
-        AlertDialog.Builder(requireContext())
+        CustomAlertDialog(requireContext())
             .setTitle("Delete Category")
             .setMessage("Are you sure you want to delete ${category.name}?")
-            .setPositiveButton("Delete") { _, _ ->
+            .setIcon(R.drawable.ic_action_delete, ContextCompat.getColor(requireContext(), R.color.danger))
+            .setPositiveButton("Delete") {
                 database.child(category.id).removeValue()
                     .addOnSuccessListener {
                         if (_binding != null) {

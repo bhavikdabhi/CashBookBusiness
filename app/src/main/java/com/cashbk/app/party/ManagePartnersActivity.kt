@@ -5,6 +5,9 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import com.cashbk.app.R
+import com.cashbk.app.utils.CustomAlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cashbk.app.partner.adapter.PartnerAdapter
 import com.cashbk.app.databinding.ActivityManagePartnersBinding
@@ -211,10 +214,11 @@ class ManagePartnersActivity : AppCompatActivity() {
             Toast.makeText(this, "Only owners or admins can remove partners", Toast.LENGTH_SHORT).show()
             return
         }
-        AlertDialog.Builder(this)
+        CustomAlertDialog(this)
             .setTitle("Remove Partner")
             .setMessage("Are you sure you want to remove ${partner.name}?")
-            .setPositiveButton("Yes") { _, _ ->
+            .setIcon(R.drawable.ic_action_delete, ContextCompat.getColor(this, R.color.danger))
+            .setPositiveButton("Yes") {
                 database.child(partner.id).removeValue()
             }
             .setNegativeButton("No", null)
