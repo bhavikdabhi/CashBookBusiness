@@ -61,29 +61,49 @@ class AddTransactionFragment : Fragment() {
     private var capturedReceiptName: String = ""
 
     private val pickReceiptLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        uri?.let {
-            receiptUri = it
-            capturedReceiptName = getFileNameFromUri(it) ?: "Receipt_${System.currentTimeMillis()}.jpg"
-            binding.tvAttachLabel.text = capturedReceiptName
-            binding.tvAttachLabel.setTextColor(ContextCompat.getColor(requireContext(), R.color.success))
-            binding.ivAttachIcon.setImageResource(android.R.drawable.ic_menu_gallery)
-            binding.ivAttachIcon.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.success))
+        uri?.let { selectedUri ->
+            try {
+                val cacheFile = copyUriToCache(selectedUri, "receipt_temp")
+                if (cacheFile != null) {
+                    receiptUri = Uri.fromFile(cacheFile)
+                    capturedReceiptName = getFileNameFromUri(selectedUri) ?: "Receipt_${System.currentTimeMillis()}.jpg"
+                    binding.tvAttachLabel.text = capturedReceiptName
+                    binding.tvAttachLabel.setTextColor(ContextCompat.getColor(requireContext(), R.color.success))
+                    binding.ivAttachIcon.setImageResource(android.R.drawable.ic_menu_gallery)
+                    binding.ivAttachIcon.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.success))
+                } else {
+                    Toast.makeText(requireContext(), "Failed to process receipt image", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(requireContext(), "Failed to process receipt image: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
     private var pendingCloseAfterSave = false
     private val driveSignInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-            task.addOnSuccessListener { account ->
-                saveGoogleDriveEmail(account.email)
-                uploadToGoogleDrive(account)
-            }.addOnFailureListener {
-                Toast.makeText(requireContext(), "Drive Authorization Failed", Toast.LENGTH_SHORT).show()
-                binding.saveButton.isEnabled = true
-                binding.saveButton.text = "Confirm Transaction"
+        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+        try {
+            val account = task.getResult(com.google.android.gms.common.api.ApiException::class.java)
+            saveGoogleDriveEmail(account.email)
+            uploadToGoogleDrive(account)
+        } catch (e: com.google.android.gms.common.api.ApiException) {
+            val statusCode = e.statusCode
+            val errorMsg = e.message ?: e.localizedMessage
+            android.util.Log.e("AddTransactionFragment", "Drive Authorization Failed (code: $statusCode): $errorMsg", e)
+            val hint = when (statusCode) {
+                10 -> "\n\nTip: This (DEVELOPER_ERROR) usually means the SHA-1 fingerprint of your app signature is not registered in the Firebase/Google Cloud Console, or the package name is mismatched."
+                12500 -> "\n\nTip: This (SIGN_IN_FAILED) usually means Google Play Services configuration is missing/incorrect or Google Project is not configured."
+                16 -> "\n\nTip: Sign-in process was canceled or interrupted."
+                else -> ""
             }
-        } else {
+            Toast.makeText(requireContext(), "Drive Authorization Failed (code: $statusCode): $errorMsg$hint", Toast.LENGTH_LONG).show()
+            binding.saveButton.isEnabled = true
+            binding.saveButton.text = "Confirm Transaction"
+        } catch (e: Exception) {
+            android.util.Log.e("AddTransactionFragment", "Unknown Auth failure", e)
+            Toast.makeText(requireContext(), "Drive Authorization Failed: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
             binding.saveButton.isEnabled = true
             binding.saveButton.text = "Confirm Transaction"
         }
@@ -104,6 +124,7 @@ class AddTransactionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        cleanupTempReceiptFiles()
 
         database = FirebaseDatabase.getInstance()
         auth = FirebaseAuth.getInstance()
@@ -397,13 +418,21 @@ class AddTransactionFragment : Fragment() {
             binding.saveButton.isEnabled = false
             binding.saveButton.text = "Connecting to Drive..."
             
+            val context = requireContext()
+            val driveScope = Scope("https://www.googleapis.com/auth/drive.file")
+            val account = GoogleSignIn.getLastSignedInAccount(context)
+            if (account != null && GoogleSignIn.hasPermissions(account, driveScope)) {
+                uploadToGoogleDrive(account)
+                return
+            }
+
             val uid = auth.currentUser?.uid ?: return
             FirebaseDatabase.getInstance().reference.child("users").child(uid).child("googleDriveEmail").get()
                 .addOnSuccessListener { snapshot ->
                     val driveEmail = snapshot.getValue(String::class.java)
                     val builder = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                         .requestEmail()
-                        .requestScopes(Scope("https://www.googleapis.com/auth/drive.file"))
+                        .requestScopes(driveScope)
                     if (!driveEmail.isNullOrEmpty()) {
                         builder.setAccountName(driveEmail)
                     }
@@ -414,7 +443,7 @@ class AddTransactionFragment : Fragment() {
                 .addOnFailureListener {
                     val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                         .requestEmail()
-                        .requestScopes(Scope("https://www.googleapis.com/auth/drive.file"))
+                        .requestScopes(driveScope)
                         .build()
                     val client = GoogleSignIn.getClient(requireActivity(), signInOptions)
                     driveSignInLauncher.launch(client.signInIntent)
@@ -446,15 +475,17 @@ class AddTransactionFragment : Fragment() {
                     folderName = "Receipt"
                 )
 
-                if (webViewLink != null) {
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(requireContext(), "Uploaded to Google Drive!", Toast.LENGTH_SHORT).show()
-                        binding.saveButton.isEnabled = true
-                        binding.saveButton.text = "Confirm Transaction"
-                        executeFirebaseSave(pendingCloseAfterSave, webViewLink)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Uploaded to Google Drive!", Toast.LENGTH_SHORT).show()
+                    binding.saveButton.isEnabled = true
+                    binding.saveButton.text = "Confirm Transaction"
+                    receiptUri?.path?.let { path ->
+                        val context = context
+                        if (context != null && path.contains(context.cacheDir.path)) {
+                            java.io.File(path).delete()
+                        }
                     }
-                } else {
-                    throw Exception("Failed to get upload link")
+                    executeFirebaseSave(pendingCloseAfterSave, webViewLink)
                 }
 
             } catch (e: Exception) {
@@ -540,6 +571,12 @@ class AddTransactionFragment : Fragment() {
         }
         
         // Reset Receipt
+        receiptUri?.path?.let { path ->
+            val context = context
+            if (context != null && path.contains(context.cacheDir.path)) {
+                java.io.File(path).delete()
+            }
+        }
         receiptUri = null
         capturedReceiptName = ""
         binding.tvAttachLabel.text = "ATTACH BILL / RECEIPT"
@@ -560,7 +597,41 @@ class AddTransactionFragment : Fragment() {
     }
 
 
+    private fun copyUriToCache(uri: Uri, fileNamePrefix: String): java.io.File? {
+        val context = context ?: return null
+        return try {
+            val inputStream = context.contentResolver.openInputStream(uri) ?: return null
+            val name = getFileNameFromUri(uri) ?: ""
+            val extension = if (name.contains(".")) "." + name.substringAfterLast(".") else ".jpg"
+            val tempFile = java.io.File(context.cacheDir, "${fileNamePrefix}_${System.currentTimeMillis()}$extension")
+            tempFile.outputStream().use { outputStream ->
+                inputStream.use { inputStream ->
+                    inputStream.copyTo(outputStream)
+                }
+            }
+            tempFile
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private fun cleanupTempReceiptFiles() {
+        try {
+            val context = context ?: return
+            val files = context.cacheDir.listFiles()
+            files?.forEach { file ->
+                if (file.name.startsWith("receipt_temp")) {
+                    file.delete()
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     override fun onDestroyView() {
+        cleanupTempReceiptFiles()
         super.onDestroyView()
         _binding = null
     }

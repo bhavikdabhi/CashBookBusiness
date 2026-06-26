@@ -37,38 +37,38 @@ class GoogleDriveManager(private val context: Context, private val googleAccount
         fileName: String,
         folderName: String = "CashBook_Assets",
         mimeType: String = "image/jpeg"
-    ): String? = withContext(Dispatchers.IO) {
+    ): String = withContext(Dispatchers.IO) {
+        val contentResolver = context.contentResolver
+        val inputStream = contentResolver.openInputStream(fileUri) 
+            ?: throw java.io.FileNotFoundException("Could not open file URI: $fileUri")
+        val mediaContent = InputStreamContent(mimeType, inputStream)
+
+        val fileMetadata = File().apply {
+            name = fileName
+        }
+
+        // Get or create the folder
+        val folderId = getOrCreateFolder(folderName)
+        if (folderId != null) {
+            fileMetadata.parents = listOf(folderId)
+        }
+
+        val uploadedFile = driveService.files().create(fileMetadata, mediaContent)
+            .setFields("id, webViewLink")
+            .execute()
+
+        // Set permission to anyone with link so it can be viewed by Glide/Partners
         try {
-            val contentResolver = context.contentResolver
-            val inputStream = contentResolver.openInputStream(fileUri) ?: return@withContext null
-            val mediaContent = InputStreamContent(mimeType, inputStream)
-
-            val fileMetadata = File().apply {
-                name = fileName
-            }
-
-            // Get or create the folder
-            val folderId = getOrCreateFolder(folderName)
-            if (folderId != null) {
-                fileMetadata.parents = listOf(folderId)
-            }
-
-            val uploadedFile = driveService.files().create(fileMetadata, mediaContent)
-                .setFields("id, webViewLink")
-                .execute()
-
-            // Set permission to anyone with link so it can be viewed by Glide/Partners
             val permission = Permission().apply {
                 type = "anyone"
                 role = "reader"
             }
             driveService.permissions().create(uploadedFile.id, permission).execute()
-
-            uploadedFile.webViewLink
         } catch (e: Exception) {
             e.printStackTrace()
-            null
         }
+
+        uploadedFile.webViewLink ?: throw Exception("Failed to get webViewLink for uploaded file")
     }
 
     /**
@@ -109,8 +109,9 @@ class GoogleDriveManager(private val context: Context, private val googleAccount
                 .setFields("files(id, name)")
                 .execute()
 
-            if (result.files.isNotEmpty()) {
-                result.files[0].id
+            val filesList = result.files
+            if (filesList != null && filesList.isNotEmpty()) {
+                filesList[0].id
             } else {
                 val folderMetadata = File().apply {
                     name = folderName
@@ -137,8 +138,9 @@ class GoogleDriveManager(private val context: Context, private val googleAccount
                 .setFields("files(id, name)")
                 .execute()
 
-            if (result.files.isNotEmpty()) {
-                result.files[0].id
+            val filesList = result.files
+            if (filesList != null && filesList.isNotEmpty()) {
+                filesList[0].id
             } else {
                 val folderMetadata = File().apply {
                     name = folderName

@@ -13,7 +13,20 @@
           "package_name": "com.cashbk.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1099086113644-3rtmia50hqpe8r7972mbd6v4ge3aa13h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cashbk.app",
+            "certificate_hash": "52d9fa54be92f9a415b2302851cb6bc108403464"
+          }
+        },
+        {
+          "client_id": "1099086113644-k7ltvlh5pt8vt71edshnqrn7d0aksp55.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAlhlhJVz2v7C1ul5xdgJyrhx2FaeEf2-8"
@@ -21,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1099086113644-k7ltvlh5pt8vt71edshnqrn7d0aksp55.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

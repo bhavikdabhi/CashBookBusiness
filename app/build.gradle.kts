@@ -72,6 +72,9 @@ android {
             excludes += "META-INF/ASL2.0"
             excludes += "META-INF/*.kotlin_module"
         }
+        jniLibs {
+            useLegacyPackaging = false
+        }
     }
 }
 

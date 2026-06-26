@@ -72,41 +72,61 @@ class ProfileFragment : Fragment() {
     private val pendingMigrationFiles = mutableListOf<Pair<MigrationItem, File>>()
 
     private val imagePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        uri?.let {
-            pendingImageUri = it
-            startDriveAuthFlow()
+        uri?.let { selectedUri ->
+            try {
+                val cacheFile = copyUriToCache(selectedUri, "profile_temp")
+                if (cacheFile != null) {
+                    pendingImageUri = Uri.fromFile(cacheFile)
+                    startDriveAuthFlow()
+                } else {
+                    Toast.makeText(requireContext(), "Failed to process profile image", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(requireContext(), "Failed to process profile image: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
     private val driveSignInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-            task.addOnSuccessListener { account ->
-                saveGoogleDriveEmail(account.email)
-                when (driveFlowMode) {
-                    DriveFlowMode.CONNECT -> {
-                        Toast.makeText(requireContext(), "Google Drive connected successfully!", Toast.LENGTH_SHORT).show()
-                    }
-                    DriveFlowMode.PROFILE_UPLOAD -> {
-                        if (pendingImageUri != null) {
-                            uploadToGoogleDrive(account)
-                        }
-                    }
-                    DriveFlowMode.SWITCH_NO_MIGRATE -> {
-                        Toast.makeText(requireContext(), "Google Account switched successfully!", Toast.LENGTH_SHORT).show()
-                    }
-                    DriveFlowMode.SWITCH_WITH_MIGRATE -> {
-                        uploadMigratedFiles(account)
-                    }
-                    else -> {}
+        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+        try {
+            val account = task.getResult(com.google.android.gms.common.api.ApiException::class.java)
+            saveGoogleDriveEmail(account.email)
+            when (driveFlowMode) {
+                DriveFlowMode.CONNECT -> {
+                    Toast.makeText(requireContext(), "Google Drive connected successfully!", Toast.LENGTH_SHORT).show()
                 }
-                driveFlowMode = DriveFlowMode.NONE
-            }.addOnFailureListener {
-                Toast.makeText(requireContext(), "Drive Authorization Failed", Toast.LENGTH_SHORT).show()
-                cleanupTempMigrationFiles()
-                driveFlowMode = DriveFlowMode.NONE
+                DriveFlowMode.PROFILE_UPLOAD -> {
+                    if (pendingImageUri != null) {
+                        uploadToGoogleDrive(account)
+                    }
+                }
+                DriveFlowMode.SWITCH_NO_MIGRATE -> {
+                    Toast.makeText(requireContext(), "Google Account switched successfully!", Toast.LENGTH_SHORT).show()
+                }
+                DriveFlowMode.SWITCH_WITH_MIGRATE -> {
+                    uploadMigratedFiles(account)
+                }
+                else -> {}
             }
-        } else {
+            driveFlowMode = DriveFlowMode.NONE
+        } catch (e: com.google.android.gms.common.api.ApiException) {
+            val statusCode = e.statusCode
+            val errorMsg = e.message ?: e.localizedMessage
+            android.util.Log.e("ProfileFragment", "Drive Authorization Failed (code: $statusCode): $errorMsg", e)
+            val hint = when (statusCode) {
+                10 -> "\n\nTip: This (DEVELOPER_ERROR) usually means the SHA-1 fingerprint of your app signature is not registered in the Firebase/Google Cloud Console, or the package name is mismatched."
+                12500 -> "\n\nTip: This (SIGN_IN_FAILED) usually means Google Play Services configuration is missing/incorrect or Google Project is not configured."
+                16 -> "\n\nTip: Sign-in process was canceled or interrupted."
+                else -> ""
+            }
+            Toast.makeText(requireContext(), "Drive Authorization Failed (code: $statusCode): $errorMsg$hint", Toast.LENGTH_LONG).show()
+            cleanupTempMigrationFiles()
+            driveFlowMode = DriveFlowMode.NONE
+        } catch (e: Exception) {
+            android.util.Log.e("ProfileFragment", "Unknown Auth failure", e)
+            Toast.makeText(requireContext(), "Drive Authorization Failed: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
             cleanupTempMigrationFiles()
             driveFlowMode = DriveFlowMode.NONE
         }
@@ -122,6 +142,7 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        cleanupTempProfileFiles()
         
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference
@@ -294,10 +315,20 @@ class ProfileFragment : Fragment() {
     }
 
     private fun startDriveAuthFlow() {
+        val context = requireContext()
+        val driveScope = Scope("https://www.googleapis.com/auth/drive.file")
+        val account = GoogleSignIn.getLastSignedInAccount(context)
+        if (account != null && GoogleSignIn.hasPermissions(account, driveScope)) {
+            driveFlowMode = DriveFlowMode.PROFILE_UPLOAD
+            uploadToGoogleDrive(account)
+            driveFlowMode = DriveFlowMode.NONE
+            return
+        }
+
         driveFlowMode = DriveFlowMode.PROFILE_UPLOAD
         val builder = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
-            .requestScopes(Scope("https://www.googleapis.com/auth/drive.file"))
+            .requestScopes(driveScope)
         
         currentUser?.googleDriveEmail?.let {
             if (it.isNotEmpty()) {
@@ -393,13 +424,15 @@ class ProfileFragment : Fragment() {
                     folderName = "Profile"
                 )
 
-                if (webViewLink != null) {
-                    withContext(Dispatchers.Main) {
-                        updateProfileImageUrl(webViewLink)
-                        pendingImageUri = null
+                withContext(Dispatchers.Main) {
+                    updateProfileImageUrl(webViewLink)
+                    pendingImageUri?.path?.let { path ->
+                        val context = context
+                        if (context != null && path.contains(context.cacheDir.path)) {
+                            java.io.File(path).delete()
+                        }
                     }
-                } else {
-                    throw Exception("Failed to get upload link")
+                    pendingImageUri = null
                 }
 
             } catch (e: Exception) {
@@ -504,10 +537,19 @@ class ProfileFragment : Fragment() {
     }
 
     private fun connectGoogleDrive() {
+        val context = requireContext()
+        val driveScope = Scope("https://www.googleapis.com/auth/drive.file")
+        val account = GoogleSignIn.getLastSignedInAccount(context)
+        if (account != null && GoogleSignIn.hasPermissions(account, driveScope)) {
+            saveGoogleDriveEmail(account.email)
+            Toast.makeText(context, "Google Drive connected successfully!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         driveFlowMode = DriveFlowMode.CONNECT
         val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
-            .requestScopes(Scope("https://www.googleapis.com/auth/drive.file"))
+            .requestScopes(driveScope)
             .build()
         val client = GoogleSignIn.getClient(requireActivity(), signInOptions)
         driveSignInLauncher.launch(client.signInIntent)
@@ -735,23 +777,17 @@ class ProfileFragment : Fragment() {
                     progressDialog.setMessage("Uploading file ${index + 1} of $total...")
                 }
                 
-                val fileUri = Uri.fromFile(file)
-                val newUrl = driveManager.uploadFile(
-                    fileUri = fileUri,
-                    fileName = item.fileName,
-                    folderName = item.folderName
-                )
-                
-                if (newUrl != null) {
-                    try {
-                        db.child(item.dbPath).setValue(newUrl).awaitTask()
-                        successCount++
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        // Fallback: write without await
-                        db.child(item.dbPath).setValue(newUrl)
-                        successCount++
-                    }
+                try {
+                    val fileUri = Uri.fromFile(file)
+                    val newUrl = driveManager.uploadFile(
+                        fileUri = fileUri,
+                        fileName = item.fileName,
+                        folderName = item.folderName
+                    )
+                    db.child(item.dbPath).setValue(newUrl).awaitTask()
+                    successCount++
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
                 file.delete()
             }
@@ -771,7 +807,62 @@ class ProfileFragment : Fragment() {
         pendingMigrationFiles.clear()
     }
 
+    private fun getFileNameFromUri(uri: Uri): String? {
+        var result: String? = null
+        if (uri.scheme == "content") {
+            val cursor = requireContext().contentResolver.query(uri, null, null, null, null)
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    val index = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
+                    if (index != -1) result = cursor.getString(index)
+                }
+            } finally {
+                cursor?.close()
+            }
+        }
+        if (result == null) {
+            result = uri.path
+            val cut = result?.lastIndexOf('/') ?: -1
+            if (cut != -1) result = result?.substring(cut + 1)
+        }
+        return result
+    }
+
+    private fun copyUriToCache(uri: Uri, fileNamePrefix: String): java.io.File? {
+        val context = context ?: return null
+        return try {
+            val inputStream = context.contentResolver.openInputStream(uri) ?: return null
+            val name = getFileNameFromUri(uri) ?: ""
+            val extension = if (name.contains(".")) "." + name.substringAfterLast(".") else ".jpg"
+            val tempFile = java.io.File(context.cacheDir, "${fileNamePrefix}_${System.currentTimeMillis()}$extension")
+            tempFile.outputStream().use { outputStream ->
+                inputStream.use { inputStream ->
+                    inputStream.copyTo(outputStream)
+                }
+            }
+            tempFile
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private fun cleanupTempProfileFiles() {
+        try {
+            val context = context ?: return
+            val files = context.cacheDir.listFiles()
+            files?.forEach { file ->
+                if (file.name.startsWith("profile_temp")) {
+                    file.delete()
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     override fun onDestroyView() {
+        cleanupTempProfileFiles()
         profileListener?.let { listener ->
             registeredUid?.let { uid ->
                 database.child("users").child(uid).removeEventListener(listener)
