@@ -34,7 +34,7 @@
             android:text="Business Settings"
             android:fontFamily="@font/roboto_bold"
             android:textSize="@dimen/_18ssp"
-            android:textColor="@color/white"
+            android:textColor="@color/text_secondary"
             app:layout_constraintTop_toBottomOf="@id/lbl_role"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="@dimen/_16sdp" />
@@ -93,7 +93,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nexus Digital"
-                android:textColor="@color/white"
+                android:textColor="@color/text_secondary"
                 android:fontFamily="@font/roboto_medium"
                 android:textSize="@dimen/_14ssp"
                 android:layout_marginTop="@dimen/_12sdp"
@@ -150,7 +150,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Business Vault"
-                android:textColor="@color/white"
+                android:textColor="@color/text_secondary"
                 android:fontFamily="@font/roboto_medium"
                 android:textSize="@dimen/_14ssp"
                 android:layout_marginTop="@dimen/_12sdp"
@@ -216,7 +216,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Manage Business Partner"
-                    android:textColor="@color/white"
+                    android:textColor="@color/text_secondary"
                     android:fontFamily="@font/roboto_medium"
                     android:textSize="@dimen/_12ssp"/>
                 <TextView

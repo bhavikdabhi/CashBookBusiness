@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        ThemeOverlay.AppTheme.MediumContrast
+        ─────────────────────────────────────
+        Adjusts primary, secondary, and surface container colors to medium contrast
+        values for improved readability. Apply as a theme overlay on specific
+        screens or components via ContextThemeWrapper or android:theme attribute.
+    -->
+    <style name="ThemeOverlay.AppTheme.MediumContrast" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">#3730A3</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorPrimaryContainer">#C7D2FE</item>
+        <item name="colorOnPrimaryContainer">#1E1B4B</item>
+        <item name="colorSecondary">#004D51</item>
+        <item name="colorOnSecondary">#FFFFFF</item>
+        <item name="colorSecondaryContainer">#B2EBF2</item>
+        <item name="colorOnSecondaryContainer">#002728</item>
+        <item name="colorSurface">#FFFFFF</item>
+        <item name="colorOnSurface">#0F172A</item>
+        <item name="colorSurfaceContainerLowest">#FFFFFF</item>
+        <item name="colorSurfaceContainerLow">#F1F5F9</item>
+        <item name="colorSurfaceContainer">#E2E8F0</item>
+        <item name="colorSurfaceContainerHigh">#CBD5E1</item>
+        <item name="colorOutline">#64748B</item>
+        <item name="colorOutlineVariant">#94A3B8</item>
+    </style>
+
+    <!--
+        ThemeOverlay.AppTheme.HighContrast
+        ────────────────────────────────────
+        Enhances accessibility by pushing color values toward pure black/white
+        contrast bounds. Use for accessibility-critical screens.
+    -->
+    <style name="ThemeOverlay.AppTheme.HighContrast" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">#1E1B4B</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorPrimaryContainer">#E0E7FF</item>
+        <item name="colorOnPrimaryContainer">#000000</item>
+        <item name="colorSecondary">#002728</item>
+        <item name="colorOnSecondary">#FFFFFF</item>
+        <item name="colorSurface">#FFFFFF</item>
+        <item name="colorOnSurface">#000000</item>
+        <item name="colorSurfaceVariant">#F1F5F9</item>
+        <item name="colorOnSurfaceVariant">#000000</item>
+        <item name="colorOutline">#000000</item>
+        <item name="colorOutlineVariant">#334155</item>
+    </style>
+
+</resources>

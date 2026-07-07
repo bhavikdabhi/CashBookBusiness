@@ -69,7 +69,7 @@
             android:fontFamily="@font/roboto_regular"
             android:inputType="phone"
             android:maxLength="10"
-            android:textColor="@color/white" />
+            android:textColor="@color/text_secondary" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.appcompat.widget.AppCompatButton

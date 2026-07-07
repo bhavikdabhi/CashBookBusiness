@@ -27,7 +27,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="8dp"
                 android:src="@drawable/ic_back"
-                app:tint="@color/white" />
+                app:tint="@color/text_secondary" />
 
             <TextView
                 android:id="@+id/tvHeaderTitle"
@@ -38,7 +38,7 @@
                 android:layout_toEndOf="@id/btnBack"
                 android:fontFamily="@font/roboto_bold"
                 android:text="NotebookName"
-                android:textColor="@color/white"
+                android:textColor="@color/text_secondary"
                 android:textSize="@dimen/_16ssp" />
 
 <!--            <com.google.android.material.imageview.ShapeableImageView-->
@@ -109,7 +109,7 @@
                     android:alpha="0.6"
                     android:fontFamily="@font/roboto_regular"
                     android:text="Define a new bucket for your financial momentum."
-                    android:textColor="@color/white"
+                    android:textColor="@color/text_secondary"
                     android:textSize="@dimen/_12ssp" />
 
                 <!-- CATEGORY NAME & TYPE CARD -->
@@ -187,7 +187,7 @@
                                 android:insetTop="0dp"
                                 android:insetBottom="0dp"
                                 android:text="Income"
-                                android:textColor="@color/white"
+                                android:textColor="@color/text_secondary"
                                 app:cornerRadius="@dimen/_14sdp"
                                 app:icon="@drawable/ic_type_income"
                                 app:iconGravity="textStart"

@@ -47,7 +47,7 @@
                 android:fontFamily="@font/roboto_medium"
                 android:text="Entity Name"
                 android:textSize="@dimen/_14ssp"
-                android:textColor="@android:color/white" />
+                android:textColor="@color/text_secondary" />
 
             <TextView
                 android:id="@+id/tvSubtitle"

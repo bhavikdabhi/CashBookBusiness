@@ -1,8 +1,110 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Night / Dark Mode — inherits the same DayNight parent.
+         Only the underlying @color/* tokens change via the values-night qualifier.
+         Widget styles are copied here so dark mode has identical style hierarchy. -->
     <style name="Base.Theme.CashBookBusiness" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+
+        <!-- ====== M3 Primary Color Roles ====== -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorOnPrimary">@color/on_primary</item>
+        <item name="colorPrimaryContainer">@color/primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/on_primary_container</item>
+
+        <!-- ====== M3 Secondary Color Roles ====== -->
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorOnSecondary">@color/on_secondary</item>
+        <item name="colorSecondaryContainer">@color/secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/on_secondary_container</item>
+
+        <!-- ====== M3 Tertiary Color Roles ====== -->
+        <item name="colorTertiary">@color/tertiary</item>
+        <item name="colorOnTertiary">@color/on_tertiary</item>
+        <item name="colorTertiaryContainer">@color/tertiary_container</item>
+        <item name="colorOnTertiaryContainer">@color/on_tertiary_container</item>
+
+        <!-- ====== M3 Error Color Roles ====== -->
+        <item name="colorError">@color/error</item>
+        <item name="colorOnError">@color/on_error</item>
+        <item name="colorErrorContainer">@color/error_container</item>
+        <item name="colorOnErrorContainer">@color/on_error_container</item>
+
+        <!-- ====== M3 Background & Surface Roles ====== -->
+        <item name="android:colorBackground">@color/background</item>
+        <item name="colorOnBackground">@color/on_background</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorSurfaceVariant">@color/surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/on_surface_variant</item>
+
+        <!-- ====== M3 Outline Roles ====== -->
+        <item name="colorOutline">@color/outline</item>
+        <item name="colorOutlineVariant">@color/outline_variant</item>
+
+        <!-- ====== M3 Surface Container Roles ====== -->
+        <item name="colorSurfaceContainer">@color/surface_container</item>
+        <item name="colorSurfaceContainerLow">@color/surface_container_low</item>
+        <item name="colorSurfaceContainerHigh">@color/surface_container_high</item>
+        <item name="colorSurfaceContainerLowest">@color/surface_container_lowest</item>
+
+        <!-- ====== Window & System Bar Properties ====== -->
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:statusBarColor">@color/background</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+
+        <!-- ====== Typography ====== -->
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textFontWeight">600</item>
+
+        <!-- ====== Default Text Color ====== -->
+        <item name="android:textColor">@color/on_surface</item>
+
+    </style>
+
+    <style name="Theme.CashBookBusiness" parent="Base.Theme.CashBookBusiness">
+        <item name="android:popupMenuStyle">@style/Widget.App.PopupMenu</item>
+    </style>
+
+    <!-- Widget styles duplicated for dark mode style hierarchy parity -->
+    <style name="Widget.App.GlassCard" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">@color/stitch_surface_container_high</item>
+        <item name="cardCornerRadius">@dimen/_12sdp</item>
+        <item name="strokeColor">@color/glass_border</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="cardElevation">0dp</item>
+    </style>
+
+    <style name="Widget.App.Button.Gradient" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="android:background">@drawable/bg_primary_gradient</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="cornerRadius">@dimen/_24sdp</item>
+        <item name="android:fontFamily">@font/roboto_bold</item>
+        <item name="android:textSize">@dimen/_14ssp</item>
+    </style>
+
+    <style name="Widget.App.PopupMenu" parent="Widget.Material3.PopupMenu">
+        <item name="android:popupMenuStyle">@style/PopupMenuTheme</item>
+    </style>
+
+    <style name="Widget.App.BottomNav" parent="Widget.Material3.BottomNavigationView">
+        <item name="itemActiveIndicatorStyle">@style/Widget.App.BottomNav.Indicator</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textSize">@dimen/_12ssp</item>
+    </style>
+
+    <style name="Widget.App.BottomNav.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@android:color/transparent</item>
+    </style>
+
+    <style name="CircleImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="RoundedReceiptThumb" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
     </style>
 
 </resources>

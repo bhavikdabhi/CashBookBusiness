@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_10sdp"
                 android:text="Rename"
-                android:textColor="@color/white"
+                android:textColor="@color/text_secondary"
                 android:textSize="@dimen/_11ssp"
                 android:fontFamily="sans-serif-medium"/>
         </LinearLayout>
@@ -82,7 +82,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_10sdp"
                 android:text="Report"
-                android:textColor="@color/white"
+                android:textColor="@color/text_secondary"
                 android:textSize="@dimen/_11ssp"
                 android:fontFamily="sans-serif-medium"/>
         </LinearLayout>
@@ -116,7 +116,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_10sdp"
                 android:text="Member"
-                android:textColor="@color/white"
+                android:textColor="@color/text_secondary"
                 android:textSize="@dimen/_11ssp"
                 android:fontFamily="sans-serif-medium"/>
         </LinearLayout>
@@ -158,7 +158,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_10sdp"
                 android:text="Settings"
-                android:textColor="@color/white"
+                android:textColor="@color/text_secondary"
                 android:textSize="@dimen/_11ssp"
                 android:fontFamily="sans-serif-medium"/>
         </LinearLayout>

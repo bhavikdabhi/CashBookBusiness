@@ -1,0 +1,5 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Dark mode: lighter highlight for selected segment -->
+    <solid android:color="@color/color_33ffffff" />
+    <corners android:radius="@dimen/_18sdp" />
+</shape>

@@ -25,14 +25,14 @@
             android:src="@drawable/ic_back"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/white" />
+            app:tint="@color/text_secondary" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_bold"
             android:text="Account Settings"
-            android:textColor="@color/white"
+            android:textColor="@color/text_secondary"
             android:textSize="@dimen/_16ssp"
             app:layout_constraintBottom_toBottomOf="@id/btn_back"
             app:layout_constraintEnd_toEndOf="parent"
@@ -49,7 +49,7 @@
             android:src="@drawable/ic_settings"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/white" />
+            app:tint="@color/text_secondary" />
 
         <!-- Profile Picture Section -->
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -96,7 +96,7 @@
             android:layout_marginTop="@dimen/_12sdp"
             android:fontFamily="@font/roboto_bold"
             android:text="User Name"
-            android:textColor="@color/white"
+            android:textColor="@color/text_secondary"
             android:textSize="@dimen/_18ssp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -149,7 +149,7 @@
                 android:layout_marginStart="@dimen/_8sdp"
                 android:fontFamily="@font/roboto_bold"
                 android:text="Personal Information"
-                android:textColor="@color/white"
+                android:textColor="@color/text_secondary"
                 android:textSize="@dimen/_12ssp"
                 app:layout_constraintBottom_toBottomOf="@id/ic_person"
                 app:layout_constraintStart_toEndOf="@id/ic_person"
@@ -303,7 +303,7 @@
                 android:layout_marginStart="@dimen/_8sdp"
                 android:fontFamily="@font/roboto_bold"
                 android:text="Security"
-                android:textColor="@color/white"
+                android:textColor="@color/text_secondary"
                 android:textSize="@dimen/_12ssp"
                 app:layout_constraintBottom_toBottomOf="@id/ic_security"
                 app:layout_constraintStart_toEndOf="@id/ic_security"
@@ -333,7 +333,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_12sdp"
                     android:text="App Lock (PIN / Biometric)"
-                    android:textColor="@color/white"
+                    android:textColor="@color/text_secondary"
                     android:textSize="@dimen/_11ssp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/ic_biometric"
@@ -373,7 +373,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_12sdp"
                     android:text="Reset Password"
-                    android:textColor="@color/white"
+                    android:textColor="@color/text_secondary"
                     android:textSize="@dimen/_11ssp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/ic_reset"
@@ -422,7 +422,7 @@
                 android:layout_marginStart="@dimen/_8sdp"
                 android:fontFamily="@font/roboto_bold"
                 android:text="Drive Management"
-                android:textColor="@color/white"
+                android:textColor="@color/text_secondary"
                 android:textSize="@dimen/_12ssp"
                 app:layout_constraintBottom_toBottomOf="@id/ic_googledrive"
                 app:layout_constraintStart_toEndOf="@id/ic_googledrive"
@@ -520,7 +520,7 @@
                 android:src="@drawable/ic_palette"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/white" />
+                app:tint="@color/text_secondary" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -528,7 +528,7 @@
                 android:layout_marginStart="@dimen/_10sdp"
                 android:fontFamily="@font/roboto_bold"
                 android:text="Preferences"
-                android:textColor="@color/white"
+                android:textColor="@color/text_secondary"
                 android:textSize="@dimen/_14ssp"
                 app:layout_constraintBottom_toBottomOf="@id/ic_pref"
                 app:layout_constraintStart_toEndOf="@id/ic_pref"
@@ -565,7 +565,7 @@
                     android:gravity="center"
                     android:paddingVertical="@dimen/_10sdp"
                     android:text="Dark"
-                    android:textColor="@color/white"
+                    android:textColor="@color/text_secondary"
                     android:textSize="@dimen/_10ssp" />
 
                 <TextView
@@ -616,7 +616,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_12sdp"
                     android:text="Push Notifications"
-                    android:textColor="@color/white"
+                    android:textColor="@color/text_secondary"
                     android:textSize="@dimen/_11ssp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/ic_notif"

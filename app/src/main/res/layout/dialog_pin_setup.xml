@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:text="Create a PIN"
             android:fontFamily="@font/roboto_bold"
-            android:textColor="@color/white"
+            android:textColor="@color/text_secondary"
             android:textSize="@dimen/_16ssp"
             android:gravity="center"
             android:layout_marginTop="@dimen/_8sdp"/>
@@ -110,7 +110,7 @@
                 style="@style/PinKeypadButtonImage"
                 android:src="@drawable/ic_close"
                 android:padding="@dimen/_14sdp"
-                app:tint="@color/white" />
+                app:tint="@color/text_secondary" />
 
             <TextView android:id="@+id/btn0" style="@style/PinKeypadButton" android:text="0" />
 
@@ -119,7 +119,7 @@
                 style="@style/PinKeypadButtonImage"
                 android:src="@drawable/ic_back"
                 android:padding="@dimen/_14sdp"
-                app:tint="@color/white" />
+                app:tint="@color/text_secondary" />
         </GridLayout>
 
     </LinearLayout>

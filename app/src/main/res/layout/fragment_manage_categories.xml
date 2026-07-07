@@ -26,7 +26,7 @@
                 android:layout_gravity="center_vertical"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_back"
-                app:tint="@color/white"
+                app:tint="@color/text_secondary"
                 android:padding="@dimen/_8sdp" />
 
             <TextView
@@ -37,7 +37,7 @@
                 android:text="Business Finance"
                 android:fontFamily="@font/roboto_bold"
                 android:textSize="@dimen/_16ssp"
-                android:textColor="@android:color/white" />
+                android:textColor="@color/text_secondary" />
             
 <!--            <ImageButton-->
 <!--                android:id="@+id/btnToolbarAdd"-->
@@ -77,7 +77,7 @@
                         android:text="Manage Categories"
                         android:fontFamily="@font/roboto_bold"
                         android:textSize="@dimen/_16ssp"
-                        android:textColor="@android:color/white" />
+                        android:textColor="@color/text_secondary" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -127,7 +127,7 @@
                                     android:background="@null"
                                     android:hint="Search categories..."
                                     android:textColorHint="@color/auth_text_light"
-                                    android:textColor="@android:color/white"
+                                    android:textColor="@color/text_secondary"
                                     android:textSize="@dimen/_12ssp"
                                     android:layout_marginStart="@dimen/_8sdp"
                                     android:inputType="text" />

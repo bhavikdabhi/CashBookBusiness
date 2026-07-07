@@ -44,7 +44,7 @@
             android:textFontWeight="600"
             tools:text="Partner Name"
             android:textSize="@dimen/_14ssp"
-            android:textColor="@android:color/white"/>
+            android:textColor="@color/text_secondary"/>
 
         <TextView
             android:id="@+id/tv_partner_role"

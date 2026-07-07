@@ -1,4 +1,5 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/glass_border" /> <!-- Subtle dark/translucent background -->
+    <!-- Light mode: very subtle dark tint for segmented container -->
+    <solid android:color="@color/glass_border" />
     <corners android:radius="@dimen/_20sdp" />
 </shape>

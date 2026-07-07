@@ -201,7 +201,7 @@ class AddCategoryFragment : Fragment() {
             if (resId != 0) {
                 icon.setImageResource(resId)
             }
-            icon.imageTintList = ColorStateList.valueOf(Color.WHITE)
+            icon.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.text_secondary))
             frame.addView(icon)
 
             frame.setOnClickListener {
@@ -222,7 +222,7 @@ class AddCategoryFragment : Fragment() {
             // Add a border if selected
             if (frame.background is MaterialShapeDrawable) {
                 (frame.background as MaterialShapeDrawable).strokeWidth = if (selectedIconName == iconName) 2f else 0f
-                (frame.background as MaterialShapeDrawable).strokeColor = ColorStateList.valueOf(Color.WHITE)
+                (frame.background as MaterialShapeDrawable).strokeColor = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.text_secondary))
             }
         }
     }

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        ThemeOverlay.AppTheme.MediumContrast — Dark Mode
+        ─────────────────────────────────────────────────
+        Dark mode variant of medium contrast overlay.
+    -->
+    <style name="ThemeOverlay.AppTheme.MediumContrast" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">#A5B4FC</item>
+        <item name="colorOnPrimary">#1E1B4B</item>
+        <item name="colorPrimaryContainer">#4338CA</item>
+        <item name="colorOnPrimaryContainer">#E0E7FF</item>
+        <item name="colorSecondary">#99E6F0</item>
+        <item name="colorOnSecondary">#003F43</item>
+        <item name="colorSecondaryContainer">#1F3D47</item>
+        <item name="colorOnSecondaryContainer">#A2EEF5</item>
+        <item name="colorSurface">#1E293B</item>
+        <item name="colorOnSurface">#E2E8F0</item>
+        <item name="colorSurfaceContainerLowest">#0B1326</item>
+        <item name="colorSurfaceContainerLow">#131B2E</item>
+        <item name="colorSurfaceContainer">#1A2235</item>
+        <item name="colorSurfaceContainerHigh">#222A3D</item>
+        <item name="colorOutline">#64748B</item>
+        <item name="colorOutlineVariant">#475569</item>
+    </style>
+
+    <!--
+        ThemeOverlay.AppTheme.HighContrast — Dark Mode
+        ────────────────────────────────────────────────
+        Dark mode variant of high contrast overlay for accessibility.
+    -->
+    <style name="ThemeOverlay.AppTheme.HighContrast" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">#C7D2FE</item>
+        <item name="colorOnPrimary">#000000</item>
+        <item name="colorPrimaryContainer">#3730A3</item>
+        <item name="colorOnPrimaryContainer">#FFFFFF</item>
+        <item name="colorSecondary">#A2EEF5</item>
+        <item name="colorOnSecondary">#000000</item>
+        <item name="colorSurface">#0F172A</item>
+        <item name="colorOnSurface">#FFFFFF</item>
+        <item name="colorSurfaceVariant">#1E293B</item>
+        <item name="colorOnSurfaceVariant">#FFFFFF</item>
+        <item name="colorOutline">#FFFFFF</item>
+        <item name="colorOutlineVariant">#94A3B8</item>
+    </style>
+
+</resources>

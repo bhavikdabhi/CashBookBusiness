@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@color/bg_color">
+    android:background="?android:attr/colorBackground">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/_60sdp"
-        android:background="@color/auth_bg">
+        android:background="?attr/colorSurfaceContainerLowest">
 
         <!-- Toolbar area -->
         <ImageView
@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Add Transaction"
-            android:textColor="@color/white"
+            android:textColor="?attr/colorOnSurface"
             android:fontFamily="@font/roboto_bold"
             android:textSize="@dimen/_14ssp"
             app:layout_constraintTop_toTopOf="@id/cancelButton"
@@ -156,8 +156,8 @@
                         android:layout_height="wrap_content"
                         android:background="@null"
                         android:hint="0.00"
-                        android:textColorHint="@color/color_40ffffff"
-                        android:textColor="@color/white"
+                        android:textColorHint="?attr/colorOutlineVariant"
+                        android:textColor="?attr/colorOnSurface"
                         android:fontFamily="@font/roboto_bold"
                         android:textSize="@dimen/_36ssp"
                         android:inputType="numberDecimal" />
@@ -382,7 +382,7 @@
                 android:background="@drawable/bg_glass_field"
                 android:hint="Add some details about this transaction..."
                 android:textColorHint="@color/gray"
-                android:textColor="@color/white"
+                android:textColor="@color/text_secondary"
                 android:fontFamily="@font/roboto_medium"
                 android:textSize="@dimen/_11ssp"
                 android:padding="@dimen/_12sdp"

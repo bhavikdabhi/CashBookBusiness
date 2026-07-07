@@ -354,12 +354,12 @@ class AddTransactionFragment : Fragment() {
                     val partyAdapter = object : ArrayAdapter<String>(requireContext(), R.layout.item_dropdown_text, spinnerItems) {
                         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                             val v = super.getView(position, convertView, parent) as TextView
-                            v.setTextColor(Color.WHITE)
+                            v.setTextColor(ContextCompat.getColor(context, R.color.text_secondary))
                             return v
                         }
                         override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
                             val v = super.getDropDownView(position, convertView, parent) as TextView
-                            v.setTextColor(Color.WHITE)
+                            v.setTextColor(ContextCompat.getColor(context, R.color.text_secondary))
                             v.setBackgroundColor(ContextCompat.getColor(context, R.color.card_bg))
                             return v
                         }

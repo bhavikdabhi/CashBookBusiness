@@ -149,6 +149,11 @@ class ProfileFragment : Fragment() {
 
         setupClickListeners()
         fetchUserProfile()
+
+        // Highlight active theme button on load
+        val sharedPrefs = requireContext().getSharedPreferences("theme_prefs", android.content.Context.MODE_PRIVATE)
+        val savedTheme = sharedPrefs.getString("app_theme", "system") ?: "system"
+        updateAppearanceUI(savedTheme)
     }
 
     private fun setupClickListeners() {
@@ -300,18 +305,28 @@ class ProfileFragment : Fragment() {
             "dark" -> {
                 binding.btnAppearanceDark.setBackgroundResource(R.drawable.bg_segmented_selected)
                 binding.btnAppearanceDark.setTextColor(white)
+                saveThemePreference("dark")
+                androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES)
             }
             "light" -> {
                 binding.btnAppearanceLight.setBackgroundResource(R.drawable.bg_segmented_selected)
                 binding.btnAppearanceLight.setTextColor(white)
+                saveThemePreference("light")
+                androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO)
             }
             "system" -> {
                 binding.btnAppearanceSystem.setBackgroundResource(R.drawable.bg_segmented_selected)
                 binding.btnAppearanceSystem.setTextColor(white)
+                saveThemePreference("system")
+                androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             }
         }
+    }
 
-        Toast.makeText(requireContext(), "Theme set to: $theme", Toast.LENGTH_SHORT).show()
+    private fun saveThemePreference(theme: String) {
+        val context = context ?: return
+        val sharedPrefs = context.getSharedPreferences("theme_prefs", android.content.Context.MODE_PRIVATE)
+        sharedPrefs.edit().putString("app_theme", theme).apply()
     }
 
     private fun startDriveAuthFlow() {

@@ -15,7 +15,7 @@
         android:layout_height="@dimen/_40sdp"
         app:cardCornerRadius="@dimen/_24sdp"
         app:cardElevation="0dp"
-        app:cardBackgroundColor="@color/color_e3f2fd" 
+        app:cardBackgroundColor="?attr/colorPrimaryContainer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -48,7 +48,7 @@
             android:textFontWeight="600"
             tools:text="D@Bhi Family"
             android:textSize="@dimen/_14ssp"
-            android:textColor="@color/text_secondary"
+            android:textColor="?attr/colorOnSurface"
             android:ellipsize="end"
             android:maxLines="1"/>
 
