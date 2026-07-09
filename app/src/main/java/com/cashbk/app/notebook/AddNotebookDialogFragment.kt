@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.cashbk.app.databinding.FragmentAddBusinessBinding
 import com.cashbk.app.notebook._bean.Notebook
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -78,53 +80,58 @@ class AddNotebookDialogFragment : BottomSheetDialogFragment() {
     /* ---------------- CREATE ---------------- */
 
     private fun saveNotebook(name: String) {
-
         val userId = auth.currentUser?.uid ?: return
+        val bid = businessId
 
-        if (businessId.isNullOrEmpty()) {
+        if (bid.isNullOrEmpty()) {
             Toast.makeText(requireContext(), "Business ID missing", Toast.LENGTH_SHORT).show()
             return
         }
 
         val newId = database.push().key ?: return
-
         val notebook = Notebook(
             id = newId,
             name = name,
-            businessId = businessId!!,
+            businessId = bid,
             createdBy = userId,
             createdAt = System.currentTimeMillis()
         )
 
-        database.child(newId)
-            .setValue(notebook)
-            .addOnSuccessListener {
+        lifecycleScope.launch {
+            try {
+                com.cashbk.app.data.di.AppContainer.getRepository(requireContext()).saveNotebook(notebook)
                 Toast.makeText(requireContext(), "Notebook Created", Toast.LENGTH_SHORT).show()
                 dismiss()
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
             }
-            .addOnFailureListener {
-                Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-            }
+        }
     }
 
     /* ---------------- RENAME ---------------- */
 
     private fun renameNotebook(newName: String) {
-
         val id = notebookId
         if (id.isNullOrEmpty()) {
             Toast.makeText(requireContext(), "Notebook ID missing", Toast.LENGTH_SHORT).show()
             return
         }
 
-        database.child(id).child("name")
-            .setValue(newName)
-            .addOnSuccessListener {
-                Toast.makeText(requireContext(), "Notebook Renamed", Toast.LENGTH_SHORT).show()
-                dismiss()
+        lifecycleScope.launch {
+            try {
+                val repository = com.cashbk.app.data.di.AppContainer.getRepository(requireContext())
+                val notebook = repository.getNotebookById(id)
+                if (notebook != null) {
+                    val updated = notebook.copy(name = newName)
+                    repository.saveNotebook(updated)
+                    Toast.makeText(requireContext(), "Notebook Renamed", Toast.LENGTH_SHORT).show()
+                    dismiss()
+                } else {
+                    Toast.makeText(requireContext(), "Notebook not found locally", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
             }
-            .addOnFailureListener {
-                Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-            }
+        }
     }
 }

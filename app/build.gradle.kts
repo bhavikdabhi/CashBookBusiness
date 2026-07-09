@@ -4,6 +4,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
+    id("org.jetbrains.kotlin.kapt")
 }
 
 android {
@@ -114,6 +115,17 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.activity:activity-ktx:1.8.2")
+    
+    // Room Database
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
+
+    // WorkManager (Background Sync)
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+
+    // Gson (Payload Serialization)
+    implementation("com.google.code.gson:gson:2.10.1")
     
     // Testing libraries moved to correct configuration for AV safety
     testImplementation("junit:junit:4.13.2")

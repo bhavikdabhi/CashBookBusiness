@@ -26,6 +26,10 @@ import com.cashbk.app.utils.CustomOptionsMenu
 import com.cashbk.app.utils.startPulseAnimation
 import com.cashbk.app.utils.stopPulseAnimation
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -44,6 +48,7 @@ class CashbooksFragment : Fragment() {
     private var currentBusinessId: String? = null
     private var notebooksQuery: Query? = null
     private var notebooksListener: ValueEventListener? = null
+    private var notebookJob: Job? = null
 
     // V2 Tracker Maps for Dynamic Statistics
     private val notebookBalances = mutableMapOf<String, Double>()
@@ -95,14 +100,8 @@ class CashbooksFragment : Fragment() {
 
     private fun fetchNotebooks() {
         val id = currentBusinessId ?: return
-        notebooksListener?.let { notebooksQuery?.removeEventListener(it) }
+        notebookJob?.cancel()
 
-        // Clear existing transaction listeners
-        for ((notebookId, listener) in transactionListeners) {
-            FirebaseDatabase.getInstance().reference.child("transactions").child(notebookId)
-                .removeEventListener(listener)
-        }
-        transactionListeners.clear()
         notebookBalances.clear()
         notebookMonthlyBalances.clear()
 
@@ -113,53 +112,31 @@ class CashbooksFragment : Fragment() {
             binding.layoutEmpty.visibility = View.GONE
         }
 
-        notebooksQuery = database.orderByChild("businessId").equalTo(id)
-        notebooksListener = notebooksQuery?.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                // Temporarily detach old listeners
-                for ((nId, listener) in transactionListeners) {
-                    FirebaseDatabase.getInstance().reference.child("transactions").child(nId)
-                        .removeEventListener(listener)
-                }
-                transactionListeners.clear()
-                notebookBalances.clear()
-                notebookMonthlyBalances.clear()
-
+        val repository = com.cashbk.app.data.di.AppContainer.getRepository(requireContext())
+        notebookJob = lifecycleScope.launch {
+            repository.getNotebooksFlow(id).collectLatest { notebooks ->
                 notebookList.clear()
-                if (snapshot.exists()) {
-                    for (notebookSnapshot in snapshot.children) {
-                        val notebook = notebookSnapshot.getValue(Notebook::class.java)
-                        notebook?.id = notebookSnapshot.key.orEmpty()
-                        notebook?.let { notebookList.add(it) }
-                    }
-                }
+                notebookList.addAll(notebooks)
 
-                // Update text indicators
                 if (_binding != null) {
                     binding.tvActiveBooksCount.text = "${notebookList.size} active notebooks"
                     binding.tvStatTotalBooks.text = notebookList.size.toString()
                 }
 
-                // Attach dynamic transaction listeners for each loaded notebook
-                for (notebook in notebookList) {
-                    val transListener = object : ValueEventListener {
-                        override fun onDataChange(transSnapshot: DataSnapshot) {
+                // Collect transactions for each notebook to compute balances dynamically
+                notebooks.forEach { notebook ->
+                    launch {
+                        repository.getTransactionsFlow(notebook.id).collectLatest { transactions ->
                             var total = 0.0
                             var monthly = 0.0
                             val calendar = Calendar.getInstance()
                             val curMonth = calendar.get(Calendar.MONTH)
                             val curYear = calendar.get(Calendar.YEAR)
 
-                            for (child in transSnapshot.children) {
-                                val type = child.child("type").value as? String ?: ""
-                                val amountObj = child.child("amount").value
-                                val amount = when (amountObj) {
-                                    is Long -> amountObj.toDouble()
-                                    is Double -> amountObj
-                                    is String -> amountObj.toDoubleOrNull() ?: 0.0
-                                    else -> 0.0
-                                }
-                                val createdAt = child.child("createdAt").value as? Long ?: 0L
+                            transactions.forEach { trans ->
+                                val amount = trans.amount
+                                val type = trans.type
+                                val createdAt = trans.createdAt
 
                                 val netAmount = if (type == "in") amount else if (type == "out") -amount else 0.0
                                 total += netAmount
@@ -174,47 +151,31 @@ class CashbooksFragment : Fragment() {
                             notebookBalances[notebook.id] = total
                             notebookMonthlyBalances[notebook.id] = monthly
                             updateSummaryStats()
+                            notebookAdapter.notifyDataSetChanged()
                         }
-                        override fun onCancelled(error: DatabaseError) {}
                     }
-                    transactionListeners[notebook.id] = transListener
-                    FirebaseDatabase.getInstance().reference.child("transactions").child(notebook.id)
-                        .addValueEventListener(transListener)
                 }
 
-                if (notebookList.isEmpty()) {
+                if (notebooks.isEmpty()) {
                     updateSummaryStats()
                 }
 
-                Handler(Looper.getMainLooper()).postDelayed({
-                    if (_binding == null) return@postDelayed
+                // Hide shimmer loading UI
+                if (_binding != null) {
                     binding.layoutShimmerNotebooks.stopPulseAnimation()
                     binding.layoutShimmerNotebooks.visibility = View.GONE
 
-                    if (isAdded) {
-                          notebookAdapter.notifyDataSetChanged()
-                          if (notebookList.isEmpty()) {
-                              binding.layoutEmpty.visibility = View.VISIBLE
-                              binding.notebooksRecyclerView.visibility = View.GONE
-                          } else {
-                              binding.layoutEmpty.visibility = View.GONE
-                              binding.notebooksRecyclerView.visibility = View.VISIBLE
-                          }
+                    if (notebookList.isEmpty()) {
+                        binding.layoutEmpty.visibility = View.VISIBLE
+                        binding.notebooksRecyclerView.visibility = View.GONE
+                    } else {
+                        binding.layoutEmpty.visibility = View.GONE
+                        binding.notebooksRecyclerView.visibility = View.VISIBLE
                     }
-                }, 2000)
+                }
+                notebookAdapter.notifyDataSetChanged()
             }
-
-            override fun onCancelled(error: DatabaseError) {
-                Handler(Looper.getMainLooper()).postDelayed({
-                    if (_binding == null) return@postDelayed
-                    binding.layoutShimmerNotebooks.stopPulseAnimation()
-                    binding.layoutShimmerNotebooks.visibility = View.GONE
-                    if (isAdded) {
-                        Toast.makeText(context, "Failed to load notebooks", Toast.LENGTH_SHORT).show()
-                    }
-                }, 2000)
-            }
-        })
+        }
     }
 
     private fun setupRecyclerView() {
@@ -276,21 +237,12 @@ class CashbooksFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        notebooksListener?.let { notebooksQuery?.removeEventListener(it) }
-        // Clean up transaction listeners
-        for ((notebookId, listener) in transactionListeners) {
-            FirebaseDatabase.getInstance().reference.child("transactions").child(notebookId)
-                .removeEventListener(listener)
-        }
-        transactionListeners.clear()
+        notebookJob?.cancel()
         super.onDestroyView()
         _binding = null
     }
 
-
-
     private fun showDeleteNotebookDialog(notebook: Notebook) {
-
         val dialog = MaterialAlertDialogBuilder(
             requireContext(),
             R.style.CashbkAlertDialog
@@ -310,19 +262,15 @@ class CashbooksFragment : Fragment() {
             .setTextColor(ContextCompat.getColor(requireContext(), R.color.danger))
     }
 
-
     private fun deleteNotebook(notebook: Notebook) {
-        FirebaseDatabase.getInstance()
-            .reference
-            .child("notebooks")
-            .child(notebook.id)
-            .removeValue()
-            .addOnSuccessListener {
+        lifecycleScope.launch {
+            try {
+                com.cashbk.app.data.di.AppContainer.getRepository(requireContext()).deleteNotebook(notebook)
                 Toast.makeText(requireContext(), "Notebook deleted", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
             }
-            .addOnFailureListener {
-                Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-            }
+        }
     }
 
     private fun showDeletePopup(anchor: View, notebook: Notebook) {

@@ -22,5 +22,16 @@ class CashBookApp : Application() {
             else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
         }
         AppCompatDelegate.setDefaultNightMode(nightMode)
+
+        // Initialize and start Realtime Sync if user is authenticated
+        val auth = com.google.firebase.auth.FirebaseAuth.getInstance()
+        auth.addAuthStateListener { firebaseAuth ->
+            val syncManager = com.cashbk.app.data.di.AppContainer.getSyncManager(this)
+            if (firebaseAuth.currentUser != null) {
+                syncManager.startRealtimeSync()
+            } else {
+                syncManager.stopRealtimeSync()
+            }
+        }
     }
 }
