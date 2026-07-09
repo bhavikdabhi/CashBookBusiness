@@ -66,60 +66,26 @@ class RegisterFragment : Fragment() {
             return
         }
 
-        val queryPhone = if (mobile.startsWith("+91")) mobile else "+91$mobile"
+        binding.btnRegister.isEnabled = false
+        binding.btnRegister.text = "Sending OTP..."
 
-        // First, create the user in Auth so we have permission to query Database
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(requireActivity()) { task ->
-                if (task.isSuccessful) {
-                    val user = auth.currentUser
-                    if (user != null) {
-                        // Now we are authenticated. Check if phone already exists
-                        FirebaseDatabase.getInstance().getReference("users")
-                            .orderByChild("phone").equalTo(queryPhone)
-                            .addListenerForSingleValueEvent(object : ValueEventListener {
-                                override fun onDataChange(snapshot: DataSnapshot) {
-                                    if (snapshot.exists()) {
-                                        // Phone exists! Delete this auth account
-                                        user.delete().addOnCompleteListener {
-                                            Toast.makeText(requireContext(), "This phone number is already registered.", Toast.LENGTH_LONG).show()
-                                        }
-                                    } else {
-                                        // Phone is unique, save data
-                                        val userMap = mapOf(
-                                            "email" to email,
-                                            "phone" to queryPhone
-                                        )
-
-                                        FirebaseDatabase.getInstance().getReference("users").child(user.uid)
-                                            .setValue(userMap)
-                                            .addOnCompleteListener { dbTask ->
-                                                if (dbTask.isSuccessful) {
-                                                    Toast.makeText(requireContext(), "Registration successful", Toast.LENGTH_SHORT).show()
-                                                    startActivity(Intent(requireContext(), BusinessDetailActivity::class.java))
-                                                    requireActivity().finish()
-                                                } else {
-                                                    user.delete().addOnCompleteListener {
-                                                        Toast.makeText(requireContext(), "Failed to save user data: ${dbTask.exception?.message}", Toast.LENGTH_SHORT).show()
-                                                    }
-                                                }
-                                            }
-                                    }
-                                }
-
-
-
-
-                                override fun onCancelled(error: DatabaseError) {
-                                    Toast.makeText(requireContext(), "Database Error: ${error.message}", Toast.LENGTH_SHORT).show()
-                                    user.delete() // Cleanup
-                                }
-                            })
-                    }
-                } else {
-                    Toast.makeText(requireContext(), "Registration failed: ${task.exception?.message}", Toast.LENGTH_LONG).show()
-                }
+        AuthManager.sendOtp(email) { success, message ->
+            binding.btnRegister.isEnabled = true
+            binding.btnRegister.text = "Create Account"
+            if (success) {
+                val otpFragment = OtpVerificationFragment.newInstance(
+                    name = email.substringBefore("@"),
+                    email = email,
+                    phone = mobile
+                )
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.nav_host_fragment, otpFragment)
+                    .addToBackStack(null)
+                    .commit()
+            } else {
+                Toast.makeText(requireContext(), "Failed to send OTP: $message", Toast.LENGTH_LONG).show()
             }
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")

@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import java.util.Calendar
+import java.util.Locale
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,6 +45,11 @@ class CashbooksFragment : Fragment() {
     private var notebooksQuery: Query? = null
     private var notebooksListener: ValueEventListener? = null
 
+    // V2 Tracker Maps for Dynamic Statistics
+    private val notebookBalances = mutableMapOf<String, Double>()
+    private val notebookMonthlyBalances = mutableMapOf<String, Double>()
+    private val transactionListeners = mutableMapOf<String, ValueEventListener>()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -68,6 +75,17 @@ class CashbooksFragment : Fragment() {
         } else {
             notebookList.clear()
             notebookAdapter.notifyDataSetChanged()
+            
+            // Clear stats and listeners
+            for ((notebookId, listener) in transactionListeners) {
+                FirebaseDatabase.getInstance().reference.child("transactions").child(notebookId)
+                    .removeEventListener(listener)
+            }
+            transactionListeners.clear()
+            notebookBalances.clear()
+            notebookMonthlyBalances.clear()
+            updateSummaryStats()
+
             if (_binding != null) {
                 binding.layoutShimmerNotebooks.stopPulseAnimation()
                 binding.layoutShimmerNotebooks.visibility = View.GONE
@@ -79,6 +97,15 @@ class CashbooksFragment : Fragment() {
         val id = currentBusinessId ?: return
         notebooksListener?.let { notebooksQuery?.removeEventListener(it) }
 
+        // Clear existing transaction listeners
+        for ((notebookId, listener) in transactionListeners) {
+            FirebaseDatabase.getInstance().reference.child("transactions").child(notebookId)
+                .removeEventListener(listener)
+        }
+        transactionListeners.clear()
+        notebookBalances.clear()
+        notebookMonthlyBalances.clear()
+
         if (_binding != null) {
             binding.layoutShimmerNotebooks.visibility = View.VISIBLE
             binding.layoutShimmerNotebooks.startPulseAnimation()
@@ -89,6 +116,15 @@ class CashbooksFragment : Fragment() {
         notebooksQuery = database.orderByChild("businessId").equalTo(id)
         notebooksListener = notebooksQuery?.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                // Temporarily detach old listeners
+                for ((nId, listener) in transactionListeners) {
+                    FirebaseDatabase.getInstance().reference.child("transactions").child(nId)
+                        .removeEventListener(listener)
+                }
+                transactionListeners.clear()
+                notebookBalances.clear()
+                notebookMonthlyBalances.clear()
+
                 notebookList.clear()
                 if (snapshot.exists()) {
                     for (notebookSnapshot in snapshot.children) {
@@ -98,20 +134,72 @@ class CashbooksFragment : Fragment() {
                     }
                 }
 
+                // Update text indicators
+                if (_binding != null) {
+                    binding.tvActiveBooksCount.text = "${notebookList.size} active notebooks"
+                    binding.tvStatTotalBooks.text = notebookList.size.toString()
+                }
+
+                // Attach dynamic transaction listeners for each loaded notebook
+                for (notebook in notebookList) {
+                    val transListener = object : ValueEventListener {
+                        override fun onDataChange(transSnapshot: DataSnapshot) {
+                            var total = 0.0
+                            var monthly = 0.0
+                            val calendar = Calendar.getInstance()
+                            val curMonth = calendar.get(Calendar.MONTH)
+                            val curYear = calendar.get(Calendar.YEAR)
+
+                            for (child in transSnapshot.children) {
+                                val type = child.child("type").value as? String ?: ""
+                                val amountObj = child.child("amount").value
+                                val amount = when (amountObj) {
+                                    is Long -> amountObj.toDouble()
+                                    is Double -> amountObj
+                                    is String -> amountObj.toDoubleOrNull() ?: 0.0
+                                    else -> 0.0
+                                }
+                                val createdAt = child.child("createdAt").value as? Long ?: 0L
+
+                                val netAmount = if (type == "in") amount else if (type == "out") -amount else 0.0
+                                total += netAmount
+
+                                val transCal = Calendar.getInstance()
+                                transCal.timeInMillis = createdAt
+                                if (transCal.get(Calendar.MONTH) == curMonth && transCal.get(Calendar.YEAR) == curYear) {
+                                    monthly += netAmount
+                                }
+                            }
+
+                            notebookBalances[notebook.id] = total
+                            notebookMonthlyBalances[notebook.id] = monthly
+                            updateSummaryStats()
+                        }
+                        override fun onCancelled(error: DatabaseError) {}
+                    }
+                    transactionListeners[notebook.id] = transListener
+                    FirebaseDatabase.getInstance().reference.child("transactions").child(notebook.id)
+                        .addValueEventListener(transListener)
+                }
+
+                if (notebookList.isEmpty()) {
+                    updateSummaryStats()
+                }
+
                 Handler(Looper.getMainLooper()).postDelayed({
                     if (_binding == null) return@postDelayed
                     binding.layoutShimmerNotebooks.stopPulseAnimation()
                     binding.layoutShimmerNotebooks.visibility = View.GONE
 
                     if (isAdded) {
-                         notebookAdapter.notifyDataSetChanged()
-                         if (notebookList.isEmpty()) {
-                             binding.layoutEmpty.visibility = View.VISIBLE
-                             binding.notebooksRecyclerView.visibility = View.GONE
-                         } else {
-                             binding.layoutEmpty.visibility = View.GONE
-                             binding.notebooksRecyclerView.visibility = View.VISIBLE
-                         }
+                          notebookAdapter.notifyDataSetChanged()
+                          if (notebookList.isEmpty()) {
+                              binding.layoutEmpty.visibility = View.VISIBLE
+                              binding.notebooksRecyclerView.visibility = View.GONE
+                          } else {
+                              binding.layoutEmpty.visibility = View.GONE
+                              binding.notebooksRecyclerView.visibility = View.VISIBLE
+                          }
                     }
                 }, 2000)
             }
@@ -148,14 +236,21 @@ class CashbooksFragment : Fragment() {
         }
 
         binding.addNotebookFab.setOnClickListener {
-
             val sheet = AddNotebookDialogFragment()
             sheet.arguments = Bundle().apply {
                 val businessId = currentBusinessId
                 putString("businessId", businessId)
             }
             sheet.show(parentFragmentManager, "AddNotebook")
+        }
 
+        binding.btnCreateFirstBook.setOnClickListener {
+            val sheet = AddNotebookDialogFragment()
+            sheet.arguments = Bundle().apply {
+                val businessId = currentBusinessId
+                putString("businessId", businessId)
+            }
+            sheet.show(parentFragmentManager, "AddNotebook")
         }
     }
 
@@ -182,6 +277,12 @@ class CashbooksFragment : Fragment() {
 
     override fun onDestroyView() {
         notebooksListener?.let { notebooksQuery?.removeEventListener(it) }
+        // Clean up transaction listeners
+        for ((notebookId, listener) in transactionListeners) {
+            FirebaseDatabase.getInstance().reference.child("transactions").child(notebookId)
+                .removeEventListener(listener)
+        }
+        transactionListeners.clear()
         super.onDestroyView()
         _binding = null
     }
@@ -278,4 +379,45 @@ class CashbooksFragment : Fragment() {
 
 
 
+    private fun updateSummaryStats() {
+        if (_binding == null) return
+
+        val netTotal = notebookBalances.values.sum()
+        val monthlyTotal = notebookMonthlyBalances.values.sum()
+
+        binding.tvStatNetBalance.text = formatBalanceCompact(netTotal, showPositiveSign = false)
+        binding.tvStatNetBalance.setTextColor(
+            ContextCompat.getColor(requireContext(), if (netTotal >= 0) R.color.success else R.color.danger)
+        )
+
+        binding.tvStatThisMonth.text = formatBalanceCompact(monthlyTotal, showPositiveSign = true)
+        binding.tvStatThisMonth.setTextColor(
+            ContextCompat.getColor(requireContext(), if (monthlyTotal >= 0) R.color.success else R.color.danger)
+        )
+    }
+
+    private fun formatBalanceCompact(value: Double, showPositiveSign: Boolean): String {
+        val absValue = Math.abs(value)
+        val prefix = if (value >= 0) {
+            if (showPositiveSign) "+" else ""
+        } else {
+            "-"
+        }
+        val symbol = "₹"
+        val formattedValue = when {
+            absValue >= 100000.0 -> {
+                val d = absValue / 100000.0
+                if (d == d.toInt().toDouble()) String.format(Locale.getDefault(), "%dL", d.toInt())
+                else String.format(Locale.getDefault(), "%.2fL", d)
+            }
+            absValue >= 1000.0 -> {
+                val d = absValue / 1000.0
+                if (d == d.toInt().toDouble()) String.format(Locale.getDefault(), "%dK", d.toInt())
+                else String.format(Locale.getDefault(), "%.1fK", d)
+            }
+            else -> String.format(Locale.getDefault(), "%.2f", absValue)
+        }
+        val cleanVal = formattedValue.replace(".00", "")
+        return "$prefix$symbol$cleanVal"
+    }
 }

@@ -8,6 +8,7 @@ import com.cashbk.app.R
 import com.cashbk.app.databinding.ActivityAuthBinding
 import com.cashbk.app.business.BusinessDetailActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.cashbk.app.utils.setupStatusAndNavBar
 
 class AuthActivity : AppCompatActivity() {
 
@@ -17,6 +18,7 @@ class AuthActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAuthBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setupStatusAndNavBar()
 
         // Check already logged in
         if (FirebaseAuth.getInstance().currentUser != null) {
@@ -56,5 +58,10 @@ class AuthActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.nav_host_fragment, fragment)
             .commit()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setupStatusAndNavBar()
     }
 }

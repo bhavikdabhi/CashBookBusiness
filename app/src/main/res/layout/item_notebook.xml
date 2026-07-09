@@ -5,38 +5,52 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/_14sdp"
-    android:background="?attr/selectableItemBackground">
+    android:layout_marginBottom="@dimen/_10sdp"
+    android:layout_marginHorizontal="@dimen/_2sdp"
+    android:background="@drawable/bg_glass_card"
+    android:padding="@dimen/_12sdp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground">
 
-    <!-- Icon -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/icon_card"
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="@dimen/_40sdp"
-        app:cardCornerRadius="@dimen/_24sdp"
-        app:cardElevation="0dp"
-        app:cardBackgroundColor="?attr/colorPrimaryContainer"
+    <!-- Double-ring Icon Container -->
+    <FrameLayout
+        android:id="@+id/icon_ring_container"
+        android:layout_width="@dimen/_46sdp"
+        android:layout_height="@dimen/_46sdp"
+        android:background="@drawable/bg_icon_ring"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <ImageView
-            android:layout_width="@dimen/_24sdp"
-            android:layout_height="@dimen/_24sdp"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/icon_card"
+            android:layout_width="@dimen/_34sdp"
+            android:layout_height="@dimen/_34sdp"
             android:layout_gravity="center"
-            android:src="@drawable/ic_action_group"
-            app:tint="@color/primary_color"/>
-    </com.google.android.material.card.MaterialCardView>
+            app:cardCornerRadius="@dimen/_17sdp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="?attr/colorPrimaryContainer">
+
+            <ImageView
+                android:id="@+id/icon_image"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_action_group"
+                app:tint="?attr/colorPrimary"/>
+        </com.google.android.material.card.MaterialCardView>
+    </FrameLayout>
 
     <!-- Content -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginStart="@dimen/_10sdp"
         android:layout_marginEnd="@dimen/_8sdp"
-        app:layout_constraintStart_toEndOf="@id/icon_card"
-        app:layout_constraintEnd_toStartOf="@id/tv_balance"
+        app:layout_constraintStart_toEndOf="@id/icon_ring_container"
+        app:layout_constraintEnd_toStartOf="@id/balance_container"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
@@ -46,51 +60,100 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_medium"
             android:textFontWeight="600"
-            tools:text="D@Bhi Family"
-            android:textSize="@dimen/_14ssp"
+            tools:text="Family Ledger"
+            android:textSize="@dimen/_13ssp"
             android:textColor="?attr/colorOnSurface"
             android:ellipsize="end"
             android:maxLines="1"/>
 
-        <TextView
-            android:id="@+id/notebook_details"
+        <!-- Details with Group Icon -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_regular"
-            android:textFontWeight="600"
-            tools:text="6 Members . Updated on Oct 06"
-            android:textSize="@dimen/_10ssp"
-            android:textColor="@color/text_entryBy"
-            android:layout_marginTop="@dimen/_2sdp"
-            android:ellipsize="end"
-            android:maxLines="1"/>
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="@dimen/_2sdp">
+            <ImageView
+                android:id="@+id/iv_details_icon"
+                android:layout_width="@dimen/_10sdp"
+                android:layout_height="@dimen/_10sdp"
+                android:src="@drawable/ic_people_"
+                app:tint="@color/gray"
+                android:layout_marginEnd="@dimen/_4sdp"/>
+            <TextView
+                android:id="@+id/notebook_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_regular"
+                android:textFontWeight="500"
+                tools:text="6 Members . Updated 2h ago"
+                android:textSize="@dimen/_9ssp"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:ellipsize="end"
+                android:maxLines="1"/>
+        </LinearLayout>
     </LinearLayout>
 
-    <!-- Balance -->
-    <TextView
-        android:id="@+id/tv_balance"
+    <!-- Balance & Chip Container -->
+    <LinearLayout
+        android:id="@+id/balance_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="2,157"
-        android:fontFamily="@font/roboto_regular"
-        android:textFontWeight="600"
-        android:textSize="@dimen/_12ssp"
-        android:textStyle="bold"
-        android:textColor="@color/success"
-        android:layout_marginEnd="@dimen/_8sdp"
+        android:orientation="vertical"
+        android:gravity="end"
+        android:layout_marginEnd="@dimen/_6sdp"
         app:layout_constraintEnd_toStartOf="@id/btn_notebook_options"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/tv_balance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="+₹1.2L"
+            android:fontFamily="@font/roboto_medium"
+            android:textFontWeight="700"
+            android:textSize="@dimen/_12ssp"
+            android:textStyle="bold"
+            android:textColor="@color/success"/>
+
+        <LinearLayout
+            android:id="@+id/layout_balance_chip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="@dimen/_6sdp"
+            android:paddingVertical="@dimen/_2sdp"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:background="@drawable/bg_balance_chip">
+
+            <ImageView
+                android:id="@+id/iv_balance_chip_icon"
+                android:layout_width="@dimen/_8sdp"
+                android:layout_height="@dimen/_8sdp"
+                android:src="@drawable/ic_trans_plus"
+                android:layout_marginEnd="@dimen/_2sdp"/>
+
+            <TextView
+                android:id="@+id/tv_balance_chip_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Credit"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="@dimen/_8ssp"/>
+        </LinearLayout>
+    </LinearLayout>
 
     <!-- Menu -->
     <ImageButton
         android:id="@+id/btn_notebook_options"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/_28sdp"
+        android:layout_height="@dimen/_28sdp"
         android:src="@drawable/icon_threedots"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:paddingEnd="@dimen/_4sdp"
-        app:tint="@color/text_secondary"
+        android:padding="@dimen/_4sdp"
+        app:tint="?attr/colorOnSurfaceVariant"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>

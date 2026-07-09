@@ -14,6 +14,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import java.util.concurrent.Executor
+import com.cashbk.app.utils.setupStatusAndNavBar
 
 class PinLockActivity : AppCompatActivity() {
 
@@ -30,6 +31,7 @@ class PinLockActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityPinLockBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setupStatusAndNavBar()
 
         val sharedPrefs = getSharedPreferences("app_lock_prefs", MODE_PRIVATE)
         savedPin = sharedPrefs.getString("app_lock_pin", "") ?: ""
@@ -162,5 +164,10 @@ class PinLockActivity : AppCompatActivity() {
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setupStatusAndNavBar()
     }
 }

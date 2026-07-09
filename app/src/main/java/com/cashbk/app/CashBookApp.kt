@@ -4,8 +4,14 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 
 class CashBookApp : Application() {
+    companion object {
+        lateinit var instance: CashBookApp
+            private set
+    }
+
     override fun onCreate() {
         super.onCreate()
+        instance = this
         
         // Load and apply saved theme preference
         val sharedPrefs = getSharedPreferences("theme_prefs", MODE_PRIVATE)

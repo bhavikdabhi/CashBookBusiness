@@ -26,6 +26,7 @@ import android.net.Uri
 import com.cashbk.app.category.ManageCategoriesFragment
 import com.cashbk.app.party.ManagePartiesFragment
 import com.cashbk.app.utils.CustomOptionsMenu
+import com.cashbk.app.utils.setupStatusAndNavBar
 
 class NotebookActivity : AppCompatActivity() {
 
@@ -41,6 +42,7 @@ class NotebookActivity : AppCompatActivity() {
         try {
             binding = ActivityNotebookBinding.inflate(layoutInflater)
             setContentView(binding.root)
+            setupStatusAndNavBar()
 
             notebookId = intent.getStringExtra("notebookId")
             if (notebookId.isNullOrEmpty()) {
@@ -216,5 +218,10 @@ class NotebookActivity : AppCompatActivity() {
             .replace(R.id.notebook_fragment_container, fragment, EDIT_DIALOG_TAG)
             .addToBackStack(null)
             .commit()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setupStatusAndNavBar()
     }
 }

@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import com.cashbk.app.R
 import com.google.firebase.auth.FirebaseAuth
+import com.cashbk.app.utils.setupStatusAndNavBar
 
 class ForgotPasswordActivity : AppCompatActivity() {
 
@@ -16,6 +17,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_forgot_password)
+        setupStatusAndNavBar()
 
         auth = FirebaseAuth.getInstance()
 
@@ -44,5 +46,10 @@ class ForgotPasswordActivity : AppCompatActivity() {
         tvBack.setOnClickListener {
             finish()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setupStatusAndNavBar()
     }
 }

@@ -7,136 +7,135 @@
     <!--   M3 Semantic Color Role Tokens — Dark Mode Overrides        -->
     <!-- ============================================================ -->
     <!-- Primary -->
-    <color name="primary">#818CF8</color>
-    <color name="on_primary">#1E1B4B</color>
-    <color name="primary_container">#3730A3</color>
-    <color name="on_primary_container">#E0E7FF</color>
+    <color name="primary">#02929A</color>
+    <color name="on_primary">#E8F4F4</color>
+    <color name="primary_container">#1E2C2C</color>
+    <color name="on_primary_container">#E8F4F4</color>
     <!-- Secondary -->
-    <color name="secondary">#77D5E0</color>
-    <color name="on_secondary">#003F43</color>
-    <color name="secondary_container">#1F3D47</color>
-    <color name="on_secondary_container">#A2EEF5</color>
+    <color name="secondary">#02929A</color>
+    <color name="on_secondary">#E8F4F4</color>
+    <color name="secondary_container">#2A3A3A</color>
+    <color name="on_secondary_container">#E8F4F4</color>
     <!-- Tertiary -->
-    <color name="tertiary">#4DB6AC</color>
-    <color name="on_tertiary">#003544</color>
-    <color name="tertiary_container">#1F3D47</color>
-    <color name="on_tertiary_container">#A2EEF5</color>
+    <color name="tertiary">#2A3A3A</color>
+    <color name="on_tertiary">#E8F4F4</color>
+    <color name="tertiary_container">#2A3A3A</color>
+    <color name="on_tertiary_container">#E8F4F4</color>
     <!-- Error -->
-    <color name="error">#F87171</color>
-    <color name="on_error">#450A0A</color>
-    <color name="error_container">#7F1D1D</color>
-    <color name="on_error_container">#FEE2E2</color>
+    <color name="error">#F4544A</color>
+    <color name="on_error">#1A2424</color>
+    <color name="error_container">#26F4544A</color>
+    <color name="on_error_container">#F4544A</color>
     <!-- Background -->
-    <color name="background">#0F172A</color>
-    <color name="on_background">#F8FAFC</color>
+    <color name="background">#1A2424</color>
+    <color name="on_background">#E8F4F4</color>
     <!-- Surface -->
-    <color name="surface">#1E293B</color>
-    <color name="on_surface">#E2E8F0</color>
-    <color name="surface_variant">#222A3D</color>
-    <color name="on_surface_variant">#94A3B8</color>
+    <color name="surface">#1E2C2C</color>
+    <color name="on_surface">#E8F4F4</color>
+    <color name="surface_variant">#2A3A3A</color>
+    <color name="on_surface_variant">#9AB4B4</color>
     <!-- Outline -->
-    <color name="outline">#475569</color>
-    <color name="outline_variant">#334155</color>
+    <color name="outline">#1FCFD3D3</color> <!-- 12% opacity -->
+    <color name="outline_variant">#1FCFD3D3</color>
     <!-- Surface Containers -->
-    <color name="surface_container">#131B2E</color>
-    <color name="surface_container_low">#131B2E</color>
-    <color name="surface_container_high">#222A3D</color>
-    <color name="surface_container_lowest">#0B1326</color>
+    <color name="surface_container">#1E2C2C</color>
+    <color name="surface_container_low">#1A2424</color>
+    <color name="surface_container_high">#2A3A3A</color>
+    <color name="surface_container_lowest">#1A2424</color>
 
-    <!-- Primary -->
-    <color name="primary_color">#6366F1</color>
-    <color name="primary_hover">#4F46E5</color>
+    <!-- Primary Branding -->
+    <color name="primary_color">#02929A</color>
+    <color name="primary_hover">#017D84</color>
 
     <!-- Background & Text -->
-    <color name="bg_color">#0F172A</color>
-    <color name="text_secondary">#F8FAFC</color>
-    <color name="text_disabled">#89d87f</color>
-    <color name="text_entryBy">#00808b</color>
+    <color name="bg_color">#1A2424</color>
+    <color name="text_secondary">#E8F4F4</color>
+    <color name="text_disabled">#6A8A8A</color>
+    <color name="text_entryBy">#9AB4B4</color>
 
     <!-- Ethereal Ledger Design System Tokens (The Architectural Glasshouse) -->
-    <color name="stitch_surface_container_low">#131B2E</color>
-    <color name="stitch_surface_container_high">#222A3D</color>
-    <color name="stitch_outline_variant">#464554</color>
-    <color name="stitch_tertiary">#77D5E0</color>
-    <color name="auth_bg">#0B1326</color>
-    <color name="auth_input_bg">#131B2F</color>
-    <color name="auth_input_border">#2C365E</color>
-    <color name="auth_accent_light">#DAE2FD</color>
-    <color name="auth_glow_1">#8083FF</color>
-    <color name="auth_glow_2">#C0C1FF</color>
-    <color name="auth_text">#AEB9D0</color>
-    <color name="auth_text_light">#C7C4D7</color>
-    <color name="auth_surface_high">#2D3449</color>
-    <color name="auth_ic">#908FA0</color>
+    <color name="stitch_surface_container_low">#1E2C2C</color>
+    <color name="stitch_surface_container_high">#2A3A3A</color>
+    <color name="stitch_outline_variant">#1FCFD3D3</color>
+    <color name="stitch_tertiary">#02929A</color>
+    <color name="auth_bg">#1A2424</color>
+    <color name="auth_input_bg">#1E2C2C</color>
+    <color name="auth_input_border">#1FCFD3D3</color>
+    <color name="auth_accent_light">#E8F4F4</color>
+    <color name="auth_glow_1">#02929A</color>
+    <color name="auth_glow_2">#017D84</color>
+    <color name="auth_text">#9AB4B4</color>
+    <color name="auth_text_light">#02929A</color>
+    <color name="auth_surface_high">#1E2C2C</color>
+    <color name="auth_ic">#02929A</color>
 
     <!-- Glass UI -->
-   <color name="glass_border">#1AFFFFFF</color>
+    <color name="glass_border">#1FCFD3D3</color>
 
     <!-- Cards -->
-    <color name="card_bg">#1E293B</color>
+    <color name="card_bg">#243232</color>
 
     <!-- Status Colors -->
-    <color name="success">#10B981</color>
-    <color name="danger">#EF4444</color>
+    <color name="success">#3DB87A</color>
+    <color name="danger">#F4544A</color>
     <color name="warning">#F59E0B</color>
 
     <!-- Greys -->
-    <color name="gray">#94A3B8</color>
-    <color name="light_gray">#E2E8F0</color>
-    <color name="color_00e676">#00E676</color>
+    <color name="gray">#6A8A8A</color>
+    <color name="light_gray">#E8F4F4</color>
+    <color name="color_00e676">#3DB87A</color>
 
     <color name="color_40ffffff">#40FFFFFF</color>
     <color name="color_10ffffff">#10FFFFFF</color>
-    <color name="color_80deea">#80DEEA</color>
-    <color name="dark_gray">#475569</color>
-
+    <color name="color_80deea">#02929A</color>
+    <color name="dark_gray">#6A8A8A</color>
 
     <!-- Auto-extracted Hardcoded Colors -->
-    <color name="color_12ffffff">#12FFFFFF</color>
-    <color name="color_15ffffff">#15FFFFFF</color>
-    <color name="color_183b36">#183b36</color>
-    <color name="color_1a1e293b">#1A1E293B</color>
-    <color name="color_1a1f2c">#1A1F2C</color>
-    <color name="color_1a2235">#1A2235</color>
-    <color name="color_1a4db6ac">#1A4DB6AC</color>
-    <color name="color_1a77d5e0">#1A77D5E0</color>
-    <color name="color_1f3d47">#1F3D47</color>
-    <color name="color_212739">#212739</color>
-    <color name="color_22ffffff">#22FFFFFF</color>
-    <color name="color_232b3c">#232b3c</color>
-    <color name="color_242d40">#242d40</color>
-    <color name="color_266750a4">#266750A4</color>
-    <color name="color_2b2d5c">#2b2d5c</color>
-    <color name="color_33c0c1ff">#33C0C1FF</color>
-    <color name="color_33ffffff">#33FFFFFF</color>
-    <color name="color_3ce3a5">#3CE3A5</color>
-    <color name="color_4a2c2c">#4A2C2C</color>
-    <color name="color_4db6ac">#4DB6AC</color>
-    <color name="color_501e293b">#501E293B</color>
-    <color name="color_6750a4">#6750A4</color>
-    <color name="color_801e293b">#801E293B</color>
-    <color name="color_81d4fa">#81D4FA</color>
-    <color name="color_8388ff">#8388FF</color>
-    <color name="color_8c9eff">#8C9EFF</color>
-    <color name="color_9ea1ae">#9EA1AE</color>
-    <color name="color_a19df7">#A19DF7</color>
-    <color name="color_b388ff">#B388FF</color>
-    <color name="color_bfc1ff">#BFC1FF</color>
-    <color name="color_c6ccdf">#C6CCDF</color>
-    <color name="color_cc8888">#CC8888</color>
-    <color name="color_cccccc">#CCCCCC</color>
-    <color name="color_e3f2fd">#E3F2FD</color>
-    <color name="color_ff9800">#FF9800</color>
-    <color name="color_ffb3b3">#FFB3B3</color>
+     <color name="color_12ffffff">#12FFFFFF</color>
+     <color name="color_15ffffff">#15FFFFFF</color>
+     <color name="color_183b36">#183b36</color>
+     <color name="color_1a1e293b">#1A1E293B</color>
+     <color name="color_1a1f2c">#1A1F2C</color>
+     <color name="color_1a2235">#1A2235</color>
+     <color name="color_1a4db6ac">#1A4DB6AC</color>
+     <color name="color_1a77d5e0">#1A77D5E0</color>
+     <color name="color_1f3d47">#1F3D47</color>
+     <color name="color_212739">#212739</color>
+     <color name="color_22ffffff">#22FFFFFF</color>
+     <color name="color_232b3c">#232b3c</color>
+     <color name="color_242d40">#242d40</color>
+     <color name="color_266750a4">#266750A4</color>
+     <color name="color_2b2d5c">#2b2d5c</color>
+     <color name="color_33c0c1ff">#33C0C1FF</color>
+     <color name="color_33ffffff">#33FFFFFF</color>
+     <color name="color_3ce3a5">#3CE3A5</color>
+     <color name="color_4a2c2c">#4A2C2C</color>
+     <color name="color_4db6ac">#4DB6AC</color>
+     <color name="color_501e293b">#501E293B</color>
+     <color name="color_6750a4">#6750A4</color>
+     <color name="color_801e293b">#801E293B</color>
+     <color name="color_81d4fa">#81D4FA</color>
+     <color name="color_8388ff">#8388FF</color>
+     <color name="color_8c9eff">#8C9EFF</color>
+     <color name="color_9ea1ae">#9EA1AE</color>
+     <color name="color_a19df7">#A19DF7</color>
+     <color name="color_b388ff">#B388FF</color>
+     <color name="color_bfc1ff">#BFC1FF</color>
+     <color name="color_c6ccdf">#C6CCDF</color>
+     <color name="color_cc8888">#CC8888</color>
+     <color name="color_cccccc">#CCCCCC</color>
+     <color name="color_e3f2fd">#E3F2FD</color>
+     <color name="color_ff9800">#FF9800</color>
+     <color name="color_ffb3b3">#FFB3B3</color>
 
     <!-- Auto-extracted Hardcoded Colors -->
     <color name="color_00000000">#00000000</color>
     <color name="color_1c274c">#1C274C</color>
     <color name="color_292d32">#292D32</color>
-    <color name="color_3ddc84">#3DDC84</color>
+    <color name="color_3ddc84">#3DB87A</color>
     <color name="color_44000000">#44000000</color>
-    <color name="color_ff5252">#FF5252</color>
-    <color name="color_1de9b6">#1DE9B6</color>
+    <color name="color_ff5252">#F4544A</color>
+    <color name="color_1de9b6">#02929A</color>
     <color name="color_ffa726">#FFA726</color>
     <color name="color_ef5350">#EF5350</color>
     <color name="color_ec407a">#EC407A</color>
@@ -144,4 +143,28 @@
     <color name="color_5c6bc0">#5C6BC0</color>
     <color name="color_90a4ae">#90A4AE</color>
     <color name="color_b5bdff">#B5BDFF</color>
+
+    <!-- Premium Dashboard Design System Colors (Dark Theme) -->
+    <color name="fab_background">#0D1412</color>
+    <color name="fab_tint">#3CE3A5</color>
+    <color name="fab_stroke">#3CE3A5</color>
+    <color name="btn_outline_border_color">#02929A</color>
+    <color name="btn_outline_text_color">#02929A</color>
+    <color name="bottom_nav_active_bg">#3802929A</color> <!-- 22% primaryGlow -->
+    <color name="bottom_nav_active_border">#02929A</color>
+    <color name="icon_bg_blue">#2A3A3A</color>
+    <color name="icon_tint_blue">#02929A</color>
+    <color name="icon_bg_green">#263DB87A</color>
+    <color name="icon_tint_green">#3DB87A</color>
+    <color name="icon_bg_purple">#2A3A3A</color>
+    <color name="icon_tint_purple">#02929A</color>
+    <color name="icon_bg_yellow">#2A3A3A</color>
+    <color name="icon_tint_yellow">#02929A</color>
+    <color name="icon_bg_pink">#2A3A3A</color>
+    <color name="icon_tint_pink">#02929A</color>
+
+    <color name="card_soft">#2A3A3A</color>
+    <color name="green_bg">#263DB87A</color>
+    <color name="red_bg">#26F4544A</color>
+    <color name="nav_bg">#1E2C2C</color>
 </resources>

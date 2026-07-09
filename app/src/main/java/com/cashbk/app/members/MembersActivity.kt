@@ -22,6 +22,7 @@ import com.cashbk.app.databinding.ItemMemberBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.cashbk.app.utils.setupStatusAndNavBar
 
 class MembersActivity : AppCompatActivity() {
 
@@ -38,6 +39,7 @@ class MembersActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMembersBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setupStatusAndNavBar()
 
         entityId = intent.getStringExtra("entityId")
         entityType = intent.getStringExtra("entityType")
@@ -323,5 +325,8 @@ class MembersActivity : AppCompatActivity() {
         binding.addMemberFab.visibility = if (canAdd) View.VISIBLE else View.GONE
     }
 
-
+    override fun onResume() {
+        super.onResume()
+        setupStatusAndNavBar()
+    }
 }

@@ -3,12 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@android:color/transparent"
-
-    >
+    android:background="@android:color/transparent"    >
 
       <LinearLayout
-          android:background="?android:attr/colorBackground"
+          android:background="@drawable/bg_screen_gradient"
         android:id="@+id/main_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,11 +18,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingHorizontal="@dimen/_16sdp"
-            android:paddingVertical="@dimen/_10sdp"
+            android:layout_marginHorizontal="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:layout_marginBottom="@dimen/_6sdp"
+            android:paddingHorizontal="@dimen/_12sdp"
+            android:paddingVertical="@dimen/_8sdp"
             android:gravity="center_vertical"
             android:background="@drawable/bg_glass_card"
-            android:elevation="@dimen/_6sdp">
+            android:elevation="@dimen/_4sdp">
 
             <!-- Icon + Name -->
             <LinearLayout
@@ -37,11 +38,21 @@
                 android:padding="@dimen/_4sdp"
                 android:background="?attr/selectableItemBackgroundBorderless">
 
-                <ImageView
-                    android:layout_width="@dimen/_32sdp"
-                    android:layout_height="@dimen/_32sdp"
-                    android:src="@drawable/ic_business"
-                    app:tint="@color/primary_color"/>
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="@dimen/_34sdp"
+                    android:layout_height="@dimen/_34sdp"
+                    app:cardCornerRadius="@dimen/_17sdp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="@color/bottom_nav_active_bg"
+                    app:strokeColor="@color/bottom_nav_active_border"
+                    app:strokeWidth="1dp">
+                    <ImageView
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_business"
+                        app:tint="@color/bottom_nav_active_border"/>
+                </com.google.android.material.card.MaterialCardView>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -56,7 +67,7 @@
                         android:text="Business Name"
                         android:fontFamily="@font/roboto_medium"
                         android:textStyle="bold"
-                        android:textSize="@dimen/_16ssp"
+                        android:textSize="@dimen/_14ssp"
                         android:textColor="@color/text_secondary" />
 
                     <TextView
@@ -69,25 +80,64 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:layout_width="@dimen/_24sdp"
-                    android:layout_height="@dimen/_24sdp"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
                     android:src="@drawable/ic_expand_more"
                     app:tint="@color/text_secondary"
-                    android:layout_marginStart="@dimen/_10sdp"/>
+                    android:layout_marginStart="@dimen/_8sdp"/>
 
             </LinearLayout>
+
+            <!-- Theme Toggle Pill -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/btn_theme_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_26sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardCornerRadius="@dimen/_13sdp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/card_bg"
+                app:strokeColor="@color/glass_border"
+                app:strokeWidth="1.2dp">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="@dimen/_8sdp">
+                    <ImageView
+                        android:id="@+id/iv_theme_icon"
+                        android:layout_width="@dimen/_12sdp"
+                        android:layout_height="@dimen/_12sdp"
+                        android:src="@drawable/ic_moon"
+                        app:tint="@color/primary"/>
+                    <TextView
+                        android:id="@+id/tv_theme_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_4sdp"
+                        android:text="Dark"
+                        android:textColor="@color/text_secondary"
+                        android:fontFamily="@font/roboto_medium"
+                        android:textSize="@dimen/_10ssp"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- Partner Icon -->
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/btn_profile"
-                android:layout_width="@dimen/_35sdp"
-                android:layout_height="@dimen/_35sdp"
+                android:layout_width="@dimen/_36sdp"
+                android:layout_height="@dimen/_36sdp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_default_avtar"
-                android:padding="@dimen/_4sdp"
+                android:padding="@dimen/_2sdp"
                 android:scaleType="centerCrop"
                 app:shapeAppearanceOverlay="@style/CircleImageView"
-                app:tint="@color/primary_color" />
+                app:strokeColor="@color/bottom_nav_active_border"
+                app:strokeWidth="1.5dp" />
                 
         </LinearLayout>
 
@@ -122,7 +172,7 @@
             app:itemPaddingBottom="@dimen/_2sdp"
             app:itemIconTint="@color/nav_item_color"
             app:itemTextColor="@color/nav_item_color"
-            app:labelVisibilityMode="unlabeled"
+            app:labelVisibilityMode="labeled"
             app:itemBackground="@drawable/bg_bottom_nav_item_selected"
             app:itemRippleColor="@null"
             app:menu="@menu/bottom_nav_menu"

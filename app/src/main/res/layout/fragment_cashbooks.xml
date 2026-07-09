@@ -25,6 +25,161 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+                <!-- Stat Cards Row -->
+                <LinearLayout
+                    android:id="@+id/layout_stats"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    android:layout_marginBottom="@dimen/_12sdp"
+                    android:weightSum="3">
+
+                    <!-- Card 1: Total Books -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="@dimen/_6sdp"
+                        app:cardCornerRadius="@dimen/_12sdp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="@color/card_bg"
+                        app:strokeColor="@color/glass_border"
+                        app:strokeWidth="1dp">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="@dimen/_10sdp">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+                                <ImageView
+                                    android:layout_width="@dimen/_12sdp"
+                                    android:layout_height="@dimen/_12sdp"
+                                    android:src="@drawable/ic_book"
+                                    app:tint="@color/primary"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/_4sdp"
+                                    android:text="Total Books"
+                                    android:fontFamily="@font/roboto_regular"
+                                    android:textColor="@color/gray"
+                                    android:textSize="@dimen/_8ssp"/>
+                            </LinearLayout>
+                            <TextView
+                                android:id="@+id/tv_stat_total_books"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_8sdp"
+                                android:text="0"
+                                android:fontFamily="@font/roboto_bold"
+                                android:textStyle="bold"
+                                android:textColor="@color/primary"
+                                android:textSize="@dimen/_14ssp"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Card 2: Net Balance -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginHorizontal="@dimen/_2sdp"
+                        app:cardCornerRadius="@dimen/_12sdp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="@color/card_bg"
+                        app:strokeColor="@color/glass_border"
+                        app:strokeWidth="1dp">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="@dimen/_10sdp">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+                                <ImageView
+                                    android:layout_width="@dimen/_12sdp"
+                                    android:layout_height="@dimen/_12sdp"
+                                    android:src="@drawable/ic_trans_plus"
+                                    app:tint="@color/primary"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/_4sdp"
+                                    android:text="Net Balance"
+                                    android:fontFamily="@font/roboto_regular"
+                                    android:textColor="@color/gray"
+                                    android:textSize="@dimen/_8ssp"/>
+                            </LinearLayout>
+                            <TextView
+                                android:id="@+id/tv_stat_net_balance"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_8sdp"
+                                android:text="₹0"
+                                android:fontFamily="@font/roboto_bold"
+                                android:textStyle="bold"
+                                android:textColor="@color/success"
+                                android:textSize="@dimen/_13ssp"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Card 3: This Month -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="@dimen/_6sdp"
+                        app:cardCornerRadius="@dimen/_12sdp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="@color/card_bg"
+                        app:strokeColor="@color/glass_border"
+                        app:strokeWidth="1dp">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="@dimen/_10sdp">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+                                <ImageView
+                                    android:layout_width="@dimen/_12sdp"
+                                    android:layout_height="@dimen/_12sdp"
+                                    android:src="@drawable/ic_event"
+                                    app:tint="@color/primary"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/_4sdp"
+                                    android:text="This Month"
+                                    android:fontFamily="@font/roboto_regular"
+                                    android:textColor="@color/gray"
+                                    android:textSize="@dimen/_8ssp"/>
+                            </LinearLayout>
+                            <TextView
+                                android:id="@+id/tv_stat_this_month"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_8sdp"
+                                android:text="+₹0"
+                                android:fontFamily="@font/roboto_bold"
+                                android:textStyle="bold"
+                                android:textColor="@color/success"
+                                android:textSize="@dimen/_13ssp"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+
                 <!-- Header -->
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -32,29 +187,70 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Your Books"
-                        android:fontFamily="@font/roboto_medium"
-                        android:textFontWeight="600"
-                        android:textColor="?attr/colorOnSurface"
-                        android:textSize="@dimen/_14ssp"/>
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Your Books"
+                            android:fontFamily="@font/roboto_medium"
+                            android:textFontWeight="600"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="@dimen/_14ssp"/>
+                        <TextView
+                            android:id="@+id/tv_active_books_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:text="0 active notebooks"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textColor="@color/gray"
+                            android:textSize="@dimen/_9ssp"/>
+                    </LinearLayout>
 
-                    <ImageButton
-                        android:layout_width="@dimen/_40sdp"
-                        android:layout_height="@dimen/_40sdp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_filter_list"
-                        app:tint="@color/text_secondary"/>
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/btn_filter"
+                        android:layout_width="@dimen/_34sdp"
+                        android:layout_height="@dimen/_34sdp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        app:cardCornerRadius="@dimen/_8sdp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="@color/card_bg"
+                        app:strokeColor="@color/glass_border"
+                        app:strokeWidth="1dp"
+                        android:layout_marginEnd="@dimen/_8sdp">
+                        <ImageView
+                            android:layout_width="@dimen/_18sdp"
+                            android:layout_height="@dimen/_18sdp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_filter_list"
+                            app:tint="@color/text_secondary"/>
+                    </com.google.android.material.card.MaterialCardView>
 
-                    <ImageButton
-                        android:layout_width="@dimen/_40sdp"
-                        android:layout_height="@dimen/_40sdp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_search"
-                        app:tint="@color/text_secondary"/>
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/btn_search"
+                        android:layout_width="@dimen/_34sdp"
+                        android:layout_height="@dimen/_34sdp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        app:cardCornerRadius="@dimen/_8sdp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="@color/card_bg"
+                        app:strokeColor="@color/glass_border"
+                        app:strokeWidth="1dp">
+                        <ImageView
+                            android:layout_width="@dimen/_18sdp"
+                            android:layout_height="@dimen/_18sdp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_search"
+                            app:tint="@color/text_secondary"/>
+                    </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
 
                 <!-- Notebook Shimmer Loader -->
@@ -86,34 +282,50 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:layout_marginTop="@dimen/_40sdp"
+                    android:layout_marginTop="@dimen/_32sdp"
                     android:visibility="gone">
 
                     <ImageView
-                        android:layout_width="@dimen/_80sdp"
-                        android:layout_height="@dimen/_80sdp"
-                        android:src="@drawable/ic_book"
-                        android:alpha="0.2"
-                        app:tint="@color/text_secondary"/>
+                        android:layout_width="@dimen/_100sdp"
+                        android:layout_height="@dimen/_100sdp"
+                        android:src="@drawable/ic_open_book" />
 
                     <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_12sdp"
+                        android:fontFamily="@font/roboto_medium"
+                        android:text="No books yet!"
+                        android:textColor="?attr/colorOnSurface"
+                        android:textSize="@dimen/_15ssp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_6sdp"
+                        android:fontFamily="@font/roboto_regular"
+                        android:text="Create your first notebook to start\ntracking income and expenses."
+                        android:gravity="center"
+                        android:textColor="@color/gray"
+                        android:textSize="@dimen/_11ssp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_create_first_book"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_16sdp"
+                        android:text="+ Create Your First Book"
+                        android:textColor="@color/btn_outline_text_color"
+                        android:background="@drawable/bg_outline_button"
+                        app:backgroundTint="@android:color/transparent"
                         android:fontFamily="@font/roboto_medium"
-                        android:text="No Notebooks Found"
-                        android:textColor="?attr/colorOnSurface"
-                        android:textSize="@dimen/_14ssp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_4sdp"
-                        android:fontFamily="@font/roboto_regular"
-                        android:text="Tap + to add a new notebook"
-                        android:textColor="?attr/colorOnSurface"
-                        android:alpha="0.5"
-                        android:textSize="@dimen/_12ssp" />
+                        android:textSize="@dimen/_11ssp"
+                        android:paddingHorizontal="@dimen/_20sdp"
+                        android:paddingVertical="@dimen/_10sdp"
+                        app:strokeColor="@color/btn_outline_border_color"
+                        app:strokeWidth="1.5dp"
+                        style="@style/Widget.Material3.Button.TextButton"/>
                 </LinearLayout>
 
             </LinearLayout>
@@ -121,8 +333,6 @@
         </androidx.core.widget.NestedScrollView>
 
     </LinearLayout>
-
-    <!-- FAB moved to top right -->
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_notebook_fab"
@@ -134,8 +344,10 @@
         android:fontFamily="@font/roboto_medium"
         android:textFontWeight="600"
         android:src="@drawable/ic_add"
-        app:tint="@color/auth_bg"
-        app:backgroundTint="@color/auth_glow_2"
+        app:tint="@color/fab_tint"
+        app:backgroundTint="@color/fab_background"
+        app:borderWidth="2dp"
+        app:strokeColor="@color/fab_stroke"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:contentDescription="Add Book" />

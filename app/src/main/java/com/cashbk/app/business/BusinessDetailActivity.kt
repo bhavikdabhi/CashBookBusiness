@@ -3,7 +3,13 @@ package com.cashbk.app.business
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import android.content.res.Configuration
 import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import com.cashbk.app.R
 import com.cashbk.app.business._bean.Business
 import com.cashbk.app.databinding.ActivityBusinessDetailBinding
@@ -12,6 +18,8 @@ import com.cashbk.app.profile.ProfileFragment
 import com.cashbk.app.business.SettingsFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.cashbk.app.utils.setupStatusAndNavBar
+
 class BusinessDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityBusinessDetailBinding
@@ -41,6 +49,18 @@ class BusinessDetailActivity : AppCompatActivity() {
         setupClickListeners()
         setupBottomNavigation()
         
+        // Sync theme toggle button states
+        val isDark = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+        if (isDark) {
+            binding.ivThemeIcon.setImageResource(R.drawable.ic_sun)
+            binding.tvThemeText.text = "Light"
+        } else {
+            binding.ivThemeIcon.setImageResource(R.drawable.ic_moon)
+            binding.tvThemeText.text = "Dark"
+        }
+        
+        setupStatusAndNavBar()
+
         // Initial Fragment
         loadFragment(cashbooksFragment)
     }
@@ -55,6 +75,15 @@ class BusinessDetailActivity : AppCompatActivity() {
                 }
             }
             bottomSheet.show(supportFragmentManager, "BusinessSelectionBottomSheet")
+        }
+
+        binding.btnThemeToggle.setOnClickListener {
+            val currentDark = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+            if (currentDark) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            }
         }
         
 //        binding.btnAddPartner.setOnClickListener {
@@ -141,5 +170,10 @@ class BusinessDetailActivity : AppCompatActivity() {
                 val name = snapshot.child("name").value as? String ?: "Unknown"
                 binding.tvBusinessName.text = name
             }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setupStatusAndNavBar()
     }
 }

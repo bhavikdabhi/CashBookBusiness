@@ -20,6 +20,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
 import com.google.firebase.database.ValueEventListener
+import com.cashbk.app.utils.setupStatusAndNavBar
 
 class ManagePartnersActivity : AppCompatActivity() {
 
@@ -34,6 +35,7 @@ class ManagePartnersActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityManagePartnersBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setupStatusAndNavBar()
 
         businessId = intent.getStringExtra("businessId")
 
@@ -252,5 +254,10 @@ class ManagePartnersActivity : AppCompatActivity() {
     private fun updateUIForRole() {
         val canManage = currentUserRole == "owner" || currentUserRole == "admin"
         binding.addPartnerFab.visibility = if (canManage) View.VISIBLE else View.GONE
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setupStatusAndNavBar()
     }
 }
