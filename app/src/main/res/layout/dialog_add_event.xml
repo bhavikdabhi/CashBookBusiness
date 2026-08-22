@@ -80,7 +80,7 @@
             android:layout_marginBottom="@dimen/_10sdp"
             android:textColorHint="@color/gray">
 
-            <AutoCompleteTextView
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/actvNotebook"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -105,7 +105,7 @@
             android:layout_marginBottom="@dimen/_10sdp"
             android:textColorHint="@color/gray">
 
-            <AutoCompleteTextView
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/actvVisibility"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

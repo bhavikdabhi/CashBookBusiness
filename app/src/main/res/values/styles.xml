@@ -83,7 +83,6 @@
     <style name="CashbkAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
         <item name="android:background">@drawable/bg_popup_menu</item>
         <item name="android:textColor">?attr/colorOnSurface</item>
-        <item name="colorPrimary">?attr/colorPrimary</item>
     </style>
 
     <style name="PinKeypadButton">

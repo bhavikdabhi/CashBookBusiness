@@ -59,7 +59,7 @@
         android:layout_marginBottom="@dimen/_12sdp"
         android:textColorHint="@color/gray">
 
-        <AutoCompleteTextView
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/actvRole"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

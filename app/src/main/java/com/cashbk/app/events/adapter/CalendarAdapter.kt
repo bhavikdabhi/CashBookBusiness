@@ -52,7 +52,7 @@ class CalendarAdapter(
 
             if (item.isSelected) {
                 holder.binding.tvDayNumber.setBackgroundResource(R.drawable.bg_calendar_day_selected)
-                holder.binding.tvDayNumber.setTextColor(ContextCompat.getColor(context, R.color.nav_item_color))
+                holder.binding.tvDayNumber.setTextColor(ContextCompat.getColor(context, R.color.white))
             } else {
                 if (item.hasEvents) {
                     holder.binding.tvDayNumber.setBackgroundResource(R.drawable.bg_calendar_day_event)

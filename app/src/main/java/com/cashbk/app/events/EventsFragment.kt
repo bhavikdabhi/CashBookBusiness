@@ -82,12 +82,16 @@ class EventsFragment : Fragment() {
 
         binding.btnPrevMonth.setOnClickListener {
             currentMonth.add(Calendar.MONTH, -1)
+            updateSelectedDateForMonthSwitch()
             rebuildCalendar()
+            filterEventsForSelectedDate()
         }
 
         binding.btnNextMonth.setOnClickListener {
             currentMonth.add(Calendar.MONTH, 1)
+            updateSelectedDateForMonthSwitch()
             rebuildCalendar()
+            filterEventsForSelectedDate()
         }
 
         binding.fabAddEvent.setOnClickListener {
@@ -330,6 +334,13 @@ class EventsFragment : Fragment() {
         calendarAdapter = CalendarAdapter(calendarDaysList) { day ->
             if (day.date != null) {
                 selectedDate.time = day.date
+                setMidnight(selectedDate)
+                val clickedCal = Calendar.getInstance().apply { time = day.date }
+                if (clickedCal.get(Calendar.MONTH) != currentMonth.get(Calendar.MONTH) ||
+                    clickedCal.get(Calendar.YEAR) != currentMonth.get(Calendar.YEAR)) {
+                    currentMonth.set(Calendar.YEAR, clickedCal.get(Calendar.YEAR))
+                    currentMonth.set(Calendar.MONTH, clickedCal.get(Calendar.MONTH))
+                }
                 rebuildCalendar()
                 filterEventsForSelectedDate()
             }
@@ -384,12 +395,14 @@ class EventsFragment : Fragment() {
             d.set(Calendar.MONTH, prevMonthCal.get(Calendar.MONTH))
             d.set(Calendar.DAY_OF_MONTH, maxDayPrev - i)
             setMidnight(d)
+            val isSel = isSameDay(d, selectedDate)
             tempDaysList.add(
                 CalendarDay(
                     d.time,
                     d.get(Calendar.DAY_OF_MONTH).toString(),
                     false,
-                    isToday(d)
+                    isToday(d),
+                    isSel
                 )
             )
         }
@@ -415,7 +428,8 @@ class EventsFragment : Fragment() {
             d.set(Calendar.MONTH, nextMonthCal.get(Calendar.MONTH))
             d.set(Calendar.DAY_OF_MONTH, day)
             setMidnight(d)
-            tempDaysList.add(CalendarDay(d.time, day.toString(), false, isToday(d)))
+            val isSel = isSameDay(d, selectedDate)
+            tempDaysList.add(CalendarDay(d.time, day.toString(), false, isToday(d), isSel))
         }
 
         // Move current month days from Row 6 (indices 35-41) to Row 1 (indices 0-6)
@@ -733,6 +747,22 @@ class EventsFragment : Fragment() {
         cal.set(Calendar.MINUTE, 0)
         cal.set(Calendar.SECOND, 0)
         cal.set(Calendar.MILLISECOND, 0)
+    }
+
+    private fun updateSelectedDateForMonthSwitch() {
+        val today = Calendar.getInstance()
+        if (today.get(Calendar.YEAR) == currentMonth.get(Calendar.YEAR) &&
+            today.get(Calendar.MONTH) == currentMonth.get(Calendar.MONTH)) {
+            selectedDate.time = today.time
+            setMidnight(selectedDate)
+        } else {
+            val day = selectedDate.get(Calendar.DAY_OF_MONTH)
+            val maxDay = currentMonth.getActualMaximum(Calendar.DAY_OF_MONTH)
+            selectedDate.set(Calendar.YEAR, currentMonth.get(Calendar.YEAR))
+            selectedDate.set(Calendar.MONTH, currentMonth.get(Calendar.MONTH))
+            selectedDate.set(Calendar.DAY_OF_MONTH, day.coerceAtMost(maxDay))
+            setMidnight(selectedDate)
+        }
     }
 
     private fun isToday(cal: Calendar): Boolean {

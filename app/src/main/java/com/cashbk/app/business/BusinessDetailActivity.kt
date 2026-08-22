@@ -121,7 +121,7 @@ class BusinessDetailActivity : AppCompatActivity() {
     }
 
     private fun loadFragment(fragment: Fragment) {
-        if (fragment is ProfileFragment) {
+        if (fragment is ProfileFragment || fragment is EventsFragment) {
             binding.topBar.visibility = View.GONE
         } else {
             binding.topBar.visibility = View.VISIBLE

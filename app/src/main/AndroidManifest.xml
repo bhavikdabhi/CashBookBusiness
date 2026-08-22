@@ -16,12 +16,18 @@
         android:supportsRtl="true"
         tools:ignore="GoogleAppIndexingWarning"
         android:theme="@style/Theme.CashBookBusiness" >
-        <activity android:name="com.cashbk.app.auth.AuthActivity" android:exported="true">
+        <activity
+            android:name="com.cashbk.app.splash.SplashActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.cashbk.app.auth.AuthActivity"
+            android:exported="false" />
 
         <activity android:name="com.cashbk.app.auth.PinLockActivity" />
 
