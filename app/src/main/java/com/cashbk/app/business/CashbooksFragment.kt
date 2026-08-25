@@ -37,6 +37,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.Query
 import com.google.firebase.database.ValueEventListener
 
+import com.cashbk.app.utils.showToast
+
 class CashbooksFragment : Fragment() {
 
     private var _binding: FragmentCashbooksBinding? = null
@@ -266,9 +268,9 @@ class CashbooksFragment : Fragment() {
         lifecycleScope.launch {
             try {
                 com.cashbk.app.data.di.AppContainer.getRepository(requireContext()).deleteNotebook(notebook)
-                Toast.makeText(requireContext(), "Notebook deleted", Toast.LENGTH_SHORT).show()
+                showToast("Notebook deleted")
             } catch (e: Exception) {
-                Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
+                showToast(e.message)
             }
         }
     }

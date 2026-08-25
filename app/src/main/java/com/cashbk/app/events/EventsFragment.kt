@@ -40,6 +40,8 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
+import com.cashbk.app.utils.showToast
+
 class EventsFragment : Fragment() {
 
     private var _binding: FragmentEventsBinding? = null
@@ -333,7 +335,7 @@ class EventsFragment : Fragment() {
                         binding.layoutShimmerEvents.stopPulseAnimation()
                         binding.layoutShimmerEvents.visibility = View.GONE
                         if (isAdded && FirebaseAuth.getInstance().currentUser != null) {
-                            Toast.makeText(context, "Failed to load events: ${error.message}", Toast.LENGTH_SHORT).show()
+                            showToast("Failed to load events: ${error.message}")
                         }
                     }, 2000)
                 }
@@ -678,7 +680,7 @@ class EventsFragment : Fragment() {
         // Specific member picker click handler
         dialogBinding.btnSelectMembers.setOnClickListener {
             if (selectedNotebookId.isEmpty()) {
-                Toast.makeText(context, "Select a notebook first", Toast.LENGTH_SHORT).show()
+                showToast("Select a notebook first")
                 return@setOnClickListener
             }
 
@@ -688,7 +690,7 @@ class EventsFragment : Fragment() {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val memberUids = snapshot.children.mapNotNull { it.key }
                         if (memberUids.isEmpty()) {
-                            Toast.makeText(context, "No members found in this notebook", Toast.LENGTH_SHORT).show()
+                            showToast("No members found in this notebook")
                             return
                         }
 
@@ -738,12 +740,12 @@ class EventsFragment : Fragment() {
             }
 
             if (selectedNotebookId.isEmpty()) {
-                Toast.makeText(context, "Please select a scoped notebook", Toast.LENGTH_SHORT).show()
+                showToast("Please select a scoped notebook")
                 return@setOnClickListener
             }
 
             if (visibility == "Specific Members" && selectedMemberUidsMap.none { it.value }) {
-                Toast.makeText(context, "Select at least one member", Toast.LENGTH_SHORT).show()
+                showToast("Select at least one member")
                 return@setOnClickListener
             }
 
@@ -775,11 +777,11 @@ class EventsFragment : Fragment() {
 
             ref.child(eventId).setValue(newEvent)
                 .addOnSuccessListener {
-                    Toast.makeText(context, if (editingEvent == null) "Event created" else "Event updated", Toast.LENGTH_SHORT).show()
+                    showToast(if (editingEvent == null) "Event created" else "Event updated")
                     dialog.dismiss()
                 }
                 .addOnFailureListener { e ->
-                    Toast.makeText(context, "Failed to save: ${e.message}", Toast.LENGTH_SHORT).show()
+                    showToast("Failed to save: ${e.message}")
                 }
         }
 
@@ -796,10 +798,10 @@ class EventsFragment : Fragment() {
                 FirebaseDatabase.getInstance().reference.child("events").child(businessId).child(event.id)
                     .removeValue()
                     .addOnSuccessListener {
-                        Toast.makeText(context, "Event deleted", Toast.LENGTH_SHORT).show()
+                        showToast("Event deleted")
                     }
                     .addOnFailureListener { e ->
-                        Toast.makeText(context, "Delete failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                        showToast("Delete failed: ${e.message}")
                     }
             }
             .setNegativeButton("Cancel", null)

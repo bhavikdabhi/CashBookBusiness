@@ -11,6 +11,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
+import com.cashbk.app.utils.showToast
+
 class AddBusinessFragment : BottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentAddBusinessBinding
@@ -54,10 +56,10 @@ class AddBusinessFragment : BottomSheetDialogFragment() {
         )
 
         database.child(newId).setValue(business).addOnSuccessListener {
-            Toast.makeText(requireContext(), "Business Added", Toast.LENGTH_SHORT).show()
+            showToast("Business Added")
             dismiss()
         }.addOnFailureListener {
-            Toast.makeText(requireContext(), "Failed: ${it.message}", Toast.LENGTH_SHORT).show()
+            showToast("Failed: ${it.message}")
         }
     }
 }

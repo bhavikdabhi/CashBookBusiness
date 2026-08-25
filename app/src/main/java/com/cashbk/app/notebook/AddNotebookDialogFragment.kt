@@ -13,6 +13,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
+import com.cashbk.app.utils.showToast
+
 class AddNotebookDialogFragment : BottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentAddBusinessBinding
@@ -84,7 +86,7 @@ class AddNotebookDialogFragment : BottomSheetDialogFragment() {
         val bid = businessId
 
         if (bid.isNullOrEmpty()) {
-            Toast.makeText(requireContext(), "Business ID missing", Toast.LENGTH_SHORT).show()
+            showToast("Business ID missing")
             return
         }
 
@@ -100,10 +102,10 @@ class AddNotebookDialogFragment : BottomSheetDialogFragment() {
         lifecycleScope.launch {
             try {
                 com.cashbk.app.data.di.AppContainer.getRepository(requireContext()).saveNotebook(notebook)
-                Toast.makeText(requireContext(), "Notebook Created", Toast.LENGTH_SHORT).show()
+                showToast("Notebook Created")
                 dismiss()
             } catch (e: Exception) {
-                Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
+                showToast(e.message)
             }
         }
     }
@@ -113,7 +115,7 @@ class AddNotebookDialogFragment : BottomSheetDialogFragment() {
     private fun renameNotebook(newName: String) {
         val id = notebookId
         if (id.isNullOrEmpty()) {
-            Toast.makeText(requireContext(), "Notebook ID missing", Toast.LENGTH_SHORT).show()
+            showToast("Notebook ID missing")
             return
         }
 
@@ -124,13 +126,13 @@ class AddNotebookDialogFragment : BottomSheetDialogFragment() {
                 if (notebook != null) {
                     val updated = notebook.copy(name = newName)
                     repository.saveNotebook(updated)
-                    Toast.makeText(requireContext(), "Notebook Renamed", Toast.LENGTH_SHORT).show()
+                    showToast("Notebook Renamed")
                     dismiss()
                 } else {
-                    Toast.makeText(requireContext(), "Notebook not found locally", Toast.LENGTH_SHORT).show()
+                    showToast("Notebook not found locally")
                 }
             } catch (e: Exception) {
-                Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
+                showToast(e.message)
             }
         }
     }

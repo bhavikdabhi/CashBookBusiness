@@ -24,6 +24,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.cashbk.app.utils.setupStatusAndNavBar
 
+import com.cashbk.app.utils.showToast
+
 class MembersActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMembersBinding
@@ -45,7 +47,7 @@ class MembersActivity : AppCompatActivity() {
         entityType = intent.getStringExtra("entityType")
 
         if (entityId.isNullOrEmpty() || entityType.isNullOrEmpty()) {
-            Toast.makeText(this, "Error: Missing Entity ID or Type", Toast.LENGTH_SHORT).show()
+            showToast("Error: Missing Entity ID or Type")
             finish()
             return
         }
@@ -133,7 +135,7 @@ class MembersActivity : AppCompatActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(this@MembersActivity, "Failed to load members", Toast.LENGTH_SHORT).show()
+                showToast("Failed to load members")
             }
         })
     }
@@ -145,7 +147,7 @@ class MembersActivity : AppCompatActivity() {
             currentUserRole == "owner" || currentUserRole == "admin"
         }
         if (!canAdd) {
-            Toast.makeText(this, "You do not have permission to add members", Toast.LENGTH_SHORT).show()
+            showToast("You do not have permission to add members")
             return
         }
 
@@ -204,12 +206,12 @@ class MembersActivity : AppCompatActivity() {
             }
 
             if (role.isEmpty()) {
-                Toast.makeText(this, "Select a role", Toast.LENGTH_SHORT).show()
+                showToast("Select a role")
                 return@setOnClickListener
             }
             
             if (role == "admin" && membersList.count { it.role == "admin" } >= 3) {
-                Toast.makeText(this, "You can fully appoint a maximum of 3 Admins per notebook", Toast.LENGTH_LONG).show()
+                showToast("You can fully appoint a maximum of 3 Admins per notebook")
                 return@setOnClickListener
             }
 
@@ -239,20 +241,20 @@ class MembersActivity : AppCompatActivity() {
                             )
                             database.child(uid).setValue(memberData)
                                 .addOnSuccessListener {
-                                    Toast.makeText(this@MembersActivity, "Member added", Toast.LENGTH_SHORT).show()
+                                    showToast("Member added")
                                 }
                                 .addOnFailureListener {
-                                    Toast.makeText(this@MembersActivity, "Failed to add member", Toast.LENGTH_SHORT).show()
+                                    showToast("Failed to add member")
                                 }
                             return // Added first match
                         }
                     } else {
-                        Toast.makeText(this@MembersActivity, "User not found with this phone", Toast.LENGTH_LONG).show()
+                        showToast("User not found with this phone")
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(this@MembersActivity, "Error searching user", Toast.LENGTH_SHORT).show()
+                    showToast("Error searching user")
                 }
             })
     }
@@ -264,11 +266,11 @@ class MembersActivity : AppCompatActivity() {
             currentUserRole == "owner" || currentUserRole == "admin"
         }
         if (!canManage) {
-            Toast.makeText(this, "You do not have permission to remove members", Toast.LENGTH_SHORT).show()
+            showToast("You do not have permission to remove members")
             return
         }
         if (member.role == "admin" && currentUserRole != "owner") {
-            Toast.makeText(this, "Only the business owner can remove an Admin", Toast.LENGTH_SHORT).show()
+            showToast("Only the business owner can remove an Admin")
             return
         }
         CustomAlertDialog(this)

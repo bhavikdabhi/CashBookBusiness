@@ -13,6 +13,8 @@ import com.cashbk.app.business.BusinessDetailActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
+import com.cashbk.app.utils.showToast
+
 class OtpVerificationFragment : Fragment() {
 
     private var _binding: FragmentOtpVerificationBinding? = null
@@ -73,7 +75,7 @@ class OtpVerificationFragment : Fragment() {
         val otpCode = binding.etOtp.text.toString().trim()
 
         if (otpCode.isEmpty() || otpCode.length < 6) {
-            Toast.makeText(requireContext(), "Please enter a valid 6-digit OTP code", Toast.LENGTH_SHORT).show()
+            showToast("Please enter a valid 6-digit OTP code")
             return
         }
 
@@ -99,11 +101,11 @@ class OtpVerificationFragment : Fragment() {
                             binding.btnVerify.text = "Verify & Register"
                             
                             if (dbTask.isSuccessful) {
-                                Toast.makeText(requireContext(), "Registration successful", Toast.LENGTH_SHORT).show()
+                                showToast("Registration successful")
                                 startActivity(Intent(requireContext(), BusinessDetailActivity::class.java))
                                 requireActivity().finish()
                             } else {
-                                Toast.makeText(requireContext(), "Saved user, but failed to sync: ${dbTask.exception?.message}", Toast.LENGTH_SHORT).show()
+                                showToast("Saved user, but failed to sync: ${dbTask.exception?.message}")
                                 startActivity(Intent(requireContext(), BusinessDetailActivity::class.java))
                                 requireActivity().finish()
                             }
@@ -111,23 +113,23 @@ class OtpVerificationFragment : Fragment() {
                 } else {
                     binding.btnVerify.isEnabled = true
                     binding.btnVerify.text = "Verify & Register"
-                    Toast.makeText(requireContext(), "Firebase user session not found", Toast.LENGTH_LONG).show()
+                    showToast("Firebase user session not found")
                 }
             } else {
                 binding.btnVerify.isEnabled = true
                 binding.btnVerify.text = "Verify & Register"
-                Toast.makeText(requireContext(), "Verification failed: $message", Toast.LENGTH_LONG).show()
+                showToast("Verification failed: $message")
             }
         }
     }
 
     private fun resendOtp() {
-        Toast.makeText(requireContext(), "Resending OTP...", Toast.LENGTH_SHORT).show()
+        showToast("Resending OTP...")
         AuthManager.sendOtp(email) { success, message ->
             if (success) {
-                Toast.makeText(requireContext(), "OTP resent successfully", Toast.LENGTH_SHORT).show()
+                showToast("OTP resent successfully")
             } else {
-                Toast.makeText(requireContext(), "Resend failed: $message", Toast.LENGTH_LONG).show()
+                showToast("Resend failed: $message")
             }
         }
     }

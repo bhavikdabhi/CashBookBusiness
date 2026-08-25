@@ -17,7 +17,7 @@
 
     <item
         android:id="@+id/action_share_notebook"
-        android:title="Manage Partner"
+        android:title="Share"
         android:icon="@drawable/ic_action_group"
         android:iconTint="@color/success"
         android:showAsAction="always" />

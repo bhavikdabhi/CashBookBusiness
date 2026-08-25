@@ -25,6 +25,8 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+import com.cashbk.app.utils.showToast
+
 class SettingsFragment : Fragment() {
 
     private var _binding: FragmentSettingsBinding? = null
@@ -55,7 +57,7 @@ class SettingsFragment : Fragment() {
         }
 
         binding.btnLeaveBusiness.setOnClickListener {
-            Toast.makeText(requireContext(), "Leave business not fully implemented yet", Toast.LENGTH_SHORT).show()
+            showToast("Leave business not fully implemented yet")
         }
 
         binding.btnDeleteBusiness.setOnClickListener {
@@ -67,7 +69,7 @@ class SettingsFragment : Fragment() {
                 .setPositiveButton("Delete") {
                     FirebaseDatabase.getInstance().reference.child("businesses").child(currentBusinessId!!).removeValue()
                         .addOnSuccessListener {
-                            Toast.makeText(requireContext(), "Business Deleted", Toast.LENGTH_SHORT).show()
+                            showToast("Business Deleted")
                             requireActivity().finish()
                         }
                 }
@@ -86,7 +88,7 @@ class SettingsFragment : Fragment() {
                     val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
                     GoogleSignIn.getClient(requireActivity(), gso).signOut().addOnCompleteListener {
                         if (isAdded) {
-                            Toast.makeText(context, "Logged out", Toast.LENGTH_SHORT).show()
+                            showToast("Logged out")
                             val intent = Intent(context, AuthActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             startActivity(intent)

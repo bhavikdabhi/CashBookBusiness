@@ -21,6 +21,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
 import com.google.firebase.database.ValueEventListener
 
+import com.cashbk.app.utils.showToast
+
 class SettingsFragment : Fragment() {
 
     private var _binding: FragmentNotebookSettingBinding? = null
@@ -44,7 +46,7 @@ class SettingsFragment : Fragment() {
         currentUserRole = arguments?.getString("currentUserRole") ?: ""
 
         if (notebookId == null) {
-            Toast.makeText(requireContext(), "Notebook ID missing", Toast.LENGTH_SHORT).show()
+            showToast("Notebook ID missing")
             parentFragmentManager.popBackStack()
             return
         }
@@ -61,7 +63,7 @@ class SettingsFragment : Fragment() {
 
         binding.btnSaveName.setOnClickListener {
             if (currentUserRole != "owner" && currentUserRole != "admin") {
-                Toast.makeText(requireContext(), "Only owners or admins can rename notebooks", Toast.LENGTH_SHORT).show()
+                showToast("Only owners or admins can rename notebooks")
                 return@setOnClickListener
             }
             val newName = binding.etNotebookName.text.toString().trim()
@@ -94,7 +96,7 @@ class SettingsFragment : Fragment() {
 
         binding.btnDuplicateNotebook.setOnClickListener {
             if (currentUserRole == "reader") {
-                Toast.makeText(requireContext(), "Readers cannot duplicate notebooks", Toast.LENGTH_SHORT).show()
+                showToast("Readers cannot duplicate notebooks")
                 return@setOnClickListener
             }
             duplicateNotebook()
@@ -104,7 +106,7 @@ class SettingsFragment : Fragment() {
             if (currentUserRole == "owner") {
                 showDeleteConfirmation()
             } else {
-                Toast.makeText(requireContext(), "Only owners can delete notebooks", Toast.LENGTH_SHORT).show()
+                showToast("Only owners can delete notebooks")
             }
         }
     }
@@ -142,10 +144,10 @@ class SettingsFragment : Fragment() {
         FirebaseDatabase.getInstance().reference.child("notebooks").child(notebookId!!)
             .child("name").setValue(newName)
             .addOnSuccessListener {
-                Toast.makeText(requireContext(), "Notebook name updated", Toast.LENGTH_SHORT).show()
+                showToast("Notebook name updated")
             }
             .addOnFailureListener {
-                Toast.makeText(requireContext(), "Error: ${it.message}", Toast.LENGTH_SHORT).show()
+                showToast("Error: ${it.message}")
             }
     }
 
@@ -156,7 +158,7 @@ class SettingsFragment : Fragment() {
         val newNotebookId = database.child("notebooks").push().key ?: return
         val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
 
-        Toast.makeText(requireContext(), "Duplicating notebook...", Toast.LENGTH_SHORT).show()
+        showToast("Duplicating notebook...")
 
         // 1. Create Notebook Metadata
         val notebookData = mapOf(
@@ -182,12 +184,12 @@ class SettingsFragment : Fragment() {
                         database.child("categories").child(newNotebookId).setValue(snapshot.value)
                     }
 
-                    Toast.makeText(requireContext(), "Notebook duplicated successfully", Toast.LENGTH_SHORT).show()
+                    showToast("Notebook duplicated successfully")
                     requireActivity().finish() // Refresh and go back to home to see new book
                 }
             }
             .addOnFailureListener {
-                Toast.makeText(requireContext(), "Duplication failed: ${it.message}", Toast.LENGTH_SHORT).show()
+                showToast("Duplication failed: ${it.message}")
             }
     }
 
@@ -214,11 +216,11 @@ class SettingsFragment : Fragment() {
 
         database.updateChildren(updates)
             .addOnSuccessListener {
-                Toast.makeText(requireContext(), "Notebook and all data purged", Toast.LENGTH_SHORT).show()
+                showToast("Notebook and all data purged")
                 requireActivity().finish()
             }
             .addOnFailureListener {
-                Toast.makeText(requireContext(), "Purge failed: ${it.message}", Toast.LENGTH_SHORT).show()
+                showToast("Purge failed: ${it.message}")
             }
     }
 

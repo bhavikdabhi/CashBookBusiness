@@ -42,6 +42,8 @@ import com.google.firebase.database.DatabaseError
 import java.text.SimpleDateFormat
 import java.util.*
 
+import com.cashbk.app.utils.showToast
+
 class AddTransactionFragment : Fragment() {
 
     private var _binding: FragmentAddTransactionBinding? = null
@@ -72,11 +74,11 @@ class AddTransactionFragment : Fragment() {
                     binding.ivAttachIcon.setImageResource(android.R.drawable.ic_menu_gallery)
                     binding.ivAttachIcon.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.success))
                 } else {
-                    Toast.makeText(requireContext(), "Failed to process receipt image", Toast.LENGTH_SHORT).show()
+                    showToast("Failed to process receipt image")
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                Toast.makeText(requireContext(), "Failed to process receipt image: ${e.message}", Toast.LENGTH_SHORT).show()
+                showToast("Failed to process receipt image: ${e.message}")
             }
         }
     }
@@ -98,12 +100,12 @@ class AddTransactionFragment : Fragment() {
                 16 -> "\n\nTip: Sign-in process was canceled or interrupted."
                 else -> ""
             }
-            Toast.makeText(requireContext(), "Drive Authorization Failed (code: $statusCode): $errorMsg$hint", Toast.LENGTH_LONG).show()
+            showToast("Drive Authorization Failed (code: $statusCode): $errorMsg$hint", Toast.LENGTH_LONG)
             binding.saveButton.isEnabled = true
             binding.saveButton.text = "Confirm Transaction"
         } catch (e: Exception) {
             android.util.Log.e("AddTransactionFragment", "Unknown Auth failure", e)
-            Toast.makeText(requireContext(), "Drive Authorization Failed: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+            showToast("Drive Authorization Failed: ${e.localizedMessage}", Toast.LENGTH_LONG)
             binding.saveButton.isEnabled = true
             binding.saveButton.text = "Confirm Transaction"
         }
@@ -133,7 +135,7 @@ class AddTransactionFragment : Fragment() {
         transactionId = arguments?.getString("transactionId")
 
         if (notebookId.isNullOrEmpty()) {
-            Toast.makeText(requireContext(), "Notebook ID missing", Toast.LENGTH_SHORT).show()
+            showToast("Notebook ID missing")
             requireActivity().supportFragmentManager.popBackStack()
             return
         }
@@ -307,7 +309,7 @@ class AddTransactionFragment : Fragment() {
                     addChip.chipBackgroundColor = android.content.res.ColorStateList.valueOf(androidx.core.content.ContextCompat.getColor(requireContext(), com.cashbk.app.R.color.auth_surface_high))
                     addChip.setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), com.cashbk.app.R.color.white))
                     addChip.setOnClickListener {
-                        Toast.makeText(requireContext(), "Add Category not implemented", Toast.LENGTH_SHORT).show()
+                        showToast("Add Category not implemented")
                     }
                     binding.categoryChipGroup.addView(addChip)
                     */
@@ -331,7 +333,7 @@ class AddTransactionFragment : Fragment() {
 
 
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(requireContext(), "Failed to load categories", Toast.LENGTH_SHORT).show()
+                    showToast("Failed to load categories")
                 }
             })
     }
@@ -379,7 +381,7 @@ class AddTransactionFragment : Fragment() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(requireContext(), "Failed to load parties", Toast.LENGTH_SHORT).show()
+                    showToast("Failed to load parties")
                 }
             })
     }
@@ -476,7 +478,7 @@ class AddTransactionFragment : Fragment() {
                 )
 
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(requireContext(), "Uploaded to Google Drive!", Toast.LENGTH_SHORT).show()
+                    showToast("Uploaded to Google Drive!")
                     binding.saveButton.isEnabled = true
                     binding.saveButton.text = "Confirm Transaction"
                     receiptUri?.path?.let { path ->
@@ -491,7 +493,7 @@ class AddTransactionFragment : Fragment() {
             } catch (e: Exception) {
                 e.printStackTrace()
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(requireContext(), "Drive Upload Failed: ${e.message}", Toast.LENGTH_LONG).show()
+                    showToast("Drive Upload Failed: ${e.message}", Toast.LENGTH_LONG)
                     binding.saveButton.text = "Confirm Transaction"
                     binding.saveButton.isEnabled = true
                 }
@@ -545,7 +547,7 @@ class AddTransactionFragment : Fragment() {
 
         transactionRef.setValue(transaction)
             .addOnSuccessListener {
-                Toast.makeText(requireContext(), if (closeAfterSave) "Transaction saved" else "Saved. Add next entry", Toast.LENGTH_SHORT).show()
+                showToast(if (closeAfterSave) "Transaction saved" else "Saved. Add next entry")
                 if (closeAfterSave) {
                     requireActivity().supportFragmentManager.popBackStack()
                 } else {
@@ -553,7 +555,7 @@ class AddTransactionFragment : Fragment() {
                 }
             }
             .addOnFailureListener {
-                Toast.makeText(requireContext(), "Failed: ${it.message}", Toast.LENGTH_SHORT).show()
+                showToast("Failed: ${it.message}")
             }
     }
     private fun resetFormForNextEntry() {

@@ -28,6 +28,8 @@ import com.cashbk.app.party.ManagePartiesFragment
 import com.cashbk.app.utils.CustomOptionsMenu
 import com.cashbk.app.utils.setupStatusAndNavBar
 
+import com.cashbk.app.utils.showToast
+
 class NotebookActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityNotebookBinding
@@ -46,7 +48,7 @@ class NotebookActivity : AppCompatActivity() {
 
             notebookId = intent.getStringExtra("notebookId")
             if (notebookId.isNullOrEmpty()) {
-                Toast.makeText(this, "Notebook ID is missing.", Toast.LENGTH_LONG).show()
+                showToast("Notebook ID is missing.", Toast.LENGTH_LONG)
                 finish()
                 return
             }
@@ -68,7 +70,7 @@ class NotebookActivity : AppCompatActivity() {
 
         } catch (e: Exception) {
             e.printStackTrace()
-            Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+            showToast("Error: ${e.message}", Toast.LENGTH_LONG)
         }
     }
 
@@ -149,7 +151,7 @@ class NotebookActivity : AppCompatActivity() {
         }
 
         database.child(transaction.id).removeValue()
-            .addOnSuccessListener { Toast.makeText(this, "Deleted from ledger", Toast.LENGTH_SHORT).show() }
+            .addOnSuccessListener { showToast("Deleted from ledger") }
     }
 
     private fun deleteFromDrive(fileId: String) {

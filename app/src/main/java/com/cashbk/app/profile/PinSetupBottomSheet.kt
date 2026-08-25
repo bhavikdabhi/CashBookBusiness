@@ -15,6 +15,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.cashbk.app.utils.CustomAlertDialog
 
+import com.cashbk.app.utils.showToast
+
 class PinSetupBottomSheet(
     private val onComplete: (Boolean) -> Unit
 ) : BottomSheetDialogFragment() {
@@ -99,7 +101,7 @@ class PinSetupBottomSheet(
             if (pin == tempPin) {
                 savePinAndPromptBiometrics(pin)
             } else {
-                Toast.makeText(context, "PINs do not match. Start over.", Toast.LENGTH_SHORT).show()
+                showToast("PINs do not match. Start over.")
                 resetSetup()
             }
         }
@@ -133,13 +135,13 @@ class PinSetupBottomSheet(
                 .setIcon(R.drawable.ic_fingerprint, ContextCompat.getColor(requireContext(), R.color.primary_color))
                 .setPositiveButton("Yes") {
                     sharedPrefs.edit().putBoolean("app_lock_biometrics", true).apply()
-                    Toast.makeText(context, "App Lock enabled with PIN & Biometrics", Toast.LENGTH_SHORT).show()
+                    showToast("App Lock enabled with PIN & Biometrics")
                     onComplete(true)
                     dismiss()
                 }
                 .setNegativeButton("No") {
                     sharedPrefs.edit().putBoolean("app_lock_biometrics", false).apply()
-                    Toast.makeText(context, "App Lock enabled with PIN only", Toast.LENGTH_SHORT).show()
+                    showToast("App Lock enabled with PIN only")
                     onComplete(true)
                     dismiss()
                 }
@@ -148,7 +150,7 @@ class PinSetupBottomSheet(
         } else {
             // No biometrics available on device
             sharedPrefs.edit().putBoolean("app_lock_biometrics", false).apply()
-            Toast.makeText(context, "App Lock enabled with PIN", Toast.LENGTH_SHORT).show()
+            showToast("App Lock enabled with PIN")
             onComplete(true)
             dismiss()
         }

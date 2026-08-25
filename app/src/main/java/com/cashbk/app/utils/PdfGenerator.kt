@@ -129,7 +129,7 @@ object PdfGenerator {
             openPdf(context, pdfFile)
         } catch (e: Exception) {
             e.printStackTrace()
-            Toast.makeText(context, "Error generating PDF: ${e.message}", Toast.LENGTH_LONG).show()
+            context.showToast("Error generating PDF: ${e.message}", Toast.LENGTH_LONG)
         }
     }
 
@@ -150,7 +150,7 @@ object PdfGenerator {
             context.startActivity(chooser)
         } catch (e: Exception) {
             e.printStackTrace()
-            Toast.makeText(context, "No PDF viewer installed", Toast.LENGTH_SHORT).show()
+            context.showToast("No PDF viewer installed")
         }
     }
 

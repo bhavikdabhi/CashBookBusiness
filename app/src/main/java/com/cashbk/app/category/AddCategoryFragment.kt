@@ -20,6 +20,8 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 import com.google.firebase.database.FirebaseDatabase
 
+import com.cashbk.app.utils.showToast
+
 class AddCategoryFragment : Fragment() {
 
     private var _binding: FragmentAddCategoryBinding? = null
@@ -55,7 +57,7 @@ class AddCategoryFragment : Fragment() {
 
         notebookId = arguments?.getString("notebookId")
         if (notebookId.isNullOrEmpty()) {
-            Toast.makeText(requireContext(), "Notebook configuration error", Toast.LENGTH_SHORT).show()
+            showToast("Notebook configuration error")
             parentFragmentManager.popBackStack()
             return
         }
@@ -232,7 +234,7 @@ class AddCategoryFragment : Fragment() {
 
         
         if (name.isEmpty()) {
-            Toast.makeText(requireContext(), "Please enter a category name", Toast.LENGTH_SHORT).show()
+            showToast("Please enter a category name")
             return
         }
 
@@ -257,7 +259,7 @@ class AddCategoryFragment : Fragment() {
 
                // if (!isAdded) return@addOnSuccessListener
 
-                Toast.makeText(context, "Category ready!", Toast.LENGTH_SHORT).show()
+                showToast("Category ready!")
 
                 if (isAdded && !parentFragmentManager.isStateSaved) {
                     parentFragmentManager.popBackStack()
@@ -265,7 +267,7 @@ class AddCategoryFragment : Fragment() {
             }
             .addOnFailureListener { e ->
                 binding.btnSave.isEnabled = true
-                Toast.makeText(requireContext(), "Failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                showToast("Failed: ${e.message}")
             }
     }
 

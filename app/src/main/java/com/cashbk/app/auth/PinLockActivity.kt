@@ -14,6 +14,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import java.util.concurrent.Executor
+import com.cashbk.app.utils.showToast
 import com.cashbk.app.utils.setupStatusAndNavBar
 
 class PinLockActivity : AppCompatActivity() {
@@ -103,7 +104,7 @@ class PinLockActivity : AppCompatActivity() {
         if (enteredPin.toString() == savedPin) {
             navigateToMain()
         } else {
-            Toast.makeText(this, "Incorrect PIN", Toast.LENGTH_SHORT).show()
+            showToast("Incorrect PIN")
             enteredPin.clear()
             binding.tvLockStatus.text = "Incorrect PIN, try again"
             binding.tvLockStatus.setTextColor(ContextCompat.getColor(this, R.color.danger))
@@ -118,7 +119,7 @@ class PinLockActivity : AppCompatActivity() {
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
                     if (errorCode != BiometricPrompt.ERROR_USER_CANCELED && errorCode != BiometricPrompt.ERROR_NEGATIVE_BUTTON) {
-                        Toast.makeText(applicationContext, "Biometric error: $errString", Toast.LENGTH_SHORT).show()
+                        showToast("Biometric error: $errString")
                     }
                 }
 
@@ -129,7 +130,7 @@ class PinLockActivity : AppCompatActivity() {
 
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
-                    Toast.makeText(applicationContext, "Biometric failed", Toast.LENGTH_SHORT).show()
+                    showToast("Biometric failed")
                 }
             })
 

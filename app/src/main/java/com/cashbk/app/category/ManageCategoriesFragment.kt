@@ -22,6 +22,8 @@ import com.google.firebase.database.*
 import com.cashbk.app.utils.startPulseAnimation
 import com.cashbk.app.utils.stopPulseAnimation
 
+import com.cashbk.app.utils.showToast
+
 class ManageCategoriesFragment : Fragment() {
 
     private var _binding: FragmentManageCategoriesBinding? = null
@@ -51,7 +53,7 @@ class ManageCategoriesFragment : Fragment() {
 
         notebookId = arguments?.getString("notebookId")
         if (notebookId.isNullOrEmpty()) {
-            Toast.makeText(requireContext(), "Notebook ID missing", Toast.LENGTH_SHORT).show()
+            showToast("Notebook ID missing")
             parentFragmentManager.popBackStack()
             return
         }
@@ -151,7 +153,7 @@ class ManageCategoriesFragment : Fragment() {
                     binding.layoutShimmerCategories.stopPulseAnimation()
                     binding.layoutShimmerCategories.visibility = View.GONE
                     binding.rvCategories.visibility = View.VISIBLE
-                    Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+                    showToast("Error: ${error.message}")
                 }, 2000)
             }
         }
@@ -198,7 +200,7 @@ class ManageCategoriesFragment : Fragment() {
                 database.child(category.id).removeValue()
                     .addOnSuccessListener {
                         if (_binding != null) {
-                            Toast.makeText(requireContext(), "Deleted", Toast.LENGTH_SHORT).show()
+                            showToast("Deleted")
                         }
                     }
             }

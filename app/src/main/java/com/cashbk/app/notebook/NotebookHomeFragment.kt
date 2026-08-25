@@ -32,6 +32,8 @@ import com.cashbk.app.utils.CustomOptionsMenu
 import com.cashbk.app.utils.startPulseAnimation
 import com.cashbk.app.utils.stopPulseAnimation
 
+import com.cashbk.app.utils.showToast
+
 class NotebookHomeFragment : Fragment() {
 
     private var _binding: FragmentNotebookHomeBinding? = null
@@ -81,7 +83,7 @@ class NotebookHomeFragment : Fragment() {
         currentUserRole = arguments?.getString("currentUserRole") ?: (requireActivity() as? NotebookActivity)?.getUserRole() ?: ""
 
         if (notebookId.isNullOrEmpty()) {
-            Toast.makeText(requireContext(), "Notebook ID missing", Toast.LENGTH_SHORT).show()
+            showToast("Notebook ID missing")
             parentFragmentManager.popBackStack()
             return
         }
@@ -275,7 +277,7 @@ class NotebookHomeFragment : Fragment() {
                     if (_binding == null) return@postDelayed
                     binding.layoutShimmerTransactions.stopPulseAnimation()
                     binding.layoutShimmerTransactions.visibility = View.GONE
-                    Toast.makeText(requireContext(), "Failed to load: ${error.message}", Toast.LENGTH_SHORT).show()
+                    showToast("Failed to load: ${error.message}")
                 }, 2000)
             }
         })
@@ -324,7 +326,7 @@ class NotebookHomeFragment : Fragment() {
     private fun refreshTransactionData() {
         if (_binding == null) return
         if (displayedTransactionList.isEmpty()) {
-            binding.layoutEmptyTransactions.visibility = View.VISIBLE
+            binding.layoutEmptyTransactions.visibility = View.GONE
             binding.transactionsRecyclerView.visibility = View.GONE
         } else {
             binding.layoutEmptyTransactions.visibility = View.GONE
@@ -476,7 +478,7 @@ class NotebookHomeFragment : Fragment() {
         val categoryIds = categoryMap.keys.toTypedArray()
         
         if (categories.isEmpty()) {
-            Toast.makeText(requireContext(), "No categories found", Toast.LENGTH_SHORT).show()
+            showToast("No categories found")
             return
         }
         
@@ -504,7 +506,7 @@ class NotebookHomeFragment : Fragment() {
         val partyIds = partyMap.keys.toTypedArray()
         
         if (parties.isEmpty()) {
-            Toast.makeText(requireContext(), "No parties found", Toast.LENGTH_SHORT).show()
+            showToast("No parties found")
             return
         }
         
@@ -558,7 +560,7 @@ class NotebookHomeFragment : Fragment() {
         val userIds = userMap.keys.toTypedArray()
         
         if (users.isEmpty()) {
-            Toast.makeText(requireContext(), "No members found", Toast.LENGTH_SHORT).show()
+            showToast("No members found")
             return
         }
         
@@ -583,7 +585,7 @@ class NotebookHomeFragment : Fragment() {
 
     private fun showAddTransactionDialog(type: String) {
         if (currentUserRole == "reader") {
-            Toast.makeText(requireContext(), "You have view-only access", Toast.LENGTH_SHORT).show()
+            showToast("You have view-only access")
             return
         }
         val fragment = AddTransactionFragment()

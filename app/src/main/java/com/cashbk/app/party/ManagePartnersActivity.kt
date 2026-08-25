@@ -22,6 +22,8 @@ import com.google.firebase.database.ServerValue
 import com.google.firebase.database.ValueEventListener
 import com.cashbk.app.utils.setupStatusAndNavBar
 
+import com.cashbk.app.utils.showToast
+
 class ManagePartnersActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityManagePartnersBinding
@@ -40,7 +42,7 @@ class ManagePartnersActivity : AppCompatActivity() {
         businessId = intent.getStringExtra("businessId")
 
         if (businessId.isNullOrEmpty()) {
-            Toast.makeText(this, "Error: Missing Business ID", Toast.LENGTH_SHORT).show()
+            showToast("Error: Missing Business ID")
             finish()
             return
         }
@@ -143,14 +145,14 @@ class ManagePartnersActivity : AppCompatActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(this@ManagePartnersActivity, "Failed to load partners", Toast.LENGTH_SHORT).show()
+                showToast("Failed to load partners")
             }
         })
     }
 
     private fun showAddPartnerDialog() {
         if (currentUserRole != "owner" && currentUserRole != "admin") {
-            Toast.makeText(this, "Only owners or admins can add partners", Toast.LENGTH_SHORT).show()
+            showToast("Only owners or admins can add partners")
             return
         }
         val dialogBinding = DialogAddMemberBinding.inflate(layoutInflater)
@@ -165,7 +167,7 @@ class ManagePartnersActivity : AppCompatActivity() {
             val phone = dialogBinding.etMemberPhone.text.toString().trim()
 
             if (phone.length != 10) {
-                Toast.makeText(this, "Enter valid 10-digit phone", Toast.LENGTH_SHORT).show()
+                showToast("Enter valid 10-digit phone")
                 return@setOnClickListener
             }
 
@@ -193,27 +195,27 @@ class ManagePartnersActivity : AppCompatActivity() {
                             )
                             database.child(uid).setValue(memberData)
                                 .addOnSuccessListener {
-                                    Toast.makeText(this@ManagePartnersActivity, "Partner added", Toast.LENGTH_SHORT).show()
+                                    showToast("Partner added")
                                 }
                                 .addOnFailureListener {
-                                    Toast.makeText(this@ManagePartnersActivity, "Failed to add partner", Toast.LENGTH_SHORT).show()
+                                    showToast("Failed to add partner")
                                 }
                             return
                         }
                     } else {
-                        Toast.makeText(this@ManagePartnersActivity, "User not found with this phone", Toast.LENGTH_LONG).show()
+                        showToast("User not found with this phone", Toast.LENGTH_LONG)
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(this@ManagePartnersActivity, "Error searching user", Toast.LENGTH_SHORT).show()
+                    showToast("Error searching user")
                 }
             })
     }
 
     private fun removePartner(partner: Partner) {
         if (currentUserRole != "owner" && currentUserRole != "admin") {
-            Toast.makeText(this, "Only owners or admins can remove partners", Toast.LENGTH_SHORT).show()
+            showToast("Only owners or admins can remove partners")
             return
         }
         CustomAlertDialog(this)

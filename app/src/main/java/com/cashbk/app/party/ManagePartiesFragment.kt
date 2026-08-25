@@ -24,6 +24,8 @@ import com.google.firebase.database.*
 import com.cashbk.app.utils.startPulseAnimation
 import com.cashbk.app.utils.stopPulseAnimation
 
+import com.cashbk.app.utils.showToast
+
 class ManagePartiesFragment : Fragment() {
 
     private var _binding: FragmentManagePartiesBinding? = null
@@ -49,7 +51,7 @@ class ManagePartiesFragment : Fragment() {
 
         notebookId = arguments?.getString("notebookId")
         if (notebookId.isNullOrEmpty()) {
-            Toast.makeText(requireContext(), "Notebook ID missing", Toast.LENGTH_SHORT).show()
+            showToast("Notebook ID missing")
             parentFragmentManager.popBackStack()
             return
         }
@@ -139,7 +141,7 @@ class ManagePartiesFragment : Fragment() {
                     binding.layoutShimmerParties.stopPulseAnimation()
                     binding.layoutShimmerParties.visibility = View.GONE
                     binding.rvParties.visibility = View.VISIBLE
-                    Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+                    showToast("Error: ${error.message}")
                 }, 2000)
             }
         })
@@ -166,7 +168,7 @@ class ManagePartiesFragment : Fragment() {
             .setPositiveButton("Delete") {
                 database.child(party.id).removeValue()
                     .addOnSuccessListener {
-                        Toast.makeText(requireContext(), "Deleted", Toast.LENGTH_SHORT).show()
+                        showToast("Deleted")
                     }
             }
             .setNegativeButton("Cancel", null)

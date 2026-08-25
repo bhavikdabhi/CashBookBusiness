@@ -17,6 +17,8 @@ import com.cashbk.app.business.BusinessDetailActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 
+import com.cashbk.app.utils.showToast
+
 class LoginFragment : Fragment() {
 
     private var _binding: FragmentLoginBinding? = null
@@ -47,7 +49,7 @@ class LoginFragment : Fragment() {
         }
 
         binding.btnGoogleSignIn.setOnClickListener {
-            Toast.makeText(requireContext(), "Google Sign In coming soon", Toast.LENGTH_SHORT).show()
+            showToast("Google Sign In coming soon")
         }
 
         binding.tvForgotPassword.setOnClickListener {
@@ -60,18 +62,18 @@ class LoginFragment : Fragment() {
         val password = binding.etPassword.text.toString().trim()
 
         if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(requireContext(), "Please enter all fields", Toast.LENGTH_SHORT).show()
+            showToast("Please enter all fields")
             return
         }
 
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
-                    Toast.makeText(requireContext(), "Login successful", Toast.LENGTH_SHORT).show()
+                    showToast("Login successful")
                     startActivity(Intent(requireContext(), BusinessDetailActivity::class.java))
                     requireActivity().finish()
                 } else {
-                    Toast.makeText(requireContext(), "Login failed: ${task.exception?.message}", Toast.LENGTH_LONG).show()
+                    showToast("Login failed: ${task.exception?.message}")
                 }
             }
     }

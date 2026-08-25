@@ -13,6 +13,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+import com.cashbk.app.utils.CustomToast
+
 object AuthManager {
 
     private fun getContext(): Context? {
@@ -236,7 +238,7 @@ object AuthManager {
         val context = getContext() ?: return
         Handler(Looper.getMainLooper()).post {
             try {
-                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                CustomToast.show(context, message, Toast.LENGTH_LONG)
             } catch (e: Exception) {
                 // Ignore if running outside main application context
             }

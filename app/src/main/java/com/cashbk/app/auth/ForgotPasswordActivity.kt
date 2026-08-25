@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import com.cashbk.app.R
 import com.google.firebase.auth.FirebaseAuth
+import com.cashbk.app.utils.showToast
 import com.cashbk.app.utils.setupStatusAndNavBar
 
 class ForgotPasswordActivity : AppCompatActivity() {
@@ -28,17 +29,17 @@ class ForgotPasswordActivity : AppCompatActivity() {
         btnSend.setOnClickListener {
             val email = etEmail.text.toString().trim()
             if (email.isEmpty()) {
-                Toast.makeText(this, "Please enter your email address", Toast.LENGTH_SHORT).show()
+                showToast("Please enter your email address")
                 return@setOnClickListener
             }
 
             auth.sendPasswordResetEmail(email)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        Toast.makeText(this, "Recovery link sent to $email", Toast.LENGTH_LONG).show()
+                        showToast("Recovery link sent to $email")
                         finish() // Go back to login
                     } else {
-                        Toast.makeText(this, "Failed to send link: ${task.exception?.message}", Toast.LENGTH_LONG).show()
+                        showToast("Failed to send link: ${task.exception?.message}")
                     }
                 }
         }

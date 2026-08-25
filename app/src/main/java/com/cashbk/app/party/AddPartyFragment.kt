@@ -12,6 +12,8 @@ import com.cashbk.app.databinding.FragmentAddPartyBinding
 import com.cashbk.app.party._bean.Party
 import com.google.firebase.database.FirebaseDatabase
 
+import com.cashbk.app.utils.showToast
+
 class AddPartyFragment : Fragment() {
 
     private var _binding: FragmentAddPartyBinding? = null
@@ -33,7 +35,7 @@ class AddPartyFragment : Fragment() {
 
         notebookId = arguments?.getString("notebookId")
         if (notebookId.isNullOrEmpty()) {
-            Toast.makeText(requireContext(), "Notebook error", Toast.LENGTH_SHORT).show()
+            showToast("Notebook error")
             parentFragmentManager.popBackStack()
             return
         }
@@ -45,7 +47,7 @@ class AddPartyFragment : Fragment() {
         binding.btnSave.setOnClickListener { saveParty() }
         
         binding.btnSelectContacts.setOnClickListener {
-            Toast.makeText(requireContext(), "Contact integration coming soon", Toast.LENGTH_SHORT).show()
+            showToast("Contact integration coming soon")
         }
     }
 
@@ -96,7 +98,7 @@ class AddPartyFragment : Fragment() {
         val contact = binding.etContact.text.toString().trim()
 
         if (name.isEmpty()) {
-            Toast.makeText(requireContext(), "Full name is required", Toast.LENGTH_SHORT).show()
+            showToast("Full name is required")
             return
         }
 
@@ -123,8 +125,7 @@ class AddPartyFragment : Fragment() {
 
         database.child(partyId).setValue(party)
             .addOnSuccessListener {
-                val context = context ?: return@addOnSuccessListener
-                Toast.makeText(context, "Partner created successfully!", Toast.LENGTH_SHORT).show()
+                showToast("Partner created successfully!")
                 
                 if (isAdded && !parentFragmentManager.isStateSaved) {
                     parentFragmentManager.popBackStack()
@@ -132,7 +133,7 @@ class AddPartyFragment : Fragment() {
             }
             .addOnFailureListener { e ->
                 binding.btnSave.isEnabled = true
-                Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                showToast("Error: ${e.message}")
             }
     }
 

@@ -40,6 +40,8 @@ import java.io.File
 import java.net.URL
 import java.net.HttpURLConnection
 
+import com.cashbk.app.utils.showToast
+
 class ProfileFragment : Fragment() {
 
     enum class DriveFlowMode {
@@ -79,11 +81,11 @@ class ProfileFragment : Fragment() {
                     pendingImageUri = Uri.fromFile(cacheFile)
                     startDriveAuthFlow()
                 } else {
-                    Toast.makeText(requireContext(), "Failed to process profile image", Toast.LENGTH_SHORT).show()
+                    showToast("Failed to process profile image")
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                Toast.makeText(requireContext(), "Failed to process profile image: ${e.message}", Toast.LENGTH_SHORT).show()
+                showToast("Failed to process profile image: ${e.message}")
             }
         }
     }
@@ -95,7 +97,7 @@ class ProfileFragment : Fragment() {
             saveGoogleDriveEmail(account.email)
             when (driveFlowMode) {
                 DriveFlowMode.CONNECT -> {
-                    Toast.makeText(requireContext(), "Google Drive connected successfully!", Toast.LENGTH_SHORT).show()
+                    showToast("Google Drive connected successfully!")
                 }
                 DriveFlowMode.PROFILE_UPLOAD -> {
                     if (pendingImageUri != null) {
@@ -103,7 +105,7 @@ class ProfileFragment : Fragment() {
                     }
                 }
                 DriveFlowMode.SWITCH_NO_MIGRATE -> {
-                    Toast.makeText(requireContext(), "Google Account switched successfully!", Toast.LENGTH_SHORT).show()
+                    showToast("Google Account switched successfully!")
                 }
                 DriveFlowMode.SWITCH_WITH_MIGRATE -> {
                     uploadMigratedFiles(account)
@@ -121,12 +123,12 @@ class ProfileFragment : Fragment() {
                 16 -> "\n\nTip: Sign-in process was canceled or interrupted."
                 else -> ""
             }
-            Toast.makeText(requireContext(), "Drive Authorization Failed (code: $statusCode): $errorMsg$hint", Toast.LENGTH_LONG).show()
+            showToast("Drive Authorization Failed (code: $statusCode): $errorMsg$hint", Toast.LENGTH_LONG)
             cleanupTempMigrationFiles()
             driveFlowMode = DriveFlowMode.NONE
         } catch (e: Exception) {
             android.util.Log.e("ProfileFragment", "Unknown Auth failure", e)
-            Toast.makeText(requireContext(), "Drive Authorization Failed: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+            showToast("Drive Authorization Failed: ${e.localizedMessage}", Toast.LENGTH_LONG)
             cleanupTempMigrationFiles()
             driveFlowMode = DriveFlowMode.NONE
         }
@@ -214,16 +216,16 @@ class ProfileFragment : Fragment() {
                 auth.sendPasswordResetEmail(email)
                     .addOnSuccessListener {
                         if (isAdded) {
-                            Toast.makeText(context, "Reset email sent to $email", Toast.LENGTH_LONG).show()
+                            showToast("Reset email sent to $email", Toast.LENGTH_LONG)
                         }
                     }
                     .addOnFailureListener {
                         if (isAdded) {
-                            Toast.makeText(context, "Failed to send reset email: ${it.message}", Toast.LENGTH_SHORT).show()
+                            showToast("Failed to send reset email: ${it.message}")
                         }
                     }
             } else {
-                Toast.makeText(requireContext(), "Email address not found.", Toast.LENGTH_SHORT).show()
+                showToast("Email address not found.")
             }
         }
 
@@ -234,7 +236,7 @@ class ProfileFragment : Fragment() {
 
         binding.switchNotifications.setOnCheckedChangeListener { _, isChecked ->
             val status = if (isChecked) "Enabled" else "Disabled"
-            Toast.makeText(requireContext(), "Notifications $status", Toast.LENGTH_SHORT).show()
+            showToast("Notifications $status")
         }
 
         // App Lock PIN/Biometric Switch logic
@@ -259,7 +261,7 @@ class ProfileFragment : Fragment() {
                         .setIcon(R.drawable.ic_auth_lock, ContextCompat.getColor(requireContext(), R.color.primary_color))
                         .setPositiveButton("Disable") {
                             sharedPrefs.edit().clear().apply()
-                            Toast.makeText(context, "App Lock disabled", Toast.LENGTH_SHORT).show()
+                            showToast("App Lock disabled")
                         }
                         .setNegativeButton("Cancel") {
                             binding.switchBiometric.isChecked = true
@@ -410,7 +412,7 @@ class ProfileFragment : Fragment() {
 
             override fun onCancelled(error: DatabaseError) {
                 if (isAdded && auth.currentUser != null) {
-                    Toast.makeText(context, "Failed to load profile", Toast.LENGTH_SHORT).show()
+                    showToast("Failed to load profile")
                 }
             }
         })
@@ -420,7 +422,7 @@ class ProfileFragment : Fragment() {
         val uid = auth.currentUser?.uid ?: return
         val currentImageUrl = currentUser?.profileImageUrl
         
-        Toast.makeText(requireContext(), "Uploading Profile Image...", Toast.LENGTH_SHORT).show()
+        showToast("Uploading Profile Image...")
         
         val driveManager = GoogleDriveManager(requireContext(), googleAccount)
 
@@ -454,7 +456,7 @@ class ProfileFragment : Fragment() {
                 e.printStackTrace()
                 withContext(Dispatchers.Main) {
                     if (isAdded) {
-                        Toast.makeText(context, "Upload Failed: ${e.message}", Toast.LENGTH_LONG).show()
+                        showToast("Upload Failed: ${e.message}", Toast.LENGTH_LONG)
                     }
                 }
             }
@@ -466,7 +468,7 @@ class ProfileFragment : Fragment() {
         database.child("users").child(uid).child("profileImageUrl").setValue(url)
             .addOnSuccessListener {
                 if (isAdded) {
-                    Toast.makeText(context, "Profile updated successfully", Toast.LENGTH_SHORT).show()
+                    showToast("Profile updated successfully")
                 }
             }
     }
@@ -499,7 +501,7 @@ class ProfileFragment : Fragment() {
                         database.child("users").child(uid).updateChildren(updates)
                             .addOnSuccessListener {
                                 if (isAdded) {
-                                    Toast.makeText(context, "Profile updated successfully", Toast.LENGTH_SHORT).show()
+                                    showToast("Profile updated successfully")
                                 }
                             }
                     }
@@ -507,7 +509,7 @@ class ProfileFragment : Fragment() {
 
                 override fun onCancelled(error: DatabaseError) {
                     if (isAdded) {
-                        Toast.makeText(context, "Update failed: ${error.message}", Toast.LENGTH_SHORT).show()
+                        showToast("Update failed: ${error.message}")
                     }
                 }
             })
@@ -515,7 +517,7 @@ class ProfileFragment : Fragment() {
 
     private fun migrateData(fromUid: String, toUid: String, newName: String, newPhone: String) {
         if (isAdded) {
-            Toast.makeText(context, "Merging data from existing record...", Toast.LENGTH_LONG).show()
+            showToast("Merging data from existing record...", Toast.LENGTH_LONG)
         }
 
         // 1. Update existing businesses ownership
@@ -534,11 +536,11 @@ class ProfileFragment : Fragment() {
 
                     database.updateChildren(batchUpdates).addOnSuccessListener {
                         if (isAdded) {
-                            Toast.makeText(context, "Account merged and updated successfully", Toast.LENGTH_LONG).show()
+                            showToast("Account merged and updated successfully", Toast.LENGTH_LONG)
                         }
                     }.addOnFailureListener {
                         if (isAdded) {
-                            Toast.makeText(context, "Merge failed: ${it.message}", Toast.LENGTH_SHORT).show()
+                            showToast("Merge failed: ${it.message}")
                         }
                     }
                 }
@@ -557,7 +559,7 @@ class ProfileFragment : Fragment() {
         val account = GoogleSignIn.getLastSignedInAccount(context)
         if (account != null && GoogleSignIn.hasPermissions(account, driveScope)) {
             saveGoogleDriveEmail(account.email)
-            Toast.makeText(context, "Google Drive connected successfully!", Toast.LENGTH_SHORT).show()
+            showToast("Google Drive connected successfully!")
             return
         }
 
@@ -582,7 +584,7 @@ class ProfileFragment : Fragment() {
                         val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
                         GoogleSignIn.getClient(requireActivity(), signInOptions).signOut().addOnCompleteListener {
                             if (isAdded) {
-                                Toast.makeText(context, "Google Drive disconnected.", Toast.LENGTH_SHORT).show()
+                                showToast("Google Drive disconnected.")
                             }
                         }
                     }
@@ -623,7 +625,7 @@ class ProfileFragment : Fragment() {
                 driveFlowMode = DriveFlowMode.SWITCH_WITH_MIGRATE
                 performGoogleSignOutAndChooser()
             } else {
-                Toast.makeText(requireContext(), "Migration failed to prepare. Please check your connection and try again.", Toast.LENGTH_SHORT).show()
+                showToast("Migration failed to prepare. Please check your connection and try again.")
             }
         }
     }
@@ -732,7 +734,7 @@ class ProfileFragment : Fragment() {
             
             if (itemsToMigrate.isEmpty()) {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "No files found to migrate.", Toast.LENGTH_SHORT).show()
+                    showToast("No files found to migrate.")
                 }
                 return@withContext true
             }
@@ -767,7 +769,7 @@ class ProfileFragment : Fragment() {
 
     private fun uploadMigratedFiles(googleAccount: GoogleSignInAccount) {
         if (pendingMigrationFiles.isEmpty()) {
-            Toast.makeText(requireContext(), "No files to upload.", Toast.LENGTH_SHORT).show()
+            showToast("No files to upload.")
             return
         }
         
@@ -810,7 +812,7 @@ class ProfileFragment : Fragment() {
             withContext(Dispatchers.Main) {
                 progressDialog.dismiss()
                 pendingMigrationFiles.clear()
-                Toast.makeText(context, "Migration completed: $successCount of $total files migrated.", Toast.LENGTH_LONG).show()
+                showToast("Migration completed: $successCount of $total files migrated.", Toast.LENGTH_LONG)
             }
         }
     }

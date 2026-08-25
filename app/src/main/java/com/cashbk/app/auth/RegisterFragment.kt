@@ -21,6 +21,8 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
+import com.cashbk.app.utils.showToast
+
 class RegisterFragment : Fragment() {
 
     private var _binding: FragmentRegisterBinding? = null
@@ -57,12 +59,12 @@ class RegisterFragment : Fragment() {
         val password = binding.etPassword.text.toString().trim()
 
         if (email.isEmpty() || mobile.isEmpty() || password.isEmpty()) {
-            Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show()
+            showToast("Please fill in all fields")
             return
         }
 
         if (password.length < 6) {
-            Toast.makeText(requireContext(), "Password must be at least 6 characters", Toast.LENGTH_SHORT).show()
+            showToast("Password must be at least 6 characters")
             return
         }
 
@@ -83,7 +85,7 @@ class RegisterFragment : Fragment() {
                     .addToBackStack(null)
                     .commit()
             } else {
-                Toast.makeText(requireContext(), "Failed to send OTP: $message", Toast.LENGTH_LONG).show()
+                showToast("Failed to send OTP: $message")
             }
         }
     }
