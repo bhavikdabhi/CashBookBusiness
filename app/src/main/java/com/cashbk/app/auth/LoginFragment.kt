@@ -88,8 +88,10 @@ class LoginFragment : Fragment() {
                         val isPasswordVisible = binding.etPassword.transformationMethod is HideReturnsTransformationMethod
                         if (isPasswordVisible) {
                             binding.etPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+                            binding.etPassword.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_auth_lock, 0, R.drawable.ic_eye, 0)
                         } else {
                             binding.etPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                            binding.etPassword.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_auth_lock, 0, R.drawable.ic_eye_off, 0)
                         }
                         binding.etPassword.setSelection(binding.etPassword.text?.length ?: 0)
                         return@setOnTouchListener true

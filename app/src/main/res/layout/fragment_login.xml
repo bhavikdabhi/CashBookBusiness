@@ -145,7 +145,7 @@
             android:textColorHint="@color/dark_gray"
             android:textColor="@color/text_secondary"
             android:drawableStart="@drawable/ic_auth_lock"
-            android:drawableEnd="@android:drawable/ic_menu_view"
+            android:drawableEnd="@drawable/ic_eye"
             android:drawableTint="@color/auth_ic"
             android:drawablePadding="@dimen/_10sdp"
             android:inputType="textPassword"

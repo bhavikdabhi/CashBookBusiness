@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import android.view.MenuItem
+import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +26,8 @@ import com.cashbk.app.notebook._bean.Notebook
 import com.cashbk.app.utils.startPulseAnimation
 import com.cashbk.app.utils.stopPulseAnimation
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.timepicker.MaterialTimePicker
+import com.google.android.material.timepicker.TimeFormat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -55,6 +59,7 @@ class EventsFragment : Fragment() {
     private var selectedDate = Calendar.getInstance()
 
     private val userMap = mutableMapOf<String, String>() // uid -> name
+    private val userPhotoMap = mutableMapOf<String, String>() // uid -> photoUrl
     private val notebooksList = mutableListOf<Notebook>()
 
     private var eventsListener: ValueEventListener? = null
@@ -246,14 +251,19 @@ class EventsFragment : Fragment() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (_binding == null) return
                     userMap.clear()
+                    userPhotoMap.clear()
                     for (child in snapshot.children) {
                         val uid = child.key ?: continue
                         val name = child.child("name").value as? String ?: "Unknown User"
+                        val photoUrl = child.child("profileImageUrl").value as? String
+                            ?: child.child("photoUrl").value as? String ?: ""
                         userMap[uid] = name
+                        userPhotoMap[uid] = photoUrl
                     }
-                    // Refresh current creator names
+                    // Refresh current creator names and photo URLs
                     allEventsList.forEach {
                         it.createdByName = userMap[it.createdBy] ?: "Unknown User"
+                        it.createdByPhotoUrl = userPhotoMap[it.createdBy] ?: ""
                     }
                     filterEventsForSelectedDate()
                 }
@@ -302,6 +312,7 @@ class EventsFragment : Fragment() {
                         if (event != null) {
                             event.id = child.key.orEmpty()
                             event.createdByName = userMap[event.createdBy] ?: "Unknown User"
+                            event.createdByPhotoUrl = userPhotoMap[event.createdBy] ?: ""
                             allEventsList.add(event)
                         }
                     }
@@ -468,14 +479,35 @@ class EventsFragment : Fragment() {
         val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
         val targetDateMs = selectedDate.timeInMillis
 
+        // Update selected date header text (e.g. "Thursday, 22 Oct 2026")
+        val sdfHeader = SimpleDateFormat("EEEE, dd MMM yyyy", Locale.US)
+        binding.tvSelectedDateHeader.text = sdfHeader.format(Date(targetDateMs))
+
         val matches = allEventsList.filter { event ->
             event.date == targetDateMs && isEventVisibleToUser(event, currentUserId)
-        }.sortedByDescending { it.createdAt }
+        }.sortedWith(compareBy<EventItem> { if (it.eventTime.isNotEmpty()) 0 else 1 }.thenBy { it.eventTime }.thenByDescending { it.createdAt })
 
         filteredEventsList.addAll(matches)
 
         // Update active count badge
         binding.tvActiveCount.text = "${filteredEventsList.size} Active"
+
+        // Setup Sort By Time button listener
+        binding.tvSortByTime.setOnClickListener { view ->
+            val popup = PopupMenu(requireContext(), view)
+            popup.menu.add("Sort by Time")
+            popup.menu.add("Sort by Creation Date")
+            popup.setOnMenuItemClickListener { item: MenuItem ->
+                if (item.title == "Sort by Creation Date") {
+                    filteredEventsList.sortByDescending { it.createdAt }
+                } else {
+                    filteredEventsList.sortWith(compareBy<EventItem> { if (it.eventTime.isNotEmpty()) 0 else 1 }.thenBy { it.eventTime }.thenByDescending { it.createdAt })
+                }
+                eventAdapter.notifyDataSetChanged()
+                true
+            }
+            popup.show()
+        }
 
         // Notify adapter updates with current role context
         setupEventsRecyclerView()
@@ -486,7 +518,6 @@ class EventsFragment : Fragment() {
         } else {
             binding.layoutEmpty.visibility = View.GONE
             binding.rvEvents.visibility = View.VISIBLE
-
         }
     }
 
@@ -527,10 +558,16 @@ class EventsFragment : Fragment() {
         // Auto-fill "Added By"
         val currentUserName = userMap[currentUserId] ?: "You"
 
-        // Date management
+        // Date & Time management
         var selectedEventDateMs = editingEvent?.date ?: selectedDate.timeInMillis
         val sdf = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
         dialogBinding.etEventDate.setText(sdf.format(Date(selectedEventDateMs)))
+
+        if (editingEvent != null && editingEvent.eventTime.isNotEmpty()) {
+            dialogBinding.etEventTime.setText(editingEvent.eventTime)
+        } else {
+            dialogBinding.etEventTime.setText("12:01 AM")
+        }
 
         dialogBinding.etEventDate.setOnClickListener {
             val datePicker = MaterialDatePicker.Builder.datePicker()
@@ -546,6 +583,25 @@ class EventsFragment : Fragment() {
                 dialogBinding.etEventDate.setText(sdf.format(Date(selectedEventDateMs)))
             }
             datePicker.show(parentFragmentManager, "EventDatePicker")
+        }
+
+        dialogBinding.etEventTime.setOnClickListener {
+            val timePicker = MaterialTimePicker.Builder()
+                .setTimeFormat(TimeFormat.CLOCK_12H)
+                .setHour(0)
+                .setMinute(1)
+                .setTitleText("Select Event Time (Optional)")
+                .build()
+
+            timePicker.addOnPositiveButtonClickListener {
+                val hour = timePicker.hour
+                val minute = timePicker.minute
+                val amPm = if (hour >= 12) "PM" else "AM"
+                val hour12 = if (hour % 12 == 0) 12 else hour % 12
+                val formattedTime = String.format(Locale.US, "%02d:%02d %s", hour12, minute, amPm)
+                dialogBinding.etEventTime.setText(formattedTime)
+            }
+            timePicker.show(parentFragmentManager, "EventTimePicker")
         }
 
         // Fill current fields if editing
@@ -697,12 +753,20 @@ class EventsFragment : Fragment() {
             val eventId = editingEvent?.id ?: ref.push().key ?: return@setOnClickListener
             val timestamp = editingEvent?.createdAt ?: System.currentTimeMillis()
 
+            val eventTimeStr = dialogBinding.etEventTime.text.toString().trim()
+            val creatorUid = editingEvent?.createdBy ?: currentUserId
+            val creatorName = userMap[creatorUid] ?: userMap[currentUserId] ?: ""
+            val creatorPhoto = userPhotoMap[creatorUid] ?: userPhotoMap[currentUserId] ?: ""
+
             val newEvent = EventItem(
                 id = eventId,
                 name = eventName,
                 description = eventDesc,
                 date = selectedEventDateMs,
-                createdBy = editingEvent?.createdBy ?: currentUserId,
+                eventTime = eventTimeStr,
+                createdBy = creatorUid,
+                createdByName = creatorName,
+                createdByPhotoUrl = creatorPhoto,
                 createdAt = timestamp,
                 visibility = visibility,
                 notebookId = selectedNotebookId,

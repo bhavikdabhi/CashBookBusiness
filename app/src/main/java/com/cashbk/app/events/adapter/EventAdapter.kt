@@ -1,15 +1,19 @@
 package com.cashbk.app.events.adapter
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.cashbk.app.R
 import com.cashbk.app.databinding.ItemEventBinding
 import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
-import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 data class EventItem(
@@ -17,8 +21,10 @@ data class EventItem(
     val name: String = "",
     val description: String = "",
     val date: Long = 0L,
+    val eventTime: String = "", // Optional time e.g. "09:30 AM" or "03:00 PM"
     val createdBy: String = "",
     var createdByName: String = "",
+    var createdByPhotoUrl: String = "",
     val createdAt: Long = 0L,
     val visibility: String = "Everyone",
     val notebookId: String = "",
@@ -49,10 +55,24 @@ class EventAdapter(
         val context = holder.binding.root.context
         val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
-        // Event Name
-        holder.binding.tvEventName.text = event.name
+        // 1. Time Column (Left Side)
+        if (event.eventTime.isNotEmpty()) {
+            val parts = event.eventTime.trim().split(" ")
+            if (parts.size >= 2) {
+                holder.binding.tvTimeHourMin.text = parts[0]
+                holder.binding.tvTimeAmPm.text = parts[1].uppercase(Locale.US)
+            } else {
+                holder.binding.tvTimeHourMin.text = event.eventTime
+                holder.binding.tvTimeAmPm.text = ""
+            }
+        } else {
+            // Optional time not specified: default to 12:01 AM
+            holder.binding.tvTimeHourMin.text = "12:01"
+            holder.binding.tvTimeAmPm.text = "AM"
+        }
 
-        // Description
+        // 2. Event Name & Description
+        holder.binding.tvEventName.text = event.name
         if (event.description.isNotEmpty()) {
             holder.binding.tvEventDescription.text = event.description
             holder.binding.tvEventDescription.visibility = View.VISIBLE
@@ -60,66 +80,99 @@ class EventAdapter(
             holder.binding.tvEventDescription.visibility = View.GONE
         }
 
-        // Selected Date & Time (formatted like OCT 13, 09:00)
-        val calendarDate = Calendar.getInstance().apply { timeInMillis = event.date }
-        val calendarTime = Calendar.getInstance().apply { timeInMillis = event.createdAt }
-        calendarDate.set(Calendar.HOUR_OF_DAY, calendarTime.get(Calendar.HOUR_OF_DAY))
-        calendarDate.set(Calendar.MINUTE, calendarTime.get(Calendar.MINUTE))
-        val formattedDateTime = SimpleDateFormat("MMM dd, HH:mm", Locale.US).format(calendarDate.time).uppercase(Locale.US)
-        holder.binding.tvEventDate.text = formattedDateTime
-
-        // Set Icon based on name keywords
-        val nameLower = event.name.lowercase(Locale.ROOT)
-        val iconRes = when {
-            nameLower.contains("audit") || nameLower.contains("tax") || nameLower.contains("distribution") || 
-            nameLower.contains("pay") || nameLower.contains("dividend") || nameLower.contains("finance") -> {
-                R.drawable.ic_business
-            }
-            nameLower.contains("summit") || nameLower.contains("meeting") || nameLower.contains("partner") || 
-            nameLower.contains("member") || nameLower.contains("team") || nameLower.contains("shareholder") || 
-            nameLower.contains("board") || nameLower.contains("party") -> {
-                R.drawable.ic_party_group
-            }
-            else -> R.drawable.ic_event
-        }
-        holder.binding.ivEventIcon.setImageResource(iconRes)
-
-        // Tags logic
-        // Tag 1: Notebook Name
+        // 3. Notebook Tag
         val notebookName = notebooksMap[event.notebookId]
         if (!notebookName.isNullOrEmpty()) {
             holder.binding.tvTagNotebook.text = notebookName
             holder.binding.tvTagNotebook.visibility = View.VISIBLE
+
+            // Custom green / amber badge styling matching image
+            if (notebookName.lowercase(Locale.ROOT).contains("sales")) {
+                val greenBg = ContextCompat.getColor(context, R.color.icon_bg_green)
+                val greenText = ContextCompat.getColor(context, R.color.success)
+                holder.binding.tvTagNotebook.backgroundTintList = ColorStateList.valueOf(greenBg)
+                holder.binding.tvTagNotebook.setTextColor(greenText)
+                holder.binding.tvTagNotebook.setCompoundDrawablesWithIntrinsicBounds(
+                    ContextCompat.getDrawable(context, R.drawable.ic_book)?.apply {
+                        setTint(greenText)
+                    }, null, null, null
+                )
+            } else {
+                val amberBg = Color.parseColor("#FEF3C7")
+                val amberText = Color.parseColor("#D97706")
+                holder.binding.tvTagNotebook.backgroundTintList = ColorStateList.valueOf(amberBg)
+                holder.binding.tvTagNotebook.setTextColor(amberText)
+                holder.binding.tvTagNotebook.setCompoundDrawablesWithIntrinsicBounds(
+                    ContextCompat.getDrawable(context, R.drawable.ic_book)?.apply {
+                        setTint(amberText)
+                    }, null, null, null
+                )
+            }
         } else {
             holder.binding.tvTagNotebook.visibility = View.GONE
         }
 
-        // Tag 2: Visibility Tag
-        val visibilityText = when (event.visibility) {
-            "Admin & Partner Only" -> "Admin Only"
-            "Specific Members" -> "Members Only"
-            "Only Me" -> "Private"
-            else -> "" // Don't show tag if Everyone is visibility
-        }
-        if (visibilityText.isNotEmpty()) {
-            holder.binding.tvTagVisibility.text = visibilityText
-            holder.binding.tvTagVisibility.visibility = View.VISIBLE
-            
-            // Adjust margin based on first tag visibility
-            val params = holder.binding.tvTagVisibility.layoutParams as ViewGroup.MarginLayoutParams
-            params.marginStart = if (holder.binding.tvTagNotebook.visibility == View.VISIBLE) {
-                context.resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._6sdp)
-            } else {
-                0
+        // 4. Visibility Tag
+        holder.binding.tvTagVisibility.visibility = View.VISIBLE
+        val visText = event.visibility
+        holder.binding.tvTagVisibility.text = visText
+
+        when (visText) {
+            "Everyone" -> {
+                val blueBg = Color.parseColor("#EFF6FF")
+                val blueText = Color.parseColor("#2563EB")
+                holder.binding.tvTagVisibility.backgroundTintList = ColorStateList.valueOf(blueBg)
+                holder.binding.tvTagVisibility.setTextColor(blueText)
+                holder.binding.tvTagVisibility.setCompoundDrawablesWithIntrinsicBounds(
+                    ContextCompat.getDrawable(context, R.drawable.ic_people_)?.apply {
+                        setTint(blueText)
+                    }, null, null, null
+                )
             }
-            holder.binding.tvTagVisibility.layoutParams = params
-        } else {
-            holder.binding.tvTagVisibility.visibility = View.GONE
+            "Admin & Partner Only" -> {
+                val purpleBg = Color.parseColor("#F3E8FF")
+                val purpleText = Color.parseColor("#7C3AED")
+                holder.binding.tvTagVisibility.backgroundTintList = ColorStateList.valueOf(purpleBg)
+                holder.binding.tvTagVisibility.setTextColor(purpleText)
+                holder.binding.tvTagVisibility.setCompoundDrawablesWithIntrinsicBounds(
+                    ContextCompat.getDrawable(context, R.drawable.ic_security_enc)?.apply {
+                        setTint(purpleText)
+                    }, null, null, null
+                )
+            }
+            else -> {
+                val grayBg = Color.parseColor("#F1F5F9")
+                val grayText = Color.parseColor("#475569")
+                holder.binding.tvTagVisibility.backgroundTintList = ColorStateList.valueOf(grayBg)
+                holder.binding.tvTagVisibility.setTextColor(grayText)
+                holder.binding.tvTagVisibility.setCompoundDrawablesWithIntrinsicBounds(
+                    ContextCompat.getDrawable(context, R.drawable.ic_security_enc)?.apply {
+                        setTint(grayText)
+                    }, null, null, null
+                )
+            }
         }
 
-        // Options permissions check:
-        val hasEditDeletePermission = currentUserRole == "owner" || 
-                currentUserRole == "admin" || 
+        // 5. Creator Footer Info Row
+        val creatorName = if (event.createdByName.isNotEmpty()) event.createdByName else "Unknown User"
+        holder.binding.tvCreatedBy.text = "Created by $creatorName"
+
+        val sdfCreated = SimpleDateFormat("dd MMM yyyy • hh:mm a", Locale.US)
+        holder.binding.tvCreatedAtTime.text = sdfCreated.format(Date(event.createdAt))
+
+        if (event.createdByPhotoUrl.isNotEmpty()) {
+            Glide.with(context)
+                .load(event.createdByPhotoUrl)
+                .placeholder(R.drawable.ic_default_avtar)
+                .error(R.drawable.ic_default_avtar)
+                .into(holder.binding.ivCreatorAvatar)
+        } else {
+            holder.binding.ivCreatorAvatar.setImageResource(R.drawable.ic_default_avtar)
+        }
+
+        // Options Menu Permission check
+        val hasEditDeletePermission = currentUserRole == "owner" ||
+                currentUserRole == "admin" ||
                 (currentUserRole == "partner" && event.createdBy == currentUserId)
 
         if (hasEditDeletePermission) {

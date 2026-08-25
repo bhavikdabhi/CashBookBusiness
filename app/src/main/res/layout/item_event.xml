@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="@dimen/_12sdp"
-    android:layout_marginVertical="@dimen/_6sdp"
-    app:cardBackgroundColor="@color/stitch_surface_container_low"
+    android:layout_marginHorizontal="@dimen/_14sdp"
+    android:layout_marginVertical="@dimen/_5sdp"
+    app:cardBackgroundColor="@color/card_bg"
     app:cardCornerRadius="@dimen/_14sdp"
     app:cardElevation="0dp"
-    app:strokeColor="@color/glass_border"
+    app:strokeColor="@color/outline"
     app:strokeWidth="1dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,25 +17,55 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/_12sdp">
 
-        <!-- Icon Container -->
-        <FrameLayout
-            android:id="@+id/iconContainer"
-            android:layout_width="@dimen/_40sdp"
-            android:layout_height="@dimen/_40sdp"
-            android:background="@drawable/bg_glass_card"
-            android:backgroundTint="@color/stitch_surface_container_high"
+        <!-- Time Column (Left Side) -->
+        <ImageView
+            android:id="@+id/ivTimeIcon"
+            android:layout_width="@dimen/_16sdp"
+            android:layout_height="@dimen/_16sdp"
+            android:src="@drawable/ic_time"
+            app:tint="@color/primary_color"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="@id/tvEventName"
+            app:layout_constraintEnd_toEndOf="@id/tvTimeHourMin" />
 
-            <ImageView
-                android:id="@+id/ivEventIcon"
-                android:layout_width="@dimen/_20sdp"
-                android:layout_height="@dimen/_20sdp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_business"
-                app:tint="@color/primary_color" />
+        <TextView
+            android:id="@+id/tvTimeHourMin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:fontFamily="@font/roboto_bold"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/_12ssp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivTimeIcon"
+            tools:text="09:30" />
 
-        </FrameLayout>
+        <TextView
+            android:id="@+id/tvTimeAmPm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_1sdp"
+            android:fontFamily="@font/roboto_regular"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/_9ssp"
+            app:layout_constraintStart_toStartOf="@id/tvTimeHourMin"
+            app:layout_constraintEnd_toEndOf="@id/tvTimeHourMin"
+            app:layout_constraintTop_toBottomOf="@id/tvTimeHourMin"
+            tools:text="AM" />
+
+        <!-- Vertical Divider Line -->
+        <View
+            android:id="@+id/viewVerticalDivider"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:background="@color/outline"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tvTimeHourMin"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Event Content Column (Right Side) -->
 
         <!-- Title -->
         <TextView
@@ -43,37 +73,25 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:fontFamily="@font/roboto_bold"
             android:textColor="@color/text_secondary"
             android:textSize="@dimen/_13ssp"
-            android:fontFamily="@font/roboto_medium"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@id/tvEventDate"
-            app:layout_constraintStart_toEndOf="@id/iconContainer"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Quarterly Audit Review" />
-
-        <!-- Date & Time (Top Right) -->
-        <TextView
-            android:id="@+id/tvEventDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/gray"
-            android:textSize="@dimen/_8ssp"
-            android:fontFamily="@font/roboto_regular"
             app:layout_constraintEnd_toStartOf="@id/btnEventOptions"
+            app:layout_constraintStart_toEndOf="@id/viewVerticalDivider"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="OCT 13, 09:00" />
+            tools:text="Monthly Sales Review Meeting" />
 
-        <!-- Options Button -->
+        <!-- Three Dots Options Button -->
         <ImageButton
             android:id="@+id/btnEventOptions"
             android:layout_width="@dimen/_20sdp"
             android:layout_height="@dimen/_20sdp"
-            android:layout_marginStart="@dimen/_4sdp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/icon_threedots"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvEventName"
             app:tint="@color/gray" />
 
         <!-- Description -->
@@ -81,21 +99,21 @@
             android:id="@+id/tvEventDescription"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_4sdp"
-            android:textColor="@color/gray"
-            android:textSize="@dimen/_11ssp"
+            android:layout_marginTop="@dimen/_3sdp"
             android:fontFamily="@font/roboto_regular"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/_10ssp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/tvEventName"
             app:layout_constraintTop_toBottomOf="@id/tvEventName"
-            tools:text="Comprehensive review of all ledger entries for Q3 fiscal alignment and tax readiness." />
+            tools:text="Review of monthly sales performance, key metrics, and targets for next month." />
 
         <!-- Tags Container -->
         <LinearLayout
             android:id="@+id/layoutTags"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_8sdp"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/tvEventName"
@@ -106,14 +124,18 @@
                 android:id="@+id/tvTagNotebook"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_segmented_container"
-                android:backgroundTint="@color/stitch_surface_container_high"
+                android:background="@drawable/bg_chip_pill"
+                android:backgroundTint="@color/icon_bg_green"
+                android:drawableStart="@drawable/ic_book"
+                android:drawablePadding="@dimen/_4sdp"
+                android:gravity="center_vertical"
                 android:paddingHorizontal="@dimen/_8sdp"
-                android:paddingVertical="@dimen/_3sdp"
-                android:textColor="@color/auth_text_light"
+                android:paddingVertical="@dimen/_4sdp"
+                android:textColor="@color/success"
                 android:textSize="@dimen/_9ssp"
                 android:fontFamily="@font/roboto_medium"
-                tools:text="Compliance" />
+                app:drawableTint="@color/success"
+                tools:text="Sales Notebook" />
 
             <!-- Tag 2 (Visibility Restriction) -->
             <TextView
@@ -121,14 +143,69 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_6sdp"
-                android:background="@drawable/bg_segmented_container"
-                android:backgroundTint="@color/stitch_surface_container_high"
+                android:background="@drawable/bg_chip_pill"
+                android:backgroundTint="@color/icon_bg_blue"
+                android:drawableStart="@drawable/ic_people_"
+                android:drawablePadding="@dimen/_4sdp"
+                android:gravity="center_vertical"
                 android:paddingHorizontal="@dimen/_8sdp"
-                android:paddingVertical="@dimen/_3sdp"
-                android:textColor="@color/auth_text_light"
+                android:paddingVertical="@dimen/_4sdp"
+                android:textColor="@color/primary_color"
                 android:textSize="@dimen/_9ssp"
                 android:fontFamily="@font/roboto_medium"
-                tools:text="Admin Only" />
+                app:drawableTint="@color/primary_color"
+                tools:text="Everyone" />
+
+        </LinearLayout>
+
+        <!-- Creator Info Footer Row -->
+        <LinearLayout
+            android:id="@+id/layoutCreatorInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/tvEventName"
+            app:layout_constraintTop_toBottomOf="@id/layoutTags">
+
+            <!-- Creator Avatar -->
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivCreatorAvatar"
+                android:layout_width="@dimen/_24sdp"
+                android:layout_height="@dimen/_24sdp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_default_avtar"
+                app:shapeAppearanceOverlay="@style/CircleImageView" />
+
+            <!-- Name and Created At text stack -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvCreatedBy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/_10ssp"
+                    tools:text="Created by Bhavik Dabhi" />
+
+                <TextView
+                    android:id="@+id/tvCreatedAtTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_1sdp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textColor="@color/gray"
+                    android:textSize="@dimen/_8ssp"
+                    tools:text="22 Oct 2026 • 08:45 AM" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

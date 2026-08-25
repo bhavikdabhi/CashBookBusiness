@@ -196,37 +196,64 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/_16sdp"
-        android:layout_marginTop="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_14sdp"
         app:layout_constraintTop_toBottomOf="@id/cardCalendar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <TextView
-            android:id="@+id/tvUpcomingLabel"
+        <LinearLayout
+            android:id="@+id/layoutSelectedDateTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:text="Upcoming Events"
-            android:textColor="@color/text_secondary"
-            android:textSize="@dimen/_15ssp"
-            android:fontFamily="@font/roboto_medium"
-            android:textStyle="bold" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <!-- Count Active Pill -->
+            <ImageView
+                android:layout_width="@dimen/_18sdp"
+                android:layout_height="@dimen/_18sdp"
+                android:src="@drawable/ic_event"
+                app:tint="@color/primary_color" />
+
+            <TextView
+                android:id="@+id/tvSelectedDateHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_6sdp"
+                android:textColor="@color/primary_color"
+                android:textSize="@dimen/_13ssp"
+                android:fontFamily="@font/roboto_bold"
+                tools:text="Thursday, 22 Oct 2026" />
+
+        </LinearLayout>
+
         <TextView
-            android:id="@+id/tvActiveCount"
+            android:id="@+id/tvSortByTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/bg_badge_capsule"
-            android:paddingHorizontal="@dimen/_10sdp"
-            android:paddingVertical="@dimen/_4sdp"
-            android:textColor="@color/stitch_tertiary"
-            android:textSize="@dimen/_10ssp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:drawableStart="@drawable/ic_filter_list"
+            android:drawableEnd="@drawable/ic_expand_more"
+            android:drawablePadding="@dimen/_4sdp"
+            android:gravity="center_vertical"
+            android:padding="@dimen/_4sdp"
+            android:text="Sort by Time"
+            android:textColor="@color/primary_color"
+            android:textSize="@dimen/_11ssp"
             android:fontFamily="@font/roboto_medium"
-            tools:text="3 Active" />
+            app:drawableTint="@color/primary_color" />
+
+        <!-- Count Active Pill (kept for reference/hidden) -->
+        <TextView
+            android:id="@+id/tvActiveCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
 
     </RelativeLayout>
 

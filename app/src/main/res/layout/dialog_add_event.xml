@@ -51,11 +51,33 @@
             android:layout_height="wrap_content"
             style="@style/GlassInput"
             android:hint="Event Date"
-            android:layout_marginBottom="@dimen/_8sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
             android:textColorHint="@color/gray">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etEventDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_secondary"
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="@dimen/_12ssp"
+                android:focusable="false"
+                android:clickable="true"
+                android:inputType="none" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Event Time (Optional) -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilEventTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/GlassInput"
+            android:hint="Event Time (Optional)"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:textColorHint="@color/gray">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etEventTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_secondary"
