@@ -113,6 +113,13 @@ class CustomAlertDialog(private val context: Context) {
 
         dialog.show()
 
+        val window = dialog.window
+        if (window != null) {
+            window.statusBarColor = Color.TRANSPARENT
+            val controller = androidx.core.view.WindowCompat.getInsetsController(window, window.decorView)
+            controller.isAppearanceLightStatusBars = true
+        }
+
         // Force appropriate dialog width for responsive scaling on different screen sizes
         val width = (context.resources.displayMetrics.widthPixels * 0.85).toInt()
         dialog.window?.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)

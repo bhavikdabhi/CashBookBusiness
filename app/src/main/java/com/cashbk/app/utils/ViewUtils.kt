@@ -24,14 +24,12 @@ fun View.stopPulseAnimation() {
 }
 
 fun AppCompatActivity.setupStatusAndNavBar() {
-    // Set status bar color to primary
-    window.statusBarColor = ContextCompat.getColor(this, R.color.primary)
+    window.statusBarColor = android.graphics.Color.TRANSPARENT
     
-    // Ensure status bar text is white (not light appearance)
+    val isDark = (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
     val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
-    windowInsetsController.isAppearanceLightStatusBars = false
+    windowInsetsController.isAppearanceLightStatusBars = !isDark
+    windowInsetsController.isAppearanceLightNavigationBars = !isDark
     
-    // Hide transient system navigation bar but show on swipe up
-    windowInsetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-    windowInsetsController.hide(WindowInsetsCompat.Type.navigationBars())
+    windowInsetsController.show(WindowInsetsCompat.Type.navigationBars())
 }

@@ -74,6 +74,16 @@ class CustomOptionsMenu(private val context: Context, private val anchor: View) 
 
     fun setOnMemberClickListener(listener: () -> Unit): CustomOptionsMenu {
         this.onMember = listener
+        binding.tvMenuMember.text = "Member"
+        binding.ivMenuMember.setImageResource(R.drawable.ic_menu_member)
+        binding.menuMember.visibility = View.VISIBLE
+        return this
+    }
+
+    fun setOnShareClickListener(listener: () -> Unit): CustomOptionsMenu {
+        this.onMember = listener
+        binding.tvMenuMember.text = "Share"
+        binding.ivMenuMember.setImageResource(R.drawable.ic_action_group)
         binding.menuMember.visibility = View.VISIBLE
         return this
     }
@@ -92,8 +102,7 @@ class CustomOptionsMenu(private val context: Context, private val anchor: View) 
     
     // Allows setting text manually if action is slightly different (e.g. Manage Partner vs Member)
     fun setMemberText(text: String): CustomOptionsMenu {
-        // We'd have to find the TextView inside menuMember, unfortunately layout_options_menu 
-        // doesn't have an ID for the TextView. We'll skip setting text or use data binding.
+        binding.tvMenuMember.text = text
         return this
     }
 

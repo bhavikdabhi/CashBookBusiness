@@ -167,4 +167,11 @@
     <color name="green_bg">#E8F5EE</color>
     <color name="red_bg">#FDECEA</color>
     <color name="nav_bg">#FFFFFF</color>
+
+    <!-- Authentication typography tokens -->
+    <color name="auth_heading">#243A3B</color>
+    <color name="auth_body">#526666</color>
+    <color name="auth_hint">#7A8C8C</color>
+    <color name="auth_field_text">#263738</color>
+    <color name="auth_nav_inactive">#667A7A</color>
 </resources>

@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.cashbk.app.R
@@ -23,6 +24,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
 import androidx.core.content.ContextCompat
 import com.cashbk.app.utils.GoogleDriveManager
+import com.cashbk.app.utils.ThemeAnimationHelper
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -302,25 +304,60 @@ class ProfileFragment : Fragment() {
         binding.btnAppearanceLight.setTextColor(gray)
         binding.btnAppearanceSystem.setTextColor(gray)
 
+        val appCompatActivity = activity as? AppCompatActivity
+        val businessActivity = activity as? com.cashbk.app.business.BusinessDetailActivity
         // Set styles for selected option
         when (theme) {
             "dark" -> {
                 binding.btnAppearanceDark.setBackgroundResource(R.drawable.bg_segmented_selected)
                 binding.btnAppearanceDark.setTextColor(white)
-                saveThemePreference("dark")
-                androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES)
+                if (appCompatActivity != null) {
+                    ThemeAnimationHelper.switchThemeWithAnimation(
+                        activity = appCompatActivity,
+                        sourceView = binding.btnAppearanceDark,
+                        newNightMode = androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES,
+                        themePrefValue = "dark",
+                        currentBusinessId = businessActivity?.getCurrentBusinessId(),
+                        selectedTabId = R.id.nav_profile
+                    )
+                } else {
+                    saveThemePreference("dark")
+                    androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES)
+                }
             }
             "light" -> {
                 binding.btnAppearanceLight.setBackgroundResource(R.drawable.bg_segmented_selected)
                 binding.btnAppearanceLight.setTextColor(white)
-                saveThemePreference("light")
-                androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO)
+                if (appCompatActivity != null) {
+                    ThemeAnimationHelper.switchThemeWithAnimation(
+                        activity = appCompatActivity,
+                        sourceView = binding.btnAppearanceLight,
+                        newNightMode = androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO,
+                        themePrefValue = "light",
+                        currentBusinessId = businessActivity?.getCurrentBusinessId(),
+                        selectedTabId = R.id.nav_profile
+                    )
+                } else {
+                    saveThemePreference("light")
+                    androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO)
+                }
             }
             "system" -> {
                 binding.btnAppearanceSystem.setBackgroundResource(R.drawable.bg_segmented_selected)
                 binding.btnAppearanceSystem.setTextColor(white)
-                saveThemePreference("system")
-                androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                if (appCompatActivity != null) {
+                    ThemeAnimationHelper.switchThemeWithAnimation(
+                        activity = appCompatActivity,
+                        sourceView = binding.btnAppearanceSystem,
+                        newNightMode = androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
+                        themePrefValue = "system",
+                        currentBusinessId = businessActivity?.getCurrentBusinessId(),
+                        selectedTabId = R.id.nav_profile
+                    )
+                } else {
+                    saveThemePreference("system")
+                    androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                }
             }
         }
     }

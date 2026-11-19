@@ -69,6 +69,12 @@
     <color name="auth_surface_high">#1E2C2C</color>
     <color name="auth_ic">#02929A</color>
 
+    <!-- Authentication typography tokens -->
+    <color name="auth_heading">#F1F7F7</color>
+    <color name="auth_body">#B4C7C7</color>
+    <color name="auth_hint">#7F9C9C</color>
+    <color name="auth_field_text">#F1F7F7</color>
+
     <!-- Glass UI -->
     <color name="glass_border">#1FCFD3D3</color>
 
@@ -167,4 +173,5 @@
     <color name="green_bg">#263DB87A</color>
     <color name="red_bg">#26F4544A</color>
     <color name="nav_bg">#1E2C2C</color>
+    <color name="auth_nav_inactive">#91A7A7</color>
 </resources>

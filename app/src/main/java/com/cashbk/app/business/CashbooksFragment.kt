@@ -71,12 +71,19 @@ class CashbooksFragment : Fragment() {
         database = FirebaseDatabase.getInstance().reference.child("notebooks")
         setupRecyclerView()
 
-
+        if (!currentBusinessId.isNullOrEmpty()) {
+            fetchNotebooks()
+        }
     }
 
     fun updateBusinessId(businessId: String?) {
         if (businessId == currentBusinessId) return
         currentBusinessId = businessId
+
+        // If fragment view is not created or fragment is not attached yet,
+        // fetchNotebooks() will be called automatically in onViewCreated().
+        if (!isAdded || _binding == null) return
+
         if (!currentBusinessId.isNullOrEmpty()) {
             fetchNotebooks()
         } else {
@@ -93,15 +100,14 @@ class CashbooksFragment : Fragment() {
             notebookMonthlyBalances.clear()
             updateSummaryStats()
 
-            if (_binding != null) {
-                binding.layoutShimmerNotebooks.stopPulseAnimation()
-                binding.layoutShimmerNotebooks.visibility = View.GONE
-            }
+            binding.layoutShimmerNotebooks.stopPulseAnimation()
+            binding.layoutShimmerNotebooks.visibility = View.GONE
         }
     }
 
     private fun fetchNotebooks() {
         val id = currentBusinessId ?: return
+        val currentContext = context ?: return
         notebookJob?.cancel()
 
         notebookBalances.clear()
@@ -114,7 +120,7 @@ class CashbooksFragment : Fragment() {
             binding.layoutEmpty.visibility = View.GONE
         }
 
-        val repository = com.cashbk.app.data.di.AppContainer.getRepository(requireContext())
+        val repository = com.cashbk.app.data.di.AppContainer.getRepository(currentContext)
         notebookJob = lifecycleScope.launch {
             repository.getNotebooksFlow(id).collectLatest { notebooks ->
                 notebookList.clear()
@@ -223,7 +229,7 @@ class CashbooksFragment : Fragment() {
         popup.setOnRenameClickListener {
             showRenameNotebookDialog(notebook)
         }
-        popup.setOnMemberClickListener {
+        popup.setOnShareClickListener {
             val sendIntent = Intent().apply {
                 action = Intent.ACTION_SEND
                 putExtra(Intent.EXTRA_TEXT, "Join my notebook \"${notebook.name}\" on CashBook: https://cashbk.app/join/${notebook.id}")

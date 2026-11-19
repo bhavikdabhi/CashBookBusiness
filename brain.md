@@ -1,0 +1,457 @@
+# CashBook Business — Project Brain
+
+> Purpose: a fast, accurate orientation guide for developers and AI tools working on this repository.
+> Last project snapshot: 2026-11-18
+
+## 1. What this project is
+
+**CashBook Business** is a native Android bookkeeping and collaborative ledger app written in Kotlin. It manages business-level organizations, cashbooks (notebooks), income/expense transactions, parties, categories, members, events, receipts, reports, themes, and app-lock security.
+
+Core model:
+
+```text
+User
+  └── Business
+        ├── Notebook / Cashbook
+        │     ├── Transactions (cash in / cash out)
+        │     ├── Parties
+        │     ├── Categories
+        │     └── Notebook members
+        └── Business partners
+```
+
+The app has two main backend integrations:
+
+- **Laravel REST API** for authentication and OTP workflows.
+- **Firebase Authentication + Firebase Realtime Database** for session identity and live data.
+- **Google Drive** for receipt-file storage.
+- **Room** plus a sync queue for local persistence and synchronization support.
+
+## 2. Quick start
+
+### Requirements
+
+- Android Studio with JDK 17 or newer
+- Android SDK 34
+- A Firebase project
+- A Laravel OTP/auth backend compatible with `LaravelApiService`
+- Google sign-in/Drive API configuration for receipt uploads
+- Internet access for authentication and cloud sync
+
+### Main build commands
+
+```bash
+# Debug APK
+./gradlew assembleDebug
+
+# Release APK
+./gradlew assembleRelease
+
+# Run all unit tests
+./gradlew test
+
+# Install debug build
+./gradlew installDebug
+```
+
+Release builds currently trigger a custom keystore-generation task if `release.keystore` is missing.
+
+### Configuration files
+
+- `app/google-services.json` — Firebase Android configuration
+- `google-services.json` — workspace copy
+- `local.properties` — local Android SDK path
+- `gradle/libs.versions.toml` — selected dependency version catalog entries
+- `app/build.gradle.kts` — actual module dependencies, SDK levels, signing, and build settings
+- `app/src/main/AndroidManifest.xml` — activities, application class, permissions, and FileProvider
+
+Do not commit secrets or signing credentials. Review signing configuration before release distribution.
+
+## 3. Repository structure
+
+```text
+CashBookBusiness/
+├── app/src/main/java/com/cashbk/app/
+│   ├── CashBookApp.kt                 # Application startup and auth-driven sync
+│   ├── splash/                        # Splash routing
+│   ├── auth/                          # Auth UI, OTP, Firebase custom-token login, PIN/biometric
+│   ├── business/                      # Business selection/detail/settings/cashbooks
+│   ├── notebook/                      # Notebook shell, ledger, settings, filters
+│   ├── transaction/                   # Add/edit transaction UI and adapters
+│   ├── party/                         # Party management and business partners
+│   ├── partner/                       # Partner/user models and adapters
+│   ├── category/                      # Category management
+│   ├── members/                       # Notebook/business member management
+│   ├── events/                        # Calendar/event UI
+│   ├── profile/                       # User profile, Drive, theme/PIN settings
+│   ├── data/
+│   │   ├── FirebaseService.kt         # Small direct-Firebase utility
+│   │   ├── repository/                # AppRepository with Room-first operations
+│   │   ├── di/AppContainer.kt         # Manual singleton container
+│   │   ├── local/room/                # Room entities, DAOs, database
+│   │   └── sync/                      # Sync manager, queue worker, network monitor
+│   ├── network/                       # Retrofit/Laravel API client and response models
+│   └── utils/                         # Theme, PDF, Drive, menu, dialog, toast helpers
+├── app/src/main/res/
+│   ├── layout/                        # XML Activity/Fragment/view layouts
+│   ├── drawable/ drawable-night/      # Icons, cards, backgrounds
+│   ├── menu/                          # Bottom and options menus
+│   ├── values/                        # Themes, colors, strings, styles, dimensions
+│   └── xml/                           # Backup, provider, and network configuration
+├── app/src/androidTest/java/           # Android instrumentation tests
+├── app/src/test/java/                  # JVM unit tests
+├── README.md                           # Original product/setup overview
+└── brain.md                            # This developer-maintenance guide
+```
+
+There is also legacy package code under `com.example.cashbookbusiness.MainActivity.kt`; the configured application flow uses `com.cashbk.app.*` and this legacy package should not be treated as the main app entry point.
+
+## 4. Application navigation and user experience
+
+### Main entry flow
+
+```text
+SplashActivity
+  ├── no Firebase user → AuthActivity
+  ├── Firebase user + app lock enabled → PinLockActivity
+  └── Firebase user + app lock disabled → BusinessDetailActivity
+```
+
+Authentication screens route from `AuthActivity` through login/register and OTP verification fragments.
+
+### Business-level navigation
+
+`BusinessDetailActivity` is the primary business shell. It contains:
+
+- Cashbooks
+- Profile
+- Events
+- Business settings
+
+Its business selector loads owned businesses and may include partner businesses. The selected business ID is passed to child fragments.
+
+### Notebook-level navigation
+
+`NotebookActivity` is opened with a `notebookId`. Its bottom navigation contains:
+
+- Transactions / ledger
+- Parties
+- Categories
+- Notebook settings
+
+The fragment receives the notebook ID and a resolved role string.
+
+### Main data entities
+
+| Entity | Main purpose |
+|---|---|
+| User | Account profile: UID, name, email/phone details |
+| Business | Top-level organization with owner UID |
+| Notebook | Ledger/book belonging to a business |
+| Transaction | Cash-in or cash-out ledger entry |
+| Party | Customer, supplier, employee, vendor, or similar party |
+| Category | Income/expense classification |
+| Member | Notebook role membership |
+| Partner | Business-wide partner membership |
+| Event | Calendar or reminder entry associated with the app/business |
+
+## 5. Authentication and identity
+
+Authentication is hybrid:
+
+```text
+Laravel OTP/API
+  → Laravel access token stored in SharedPreferences (AppPrefs/access_token)
+  → Firebase custom token
+  → Firebase Authentication user
+  → UID used for Firebase data and sync
+```
+
+Implemented paths:
+
+- `AuthManager.sendEmailOtp()` / `sendPhoneOtp()`
+- `AuthManager.verifyAndAuthenticate()` / `verifyAndAuthenticatePhone()`
+- Laravel endpoints include send OTP, verify OTP, register, login, and profile
+- `PinLockActivity` provides PIN and biometric app-lock behavior
+- `CashBookApp` starts/stops realtime sync depending on Firebase auth state
+
+The base Laravel URL is intentionally obfuscated in `RetrofitClient.kt`. The actual request endpoints are defined in `LaravelApiService.kt`.
+
+### Authentication UI
+
+- Login and registration content is defined in `fragment_login.xml` and `fragment_register.xml`.
+- The bottom auth navigation is in `activity_auth.xml`, controlled by `AuthActivity.kt`, and uses `bottom_auth_menu.xml`.
+- Auth navigation is a compact floating pill-style bottom bar with a 64dp-scaled height, theme-aware margins, 20dp icons, and labeled active/inactive states.
+- Light and dark themes use dedicated auth typography tokens: `auth_heading`, `auth_body`, `auth_hint`, `auth_field_text`, and `auth_nav_inactive`.
+- Login/register headings, subtitles, fields, hints, Google actions, support text, and legal text now use theme-aware contrast colors rather than fixed dark-theme-oriented colors.
+
+## 6. Firebase data model
+
+The app uses Firebase Realtime Database paths. Important known roots:
+
+```text
+/users/{uid}
+/businesses/{businessId}
+/business_members/{businessId}/{uid}
+/notebooks/{notebookId}
+/members/{notebookId}/{uid}
+/transactions/{notebookId}/{transactionId}
+/categories/{notebookId}/{categoryId}
+/parties/{notebookId}/{partyId}
+/events/{businessId}/{eventId}             # used by EventsFragment
+```
+
+Representative user:
+
+```json
+{
+  "name": "Example User",
+  "phone": "+919876543210",
+  "email": "user@example.com"
+}
+```
+
+Representative business:
+
+```json
+{
+  "name": "Acme Corp",
+  "ownerId": "firebase_uid",
+  "createdAt": 1718362350000,
+  "isPartner": false,
+  "updatedAt": 1718362350000
+}
+```
+
+Representative notebook:
+
+```json
+{
+  "name": "Daily Sales",
+  "businessId": "business_id",
+  "createdBy": "firebase_uid",
+  "createdAt": 1718362350000,
+  "updatedAt": 1718362350000
+}
+```
+
+Representative transaction:
+
+```json
+{
+  "amount": 2500.0,
+  "type": "in",
+  "remark": "Client payment",
+  "createdBy": "firebase_uid",
+  "date": "2026-06-14",
+  "time": "02:15 PM",
+  "createdAt": 1718362350000,
+  "updatedAt": 1718362350000,
+  "categoryId": "general",
+  "categoryName": "General",
+  "partyId": "party_id",
+  "partyName": "Party Name",
+  "receiptUrl": "https://drive.google.com/file/d/FILE_ID/view",
+  "receiptName": "receipt.jpg"
+}
+```
+
+`ServerValue.TIMESTAMP` is used for some added/created timestamps. The exact field names should be verified against the code that writes a record before changing data contracts.
+
+## 7. Roles and permissions
+
+### Business roles
+
+- **Owner** — manages owned business, notebooks, partners, and settings.
+- **Partner** — business-level access; partner membership is stored under `business_members/{businessId}/{uid}`.
+
+Business member UI permits partner role and provides full access without owner delete privileges, subject to actual activity checks.
+
+### Notebook roles
+
+- **Owner** — resolved when the notebook's business owner is the current Firebase UID.
+- **Admin** — manages notebook members and notebook data, up to a maximum of three admins enforced in the member dialog.
+- **Writer** — can add/edit/delete ledger entries.
+- **Reader** — view-only transaction access.
+
+Role resolution is partly direct in activities/fragments and partly based on membership data. Before adding a permission-sensitive feature, search for existing role checks and enforce both UI and backend/database security rules.
+
+## 8. Data flow
+
+### Direct Firebase UI flow (current primary pattern)
+
+Many screens read and write Firebase directly:
+
+```text
+Activity / Fragment
+  → FirebaseDatabase / DatabaseReference
+  → DataSnapshot / ValueEventListener
+  → domain data class
+  → RecyclerView adapter / XML binding
+```
+
+Examples:
+
+- `NotebookHomeFragment` listens to transactions, parties, categories, and users.
+- `CashbooksFragment` reads notebooks from Firebase.
+- `MembersActivity` reads member IDs and resolves profiles under `/users`.
+- `EventsFragment` reads business/notebook/calendar-related data.
+- `AddTransactionFragment` writes transaction records directly to `/transactions/{notebookId}`.
+
+### Room and sync flow (partial/offline infrastructure)
+
+```text
+UI → AppRepository
+   → Room DAO
+   → local SQLite entity
+   → SyncQueueEntity
+   → SyncManager
+   → Firebase Realtime Database
+
+Firebase listener
+   → timestamp/version conflict check
+   → Room entity insertion/update
+   → UI Flow
+```
+
+`AppContainer` constructs shared `AppDatabase`, `NetworkMonitor`, `SyncManager`, and `AppRepository` singletons.
+
+Key details:
+
+- `AppDatabase` database name: `cashbook_business_db`
+- Room schema version: `1`
+- Missing/changed schema currently uses destructive fallback migration.
+- `SyncQueueEntity` statuses: `PENDING`, `SYNCING`, `FAILED` (and retry behavior in `SyncManager`).
+- Sync path mapping covers business, notebook, transaction, category, party, and user.
+- Realtime sync listens for authenticated-user data and nested notebook content.
+- `SyncWorker` exists for pending queue execution but should be confirmed in WorkManager scheduling before relying on it as a complete offline guarantee.
+
+### Important architecture caveat
+
+The application is currently mixed: many UI features use Firebase directly, while the repository/Room layer is not yet the source of truth for every feature. Do not assume that all writes pass through `AppRepository` or `SyncManager`.
+
+## 9. Google Drive receipts
+
+Google Drive is used as file storage for transaction receipts.
+
+- `GoogleDriveManager` creates/finds the `CashBook_Assets` folder.
+- Files are uploaded with the `drive.file` OAuth scope.
+- Public-link metadata is configured so receipt links can be consumed by the app and collaborators.
+- Glide loads receipt thumbnails in applicable UI.
+- Deleting a transaction can also attempt deletion of the linked Drive file.
+- `FileProvider` is declared for app-local file sharing.
+
+Google Sign-In, OAuth consent, Android SHA-1/SHA-256 fingerprints, and Drive scopes must match the Firebase/Google Cloud project.
+
+## 10. PDF reports
+
+`utils/PdfGenerator.kt` generates A4 PDF statements locally using Android `PdfDocument`.
+
+Typical inputs:
+
+- Notebook name
+- Displayed transaction list
+- Current net balance
+
+Statements include ledger descriptions, cash-in/cash-out values, dates, and running balance depending on the implementation selected by the filter UI.
+
+## 11. UI and resources
+
+- XML layouts use Android ViewBinding.
+- Material Components provide bottom sheets, dialogs, chips, spinners, and navigation.
+- `sdp` and `ssp` provide scalable dimensions.
+- Glide provides image loading.
+- Light/dark theme preference is stored in `theme_prefs/app_theme`.
+- App-lock preference is stored in `app_lock_prefs/app_lock_enabled`.
+- Custom utilities include toast, alert, popup-menu, status/navigation bars, and animations.
+
+Main layout areas live under `app/src/main/res/layout`. Keep resources localized in `values/` and use drawable-night variants for theme-specific assets where appropriate.
+
+## 12. Build and dependencies
+
+### Android/Kotlin
+
+- Application ID / namespace: `com.cashbk.app`
+- `compileSdk`: 34
+- `targetSdk`: 34
+- `minSdk`: 24
+- Java/Kotlin JVM target: 1.8
+- ViewBinding: enabled
+
+### Important libraries
+
+- Firebase BOM 32.7.0: Auth, Database, Analytics
+- Retrofit 2.9 + OkHttp logging: Laravel API
+- Google Play Services Auth + Google Drive API
+- Room 2.6.1
+- WorkManager 2.9.0
+- Glide 4.16.0
+- Kotlin Coroutines 1.7.3
+- SDP/SSP responsive sizing
+- AndroidX Biometric
+- Gson
+
+### Build behavior
+
+- Debug builds have shrink and minify disabled.
+- Release builds enable minification and resource shrinking.
+- Release signing reads `keystore.properties` when it exists.
+- A custom release keystore task is configured at the root/app Gradle level.
+- ProGuard rules are in `app/proguard-rules.pro`.
+
+## 13. Known implementation hotspots
+
+Before making structural changes, inspect these areas:
+
+- `auth/AuthManager.kt` — OTP/login/Firebase custom-token contract
+- `data/sync/manager/SyncManager.kt` — Firebase-to-Room mapping and conflict resolution
+- `data/repository/AppRepository.kt` — Room-first and sync queue behavior
+- `splash/SplashActivity.kt` — startup routing and app lock
+- `business/BusinessDetailActivity.kt` — business shell and selected-business state
+- `notebook/NotebookActivity.kt` — notebook shell and role resolution
+- `notebook/NotebookHomeFragment.kt` — ledger reads, filters, reports, and totals
+- `transaction/AddTransactionFragment.kt` — transaction validation and Drive upload
+- `members/MembersActivity.kt` — membership and role management
+- `profile/ProfileFragment.kt` — profile, app lock, theme, and migration/Drive-related behavior
+- `events/EventsFragment.kt` — calendar/event feature
+- `utils/PdfGenerator.kt` — statement generation
+- `network/RetrofitClient.kt` — auth API base URL and HTTP configuration
+
+## 14. Maintenance rules
+
+When modifying this project:
+
+1. **Update `brain.md` after every meaningful project update.**
+2. Record changed files, behavior, data paths, dependencies, and migration impact.
+3. If the database contract changes, update the schema section and any Room entities/DAOs.
+4. If a new Activity/Fragment is added, update navigation and structure sections.
+5. If a role or permission changes, update the Roles and Permissions section.
+6. If authentication or API endpoints change, update the Authentication and Network sections.
+7. If a dependency is added or removed, update the dependency section.
+8. Keep this file concise enough to understand quickly, but include enough detail for safe debugging.
+9. Add tests for data-contract, sync, authentication, and permission changes.
+10. Do not expose production secrets, Firebase credentials, API keys, tokens, or signing passwords in this file.
+
+## 15. Update log
+
+### 2026-11-18 — Authentication UI improved
+
+- Added theme-aware authentication text and hint color tokens for light and dark modes.
+- Improved login/register heading, subtitle, field, Google button, support-link, and legal-text readability.
+- Reduced and restyled the auth bottom navigation into a compact floating pill with clearer selected/unselected contrast.
+- Updated auth bottom navigation icon and label sizing for more consistent appearance.
+- Debug resource validation and `assembleDebug` build completed.
+
+### 2026-11-18 — Initial project brain created
+
+- Documented native Android project purpose and hierarchy.
+- Documented auth, Firebase, Room, sync, and Google Drive architecture.
+- Documented main Activities, Fragments, permissions, navigation, and data paths.
+- Added maintenance instructions for future updates.
+- Captured the current mixed Firebase-direct and Room-repository architecture.
+
+### 2026-11-18 — Improved login/register UI and theme-aware auth tokens
+
+- Documented the new login and registration XML layouts and their integration in `AuthActivity`.
+- Described the compact floating pill-style bottom bar for auth navigation.
+- Explained the use of theme-aware typography tokens and contrast colors in light and dark themes for auth screens.
