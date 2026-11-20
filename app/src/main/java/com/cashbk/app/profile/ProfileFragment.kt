@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.cashbk.app.R
@@ -232,9 +233,9 @@ class ProfileFragment : Fragment() {
         }
 
         // Appearance Selection Logic
-        binding.btnAppearanceDark.setOnClickListener { updateAppearanceUI("dark") }
-        binding.btnAppearanceLight.setOnClickListener { updateAppearanceUI("light") }
-        binding.btnAppearanceSystem.setOnClickListener { updateAppearanceUI("system") }
+        binding.btnAppearanceDark.setOnClickListener { onThemeButtonClicked("dark", it) }
+        binding.btnAppearanceLight.setOnClickListener { onThemeButtonClicked("light", it) }
+        binding.btnAppearanceSystem.setOnClickListener { onThemeButtonClicked("system", it) }
 
         binding.switchNotifications.setOnCheckedChangeListener { _, isChecked ->
             val status = if (isChecked) "Enabled" else "Disabled"
@@ -291,8 +292,8 @@ class ProfileFragment : Fragment() {
     }
 
     private fun updateAppearanceUI(theme: String) {
-        val white = ContextCompat.getColor(requireContext(), R.color.white)
-        val gray = ContextCompat.getColor(requireContext(), R.color.gray)
+        val selectedTextColor = ContextCompat.getColor(requireContext(), R.color.white)
+        val unselectedTextColor = ContextCompat.getColor(requireContext(), R.color.text_secondary)
 
         // Reset backgrounds of all options
         binding.btnAppearanceDark.setBackgroundResource(0)
@@ -300,65 +301,56 @@ class ProfileFragment : Fragment() {
         binding.btnAppearanceSystem.setBackgroundResource(0)
 
         // Reset text colors of all options
-        binding.btnAppearanceDark.setTextColor(gray)
-        binding.btnAppearanceLight.setTextColor(gray)
-        binding.btnAppearanceSystem.setTextColor(gray)
+        binding.btnAppearanceDark.setTextColor(unselectedTextColor)
+        binding.btnAppearanceLight.setTextColor(unselectedTextColor)
+        binding.btnAppearanceSystem.setTextColor(unselectedTextColor)
 
-        val appCompatActivity = activity as? AppCompatActivity
-        val businessActivity = activity as? com.cashbk.app.business.BusinessDetailActivity
         // Set styles for selected option
         when (theme) {
             "dark" -> {
                 binding.btnAppearanceDark.setBackgroundResource(R.drawable.bg_segmented_selected)
-                binding.btnAppearanceDark.setTextColor(white)
-                if (appCompatActivity != null) {
-                    ThemeAnimationHelper.switchThemeWithAnimation(
-                        activity = appCompatActivity,
-                        sourceView = binding.btnAppearanceDark,
-                        newNightMode = androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES,
-                        themePrefValue = "dark",
-                        currentBusinessId = businessActivity?.getCurrentBusinessId(),
-                        selectedTabId = R.id.nav_profile
-                    )
-                } else {
-                    saveThemePreference("dark")
-                    androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES)
-                }
+                binding.btnAppearanceDark.setTextColor(selectedTextColor)
             }
             "light" -> {
                 binding.btnAppearanceLight.setBackgroundResource(R.drawable.bg_segmented_selected)
-                binding.btnAppearanceLight.setTextColor(white)
-                if (appCompatActivity != null) {
-                    ThemeAnimationHelper.switchThemeWithAnimation(
-                        activity = appCompatActivity,
-                        sourceView = binding.btnAppearanceLight,
-                        newNightMode = androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO,
-                        themePrefValue = "light",
-                        currentBusinessId = businessActivity?.getCurrentBusinessId(),
-                        selectedTabId = R.id.nav_profile
-                    )
-                } else {
-                    saveThemePreference("light")
-                    androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO)
-                }
+                binding.btnAppearanceLight.setTextColor(selectedTextColor)
             }
             "system" -> {
                 binding.btnAppearanceSystem.setBackgroundResource(R.drawable.bg_segmented_selected)
-                binding.btnAppearanceSystem.setTextColor(white)
-                if (appCompatActivity != null) {
-                    ThemeAnimationHelper.switchThemeWithAnimation(
-                        activity = appCompatActivity,
-                        sourceView = binding.btnAppearanceSystem,
-                        newNightMode = androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
-                        themePrefValue = "system",
-                        currentBusinessId = businessActivity?.getCurrentBusinessId(),
-                        selectedTabId = R.id.nav_profile
-                    )
-                } else {
-                    saveThemePreference("system")
-                    androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-                }
+                binding.btnAppearanceSystem.setTextColor(selectedTextColor)
             }
+        }
+    }
+
+    private fun onThemeButtonClicked(theme: String, sourceView: View) {
+        val context = context ?: return
+        val sharedPrefs = context.getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
+        val currentTheme = sharedPrefs.getString("app_theme", "system") ?: "system"
+        if (currentTheme == theme) return
+
+        updateAppearanceUI(theme)
+
+        val appCompatActivity = activity as? AppCompatActivity
+        val businessActivity = activity as? com.cashbk.app.business.BusinessDetailActivity
+
+        val newNightMode = when (theme) {
+            "dark" -> AppCompatDelegate.MODE_NIGHT_YES
+            "light" -> AppCompatDelegate.MODE_NIGHT_NO
+            else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        }
+
+        if (appCompatActivity != null) {
+            ThemeAnimationHelper.switchThemeWithAnimation(
+                activity = appCompatActivity,
+                sourceView = sourceView,
+                newNightMode = newNightMode,
+                themePrefValue = theme,
+                currentBusinessId = businessActivity?.getCurrentBusinessId(),
+                selectedTabId = R.id.nav_profile
+            )
+        } else {
+            saveThemePreference(theme)
+            AppCompatDelegate.setDefaultNightMode(newNightMode)
         }
     }
 
@@ -440,7 +432,7 @@ class ProfileFragment : Fragment() {
                         binding.layoutDriveActions.visibility = View.VISIBLE
                     } else {
                         binding.tvDriveStatus.text = "Not Connected"
-                        binding.tvDriveStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.gray))
+                        binding.tvDriveStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.on_surface_variant))
                         binding.btnConnectDrive.visibility = View.VISIBLE
                         binding.layoutDriveActions.visibility = View.GONE
                     }

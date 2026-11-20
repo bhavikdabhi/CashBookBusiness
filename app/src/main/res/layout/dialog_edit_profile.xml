@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Full Name"
-        android:textColorHint="@color/gray">
+        android:textColorHint="@color/on_surface_variant">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_name"
@@ -60,7 +60,7 @@
         android:textColor="@color/text_secondary"
         android:hint="Phone Number"
         style="@style/GlassInput"
-        android:textColorHint="@color/gray" >
+        android:textColorHint="@color/on_surface_variant" >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_phone"
@@ -80,7 +80,7 @@
         android:text="Update Profile"
         android:fontFamily="@font/roboto_bold"
         android:textSize="@dimen/_13ssp"
-        android:textColor="@color/auth_bg"
+        android:textColor="@color/white"
         android:textAllCaps="false"
         android:elevation="@dimen/_16sdp"
         android:background="@drawable/bg_gradient_button"

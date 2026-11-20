@@ -86,7 +86,7 @@
                 android:src="@drawable/ic_action_edit"
                 app:layout_constraintBottom_toBottomOf="@id/iv_profile"
                 app:layout_constraintEnd_toEndOf="@id/iv_profile"
-                app:tint="@color/bg_color" />
+                app:tint="@color/white" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
@@ -127,6 +127,11 @@
             android:layout_marginHorizontal="@dimen/_16sdp"
             android:layout_marginTop="@dimen/_24sdp"
             style="@style/Widget.App.GlassCard"
+            app:cardBackgroundColor="@color/card_bg"
+            app:cardCornerRadius="@dimen/_12sdp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/glass_border"
+            app:strokeWidth="1dp"
             app:layout_constraintTop_toBottomOf="@id/tv_profile_name">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -172,7 +177,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_12sdp"
                 android:text="FULL NAME"
-                android:textColor="@color/gray"
+                android:textColor="@color/on_surface_variant"
                 android:fontFamily="@font/roboto_bold"
                 android:textSize="@dimen/_10ssp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -208,7 +213,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_12sdp"
                 android:text="EMAIL ADDRESS"
-                android:textColor="@color/gray"
+                android:textColor="@color/on_surface_variant"
                 android:fontFamily="@font/roboto_bold"
                 android:textSize="@dimen/_10ssp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -244,7 +249,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_12sdp"
                 android:text="MOBILE NUMBER"
-                android:textColor="@color/gray"
+                android:textColor="@color/on_surface_variant"
                 android:fontFamily="@font/roboto_bold"
                 android:textSize="@dimen/_10ssp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -278,378 +283,392 @@
         </com.google.android.material.card.MaterialCardView>
 
         <!-- Security Card -->
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_security"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/_16sdp"
             android:layout_marginTop="@dimen/_12sdp"
-            android:background="@drawable/bg_auth_card"
-            android:padding="@dimen/_16sdp"
+            style="@style/Widget.App.GlassCard"
             app:layout_constraintTop_toBottomOf="@id/card_personal_info">
 
-            <ImageView
-                android:id="@+id/ic_security"
-                android:layout_width="@dimen/_18sdp"
-                android:layout_height="@dimen/_18sdp"
-                android:src="@drawable/ic_security_enc"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/auth_glow_1" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_8sdp"
-                android:fontFamily="@font/roboto_bold"
-                android:text="Security"
-                android:textColor="@color/text_secondary"
-                android:textSize="@dimen/_12ssp"
-                app:layout_constraintBottom_toBottomOf="@id/ic_security"
-                app:layout_constraintStart_toEndOf="@id/ic_security"
-                app:layout_constraintTop_toTopOf="@id/ic_security" />
-
-
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/row_biometric"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_12sdp"
-                android:padding="@dimen/_12sdp"
-                app:layout_constraintTop_toBottomOf="@id/ic_security">
+                android:padding="@dimen/_16sdp">
 
                 <ImageView
-                    android:id="@+id/ic_biometric"
-                    android:layout_width="@dimen/_16sdp"
-                    android:layout_height="@dimen/_16sdp"
-                    android:src="@drawable/ic_auth_lock"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:id="@+id/ic_security"
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="@dimen/_18sdp"
+                    android:src="@drawable/ic_security_enc"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/gray" />
+                    app:tint="@color/auth_glow_1" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_12sdp"
-                    android:text="App Lock (PIN / Biometric)"
+                    android:layout_marginStart="@dimen/_8sdp"
+                    android:fontFamily="@font/roboto_bold"
+                    android:text="Security"
                     android:textColor="@color/text_secondary"
-                    android:textSize="@dimen/_11ssp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/ic_biometric"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:textSize="@dimen/_12ssp"
+                    app:layout_constraintBottom_toBottomOf="@id/ic_security"
+                    app:layout_constraintStart_toEndOf="@id/ic_security"
+                    app:layout_constraintTop_toTopOf="@id/ic_security" />
 
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/switch_biometric"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/_17sdp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/btn_reset_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-
-                android:padding="@dimen/_12sdp"
-                app:layout_constraintTop_toBottomOf="@id/row_biometric">
-
-                <ImageView
-                    android:id="@+id/ic_reset"
-                    android:layout_width="@dimen/_16sdp"
-                    android:layout_height="@dimen/_16sdp"
-                    android:src="@drawable/ic_auth_lock"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/gray" />
-
-                <TextView
-                    android:layout_width="wrap_content"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/row_biometric"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_12sdp"
-                    android:text="Reset Password"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="@dimen/_11ssp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/ic_reset"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:layout_marginTop="@dimen/_12sdp"
+                    android:background="@drawable/bg_segmented_container"
+                    android:padding="@dimen/_10sdp"
+                    app:layout_constraintTop_toBottomOf="@id/ic_security">
 
-                <ImageView
-                    android:layout_width="@dimen/_16sdp"
-                    android:layout_height="@dimen/_16sdp"
-                    android:src="@drawable/ic_arrow_right"
-                    android:padding="@dimen/_4sdp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/gray" />
+                    <ImageView
+                        android:id="@+id/ic_biometric"
+                        android:layout_width="@dimen/_16sdp"
+                        android:layout_height="@dimen/_16sdp"
+                        android:src="@drawable/ic_auth_lock"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tint="@color/auth_glow_1" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_12sdp"
+                        android:fontFamily="@font/roboto_medium"
+                        android:text="App Lock (PIN / Biometric)"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/_11ssp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/ic_biometric"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_biometric"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/_17sdp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/btn_reset_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:background="@drawable/bg_segmented_container"
+                    android:padding="@dimen/_10sdp"
+                    app:layout_constraintTop_toBottomOf="@id/row_biometric">
+
+                    <ImageView
+                        android:id="@+id/ic_reset"
+                        android:layout_width="@dimen/_16sdp"
+                        android:layout_height="@dimen/_16sdp"
+                        android:src="@drawable/ic_auth_lock"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tint="@color/auth_glow_1" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_12sdp"
+                        android:fontFamily="@font/roboto_medium"
+                        android:text="Reset Password"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/_11ssp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/ic_reset"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:layout_width="@dimen/_16sdp"
+                        android:layout_height="@dimen/_16sdp"
+                        android:src="@drawable/ic_arrow_right"
+                        android:padding="@dimen/_4sdp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tint="@color/on_surface_variant" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Google Drive Card -->
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_googledrive"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/_16sdp"
             android:layout_marginTop="@dimen/_12sdp"
-            android:background="@drawable/bg_auth_card"
-            android:padding="@dimen/_16sdp"
+            style="@style/Widget.App.GlassCard"
             app:layout_constraintTop_toBottomOf="@id/card_security">
 
-            <ImageView
-                android:id="@+id/ic_googledrive"
-                android:layout_width="@dimen/_18sdp"
-                android:layout_height="@dimen/_18sdp"
-                android:src="@drawable/ic_drive"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/auth_glow_1" />
-
-            <TextView
-                android:id="@+id/tv_drive_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_8sdp"
-                android:fontFamily="@font/roboto_bold"
-                android:text="Drive Management"
-                android:textColor="@color/text_secondary"
-                android:textSize="@dimen/_12ssp"
-                app:layout_constraintBottom_toBottomOf="@id/ic_googledrive"
-                app:layout_constraintStart_toEndOf="@id/ic_googledrive"
-                app:layout_constraintTop_toTopOf="@id/ic_googledrive" />
-
-            <TextView
-                android:id="@+id/tv_drive_status"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_12sdp"
-                android:fontFamily="@font/roboto_regular"
-                android:text="Not Connected"
-                android:textColor="@color/gray"
-                android:textSize="@dimen/_10ssp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ic_googledrive" />
-
-            <!-- Disconnected State: Connect Button -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_connect_drive"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_12sdp"
-                android:text="Connect Google Drive"
-                android:fontFamily="@font/roboto_bold"
-                android:textSize="@dimen/_10ssp"
-                app:icon="@drawable/ic_drive"
-                app:iconTint="@color/auth_bg"
-                app:layout_constraintTop_toBottomOf="@id/tv_drive_status"
-                android:visibility="visible"
-                app:backgroundTint="@null"
-                android:textColor="@color/auth_bg"
-                android:elevation="@dimen/_16sdp"
-                android:background="@drawable/bg_gradient_button"
-                app:cornerRadius="@dimen/_12sdp" />
+                android:padding="@dimen/_16sdp">
 
-            <!-- Connected State: Disconnect and Switch Buttons -->
-            <LinearLayout
-                android:id="@+id/layout_drive_actions"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_12sdp"
-                android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/tv_drive_status"
-                android:visibility="gone">
+                <ImageView
+                    android:id="@+id/ic_googledrive"
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="@dimen/_18sdp"
+                    android:src="@drawable/ic_drive"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/auth_glow_1" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_disconnect_drive"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/tv_drive_title"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Disconnect"
-                    android:textColor="@color/danger"
-                    android:fontFamily="@font/roboto_bold"
-                    android:textSize="@dimen/_9ssp"
-                    app:strokeColor="@color/danger"
-                    app:cornerRadius="@dimen/_8sdp" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_switch_drive"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_marginStart="@dimen/_8sdp"
-                    android:text="Switch Account"
-                    android:textSize="@dimen/_9ssp"
                     android:fontFamily="@font/roboto_bold"
+                    android:text="Drive Management"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/_12ssp"
+                    app:layout_constraintBottom_toBottomOf="@id/ic_googledrive"
+                    app:layout_constraintStart_toEndOf="@id/ic_googledrive"
+                    app:layout_constraintTop_toTopOf="@id/ic_googledrive" />
+
+                <TextView
+                    android:id="@+id/tv_drive_status"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Not Connected"
+                    android:textColor="@color/on_surface_variant"
+                    android:textSize="@dimen/_10ssp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ic_googledrive" />
+
+                <!-- Disconnected State: Connect Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_connect_drive"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    android:text="Connect Google Drive"
+                    android:fontFamily="@font/roboto_bold"
+                    android:textSize="@dimen/_10ssp"
+                    app:icon="@drawable/ic_drive"
+                    app:iconTint="@color/white"
+                    app:layout_constraintTop_toBottomOf="@id/tv_drive_status"
+                    android:visibility="visible"
                     app:backgroundTint="@null"
-                    android:textColor="@color/auth_bg"
+                    android:textColor="@color/white"
                     android:elevation="@dimen/_16sdp"
                     android:background="@drawable/bg_gradient_button"
-                    app:cornerRadius="@dimen/_12sdp"/>
+                    app:cornerRadius="@dimen/_12sdp" />
 
-            </LinearLayout>
+                <!-- Connected State: Disconnect and Switch Buttons -->
+                <LinearLayout
+                    android:id="@+id/layout_drive_actions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@id/tv_drive_status"
+                    android:visibility="gone">
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_disconnect_drive"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Disconnect"
+                        android:textColor="@color/danger"
+                        android:fontFamily="@font/roboto_bold"
+                        android:textSize="@dimen/_9ssp"
+                        app:strokeColor="@color/danger"
+                        app:cornerRadius="@dimen/_8sdp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_switch_drive"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="@dimen/_8sdp"
+                        android:text="Switch Account"
+                        android:textSize="@dimen/_9ssp"
+                        android:fontFamily="@font/roboto_bold"
+                        app:backgroundTint="@null"
+                        android:textColor="@color/white"
+                        android:elevation="@dimen/_16sdp"
+                        android:background="@drawable/bg_gradient_button"
+                        app:cornerRadius="@dimen/_12sdp"/>
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Preferences Card -->
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_preferences"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/_16sdp"
             android:layout_marginTop="@dimen/_12sdp"
-            android:background="@drawable/bg_auth_card"
-            android:padding="@dimen/_16sdp"
+            style="@style/Widget.App.GlassCard"
             app:layout_constraintTop_toBottomOf="@id/card_googledrive">
 
-            <ImageView
-                android:id="@+id/ic_pref"
-                android:layout_width="@dimen/_20sdp"
-                android:layout_height="@dimen/_20sdp"
-                android:src="@drawable/ic_palette"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/text_secondary" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:fontFamily="@font/roboto_bold"
-                android:text="Preferences"
-                android:textColor="@color/text_secondary"
-                android:textSize="@dimen/_14ssp"
-                app:layout_constraintBottom_toBottomOf="@id/ic_pref"
-                app:layout_constraintStart_toEndOf="@id/ic_pref"
-                app:layout_constraintTop_toTopOf="@id/ic_pref" />
-
-            <TextView
-                android:id="@+id/lbl_appearance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_24sdp"
-                android:text="APPEARANCE"
-                android:textColor="@color/gray"
-                android:textSize="@dimen/_8ssp"
-                android:letterSpacing="0.1"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ic_pref" />
-
-            <LinearLayout
-                android:id="@+id/layout_appearance_selector"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_8sdp"
-                android:background="@drawable/bg_segmented_container"
-                android:orientation="horizontal"
-                android:padding="@dimen/_4sdp"
-                app:layout_constraintTop_toBottomOf="@id/lbl_appearance">
-
-                <TextView
-                    android:id="@+id/btn_appearance_dark"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_segmented_selected"
-                    android:gravity="center"
-                    android:paddingVertical="@dimen/_10sdp"
-                    android:text="Dark"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="@dimen/_10ssp" />
-
-                <TextView
-                    android:id="@+id/btn_appearance_light"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:paddingVertical="@dimen/_10sdp"
-                    android:text="Light"
-                    android:textColor="@color/gray"
-                    android:textSize="@dimen/_10ssp" />
-
-                <TextView
-                    android:id="@+id/btn_appearance_system"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:paddingVertical="@dimen/_10sdp"
-                    android:text="System"
-                    android:textColor="@color/gray"
-                    android:textSize="@dimen/_10ssp" />
-            </LinearLayout>
-
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/row_notifications"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_16sdp"
-                android:background="@drawable/bg_segmented_container"
-                android:padding="@dimen/_10sdp"
-                app:layout_constraintTop_toBottomOf="@id/layout_appearance_selector">
+                android:padding="@dimen/_16sdp">
 
                 <ImageView
-                    android:id="@+id/ic_notif"
-                    android:layout_width="@dimen/_18sdp"
-                    android:layout_height="@dimen/_18sdp"
-                    android:padding="@dimen/_2sdp"
-                    android:src="@drawable/ic_bell"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:id="@+id/ic_pref"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:src="@drawable/ic_palette"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/gray" />
+                    app:tint="@color/auth_glow_1" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_12sdp"
-                    android:text="Push Notifications"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:fontFamily="@font/roboto_bold"
+                    android:text="Preferences"
                     android:textColor="@color/text_secondary"
-                    android:textSize="@dimen/_11ssp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/ic_notif"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:textSize="@dimen/_14ssp"
+                    app:layout_constraintBottom_toBottomOf="@id/ic_pref"
+                    app:layout_constraintStart_toEndOf="@id/ic_pref"
+                    app:layout_constraintTop_toTopOf="@id/ic_pref" />
 
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/switch_notifications"
+                <TextView
+                    android:id="@+id/lbl_appearance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:checked="true"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:layout_marginTop="@dimen/_24sdp"
+                    android:text="APPEARANCE"
+                    android:textColor="@color/on_surface_variant"
+                    android:textSize="@dimen/_8ssp"
+                    android:letterSpacing="0.1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ic_pref" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <LinearLayout
+                    android:id="@+id/layout_appearance_selector"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:background="@drawable/bg_segmented_container"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/_4sdp"
+                    app:layout_constraintTop_toBottomOf="@id/lbl_appearance">
+
+                    <TextView
+                        android:id="@+id/btn_appearance_dark"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_segmented_selected"
+                        android:gravity="center"
+                        android:paddingVertical="@dimen/_10sdp"
+                        android:text="Dark"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/_10ssp" />
+
+                    <TextView
+                        android:id="@+id/btn_appearance_light"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingVertical="@dimen/_10sdp"
+                        android:text="Light"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/_10ssp" />
+
+                    <TextView
+                        android:id="@+id/btn_appearance_system"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingVertical="@dimen/_10sdp"
+                        android:text="System"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/_10ssp" />
+                </LinearLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/row_notifications"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_16sdp"
+                    android:background="@drawable/bg_segmented_container"
+                    android:padding="@dimen/_10sdp"
+                    app:layout_constraintTop_toBottomOf="@id/layout_appearance_selector">
+
+                    <ImageView
+                        android:id="@+id/ic_notif"
+                        android:layout_width="@dimen/_18sdp"
+                        android:layout_height="@dimen/_18sdp"
+                        android:padding="@dimen/_2sdp"
+                        android:src="@drawable/ic_bell"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tint="@color/auth_glow_1" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_12sdp"
+                        android:text="Push Notifications"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/_11ssp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/ic_notif"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_notifications"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Sign Out Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_sign_out"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_50sdp"
+            android:layout_height="@dimen/_48sdp"
             android:layout_marginHorizontal="@dimen/_16sdp"
             android:layout_marginTop="@dimen/_24sdp"
             android:text="Sign Out"
-            android:textColor="@color/color_ffb3b3"
+            android:textColor="@color/danger"
             android:fontFamily="@font/roboto_bold"
             app:icon="@drawable/ic_logout"
             app:iconGravity="textStart"
-            app:iconTint="@color/color_ffb3b3"
+            app:iconTint="@color/danger"
             app:layout_constraintTop_toBottomOf="@id/card_preferences"
-            app:strokeColor="@color/glass_border"
+            app:strokeColor="@color/danger"
             app:cornerRadius="@dimen/_12sdp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

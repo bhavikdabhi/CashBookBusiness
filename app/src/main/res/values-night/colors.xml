@@ -87,14 +87,14 @@
     <color name="warning">#F59E0B</color>
 
     <!-- Greys -->
-    <color name="gray">#6A8A8A</color>
+    <color name="gray">#9AB4B4</color>
     <color name="light_gray">#E8F4F4</color>
     <color name="color_00e676">#3DB87A</color>
 
     <color name="color_40ffffff">#40FFFFFF</color>
     <color name="color_10ffffff">#10FFFFFF</color>
     <color name="color_80deea">#02929A</color>
-    <color name="dark_gray">#6A8A8A</color>
+    <color name="dark_gray">#9AB4B4</color>
 
     <!-- Auto-extracted Hardcoded Colors -->
      <color name="color_12ffffff">#12FFFFFF</color>

@@ -14,6 +14,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import kotlin.math.hypot
@@ -24,18 +25,18 @@ object ThemeAnimationHelper {
     private var originY: Int = 0
     private var isTargetDark: Boolean = false
 
-    val hasPendingAnimation: Boolean
-        get() = snapshotBitmap != null
+    fun hasPendingAnimation(activity: Activity): Boolean {
+        return activity.intent.getBooleanExtra("is_theme_transition", false) && snapshotBitmap != null
+    }
 
     /**
-     * Seamlessly transitions the theme without ANY blink or screen flash:
-     * 1. Captures full window screenshot with windowBackground.
-     * 2. Saves theme preference synchronously.
-     * 3. Starts new Activity instance with FLAG_ACTIVITY_NO_ANIMATION and 0ms window transitions.
-     * 4. Finishes old Activity with 0ms transition.
-     * 5. The new Activity creates directly in the new theme with localNightMode,
-     *    and immediately mounts the screenshot overlay so there is ZERO blank frame.
-     * 6. Smoothly expands circular wave revealing the new theme over 750ms.
+     * Seamlessly transitions between themes with a smooth circular ripple reveal:
+     * 1. Captures snapshot of the full window.
+     * 2. Overlays snapshot on the current activity to eliminate any blank gap.
+     * 3. Seamlessly starts the new Activity instance with 0ms transitions.
+     * 4. Mounts snapshot on the new Activity and smoothly expands the circular wave
+     *    from the button clicked, revealing the new theme underneath with zero blink.
+     * 5. No progress bars, no text — pure visual wave animation.
      */
     fun switchThemeWithAnimation(
         activity: AppCompatActivity,
@@ -62,105 +63,118 @@ object ThemeAnimationHelper {
             .putString("app_theme", themePrefValue)
             .commit()
 
-        // 2. Capture screenshot of the full window
-        val decorView = activity.window.decorView
-        if (decorView.width > 0 && decorView.height > 0) {
+        val decorView = activity.window.decorView as? ViewGroup
+        val width = decorView?.width ?: 0
+        val height = decorView?.height ?: 0
+
+        if (decorView != null && width > 0 && height > 0) {
             try {
                 clearBitmap()
-                val bitmap = Bitmap.createBitmap(
-                    decorView.width,
-                    decorView.height,
-                    Bitmap.Config.ARGB_8888
-                )
+                val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
                 val canvas = Canvas(bitmap)
 
-                // Fill window background color first to avoid any black/transparent artifacts
+                // Draw fallback window background color
                 val isCurrentDark = (activity.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
-                val fallbackColor = if (isCurrentDark) 0xFF121212.toInt() else 0xFFF8F9FA.toInt()
-
-                try {
-                    val attrs = intArrayOf(android.R.attr.windowBackground)
-                    val ta = activity.theme.obtainStyledAttributes(attrs)
-                    val bgDrawable = ta.getDrawable(0)
-                    ta.recycle()
-                    if (bgDrawable != null) {
-                        bgDrawable.setBounds(0, 0, decorView.width, decorView.height)
-                        bgDrawable.draw(canvas)
-                    } else {
-                        canvas.drawColor(fallbackColor)
-                    }
-                } catch (_: Throwable) {
-                    canvas.drawColor(fallbackColor)
-                }
+                val fallbackColor = if (isCurrentDark) 0xFF192626.toInt() else 0xFFF5FAFA.toInt()
+                canvas.drawColor(fallbackColor)
 
                 decorView.draw(canvas)
                 snapshotBitmap = bitmap
 
+                // Calculate origin from clicked source view
                 if (sourceView != null && sourceView.isAttachedToWindow) {
                     val location = IntArray(2)
                     sourceView.getLocationInWindow(location)
-                    originX = location[0] + (sourceView.width / 2)
-                    originY = location[1] + (sourceView.height / 2)
+                    originX = location[0] + sourceView.width / 2
+                    originY = location[1] + sourceView.height / 2
                 } else {
-                    originX = decorView.width / 2
-                    originY = decorView.height / 2
+                    originX = width / 2
+                    originY = height / 2
                 }
-            } catch (t: Throwable) {
+
+                // Freeze the current screen with snapshot overlay to guarantee zero blink while launching
+                val oldOverlay = ImageView(activity).apply {
+                    setImageBitmap(bitmap)
+                    scaleType = ImageView.ScaleType.FIT_XY
+                    elevation = 9999f
+                }
+                decorView.addView(
+                    oldOverlay,
+                    ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    )
+                )
+            } catch (_: Throwable) {
+                // If screenshot fails, clear snapshot
                 clearBitmap()
             }
         }
 
-        // 3. Launch new instance of Activity with NO_ANIMATION to prevent Activity.recreate() window blink
-        val intent = Intent(activity, activity.javaClass).apply {
-            activity.intent.extras?.let { putExtras(it) }
-            if (!currentBusinessId.isNullOrEmpty()) {
-                putExtra("businessId", currentBusinessId)
+        // 2. Launch new Activity seamlessly with 0ms transition
+        (sourceView ?: activity.window.decorView).postDelayed({
+            val intent = Intent(activity, activity.javaClass).apply {
+                activity.intent.extras?.let { putExtras(it) }
+                if (!currentBusinessId.isNullOrEmpty()) {
+                    putExtra("businessId", currentBusinessId)
+                }
+                if (selectedTabId != 0) {
+                    putExtra("selected_nav_tab", selectedTabId)
+                }
+                putExtra("is_theme_transition", true)
+                putExtra("is_target_dark", isTargetDark)
+                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             }
-            if (selectedTabId != 0) {
-                putExtra("selected_nav_tab", selectedTabId)
+
+            activity.startActivity(intent)
+
+            if (Build.VERSION.SDK_INT >= 34) {
+                activity.overrideActivityTransition(Activity.OVERRIDE_TRANSITION_OPEN, 0, 0)
+                activity.overrideActivityTransition(Activity.OVERRIDE_TRANSITION_CLOSE, 0, 0)
+            } else {
+                @Suppress("DEPRECATION")
+                activity.overridePendingTransition(0, 0)
             }
-            putExtra("is_theme_transition", true)
-            addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-        }
 
-        activity.startActivity(intent)
+            activity.finish()
 
-        if (Build.VERSION.SDK_INT >= 34) {
-            activity.overrideActivityTransition(Activity.OVERRIDE_TRANSITION_OPEN, 0, 0)
-            activity.overrideActivityTransition(Activity.OVERRIDE_TRANSITION_CLOSE, 0, 0)
-        } else {
-            @Suppress("DEPRECATION")
-            activity.overridePendingTransition(0, 0)
-        }
-
-        activity.finish()
-
-        if (Build.VERSION.SDK_INT >= 34) {
-            activity.overrideActivityTransition(Activity.OVERRIDE_TRANSITION_CLOSE, 0, 0)
-        } else {
-            @Suppress("DEPRECATION")
-            activity.overridePendingTransition(0, 0)
-        }
+            if (Build.VERSION.SDK_INT >= 34) {
+                activity.overrideActivityTransition(Activity.OVERRIDE_TRANSITION_CLOSE, 0, 0)
+            } else {
+                @Suppress("DEPRECATION")
+                activity.overridePendingTransition(0, 0)
+            }
+        }, 50)
     }
 
     /**
-     * Executes the circular reveal animation on top of the newly loaded theme.
-     * Places the old screenshot on top and expands a circular hole from (originX, originY)
-     * revealing the new theme underneath smoothly over 750ms.
+     * Called in Activity's onCreate() after setContentView.
+     * Executes circular wave reveal expanding from origin across the screen.
      */
     fun applyPendingThemeAnimation(
         activity: AppCompatActivity,
         rootView: View,
         onAnimationComplete: (() -> Unit)? = null
     ) {
-        val bitmap = snapshotBitmap ?: return
-        val decorView = activity.window.decorView as? ViewGroup ?: return
+        val bitmap = snapshotBitmap
+        if (bitmap == null || !hasPendingAnimation(activity)) {
+            clear()
+            return
+        }
+
+        val decorView = activity.window.decorView as? ViewGroup ?: run {
+            clear()
+            return
+        }
+
+        val cx = if (originX > 0) originX else decorView.width / 2
+        val cy = if (originY > 0) originY else decorView.height / 2
 
         val overlay = ThemeHoleOverlayView(
             context = activity,
             snapshot = bitmap,
-            cx = originX,
-            cy = originY,
+            cx = cx,
+            cy = cy,
             isTargetDark = isTargetDark
         )
 
@@ -173,12 +187,15 @@ object ThemeAnimationHelper {
         )
 
         overlay.post {
-            val dx = maxOf(originX, overlay.width - originX)
-            val dy = maxOf(originY, overlay.height - originY)
+            val viewWidth = overlay.width.takeIf { it > 0 } ?: decorView.width
+            val viewHeight = overlay.height.takeIf { it > 0 } ?: decorView.height
+
+            val dx = maxOf(cx, viewWidth - cx)
+            val dy = maxOf(cy, viewHeight - cy)
             val maxRadius = hypot(dx.toDouble(), dy.toDouble()).toFloat()
 
             val animator = ValueAnimator.ofFloat(0f, maxRadius).apply {
-                duration = 750L
+                duration = 600L
                 interpolator = AccelerateDecelerateInterpolator()
                 addUpdateListener { va ->
                     overlay.revealRadius = va.animatedValue as Float
@@ -187,7 +204,6 @@ object ThemeAnimationHelper {
                     override fun onAnimationEnd(animation: Animator) {
                         decorView.removeView(overlay)
                         clear()
-                        // Update global night mode in background after transition finishes
                         val nightMode = if (isTargetDark) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
                         AppCompatDelegate.setDefaultNightMode(nightMode)
                         onAnimationComplete?.invoke()
@@ -232,33 +248,49 @@ object ThemeAnimationHelper {
                 invalidate()
             }
 
-        private val clearPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
-        }
+        private val fullRect = Path()
+        private val circlePath = Path()
+        private val holePath = Path()
 
         private val waveRingPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             style = Paint.Style.STROKE
             strokeWidth = 3f * resources.displayMetrics.density
-            color = if (isTargetDark) Color.parseColor("#8000C6FF") else Color.parseColor("#80FF9800")
+            color = if (isTargetDark) Color.parseColor("#8002929A") else Color.parseColor("#8000C6FF")
         }
 
-        init {
-            setLayerType(LAYER_TYPE_HARDWARE, null)
+        override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+            super.onSizeChanged(w, h, oldw, oldh)
+            fullRect.reset()
+            fullRect.addRect(0f, 0f, w.toFloat(), h.toFloat(), Path.Direction.CW)
         }
 
         override fun onDraw(canvas: Canvas) {
             super.onDraw(canvas)
             if (snapshot.isRecycled) return
 
-            val saveCount = canvas.saveLayer(0f, 0f, width.toFloat(), height.toFloat(), null)
-            canvas.drawBitmap(snapshot, 0f, 0f, null)
+            if (revealRadius <= 0f) {
+                canvas.drawBitmap(snapshot, 0f, 0f, null)
+            } else {
+                circlePath.reset()
+                circlePath.addCircle(cx.toFloat(), cy.toFloat(), revealRadius, Path.Direction.CW)
 
-            if (revealRadius > 0f) {
-                canvas.drawCircle(cx.toFloat(), cy.toFloat(), revealRadius, clearPaint)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    canvas.save()
+                    canvas.clipOutPath(circlePath)
+                    canvas.drawBitmap(snapshot, 0f, 0f, null)
+                    canvas.restore()
+                } else {
+                    canvas.save()
+                    holePath.reset()
+                    holePath.op(fullRect, circlePath, Path.Op.DIFFERENCE)
+                    canvas.clipPath(holePath)
+                    canvas.drawBitmap(snapshot, 0f, 0f, null)
+                    canvas.restore()
+                }
+
+                // Glowing wave ripple border
                 canvas.drawCircle(cx.toFloat(), cy.toFloat(), revealRadius, waveRingPaint)
             }
-
-            canvas.restoreToCount(saveCount)
         }
 
         @SuppressLint("ClickableViewAccessibility")

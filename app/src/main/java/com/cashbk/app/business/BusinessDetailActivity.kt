@@ -55,8 +55,8 @@ class BusinessDetailActivity : AppCompatActivity() {
         binding = ActivityBusinessDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Apply smooth circular reveal theme animation if triggered
-        val isThemeTransition = ThemeAnimationHelper.hasPendingAnimation
+        // Apply smooth theme transition if triggered
+        val isThemeTransition = ThemeAnimationHelper.hasPendingAnimation(this)
         ThemeAnimationHelper.applyPendingThemeAnimation(this, binding.root)
 
         currentBusinessId = intent.getStringExtra("businessId")
