@@ -13,6 +13,9 @@ import android.view.ViewGroup
 import android.widget.PopupWindow
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.widget.doAfterTextChanged
+import android.content.Context
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cashbk.app.R
@@ -20,6 +23,8 @@ import com.cashbk.app.notebook.adapter.NotebookAdapter
 import com.cashbk.app.databinding.FragmentCashbooksBinding
 import com.cashbk.app.databinding.PopupDeleteNotebookBinding
 import com.cashbk.app.notebook._bean.Notebook
+import com.cashbk.app.notebook.filter.NotebookFilterBottomSheet
+import com.cashbk.app.notebook.filter.NotebookFilterCriteria
 import com.cashbk.app.notebook.AddNotebookDialogFragment
 import com.cashbk.app.notebook.NotebookActivity
 import com.cashbk.app.utils.CustomOptionsMenu
@@ -46,11 +51,16 @@ class CashbooksFragment : Fragment() {
 
     private lateinit var database: DatabaseReference
     private lateinit var notebookAdapter: NotebookAdapter
+    private val allNotebookList = mutableListOf<Notebook>()
     private val notebookList = mutableListOf<Notebook>()
     private var currentBusinessId: String? = null
     private var notebooksQuery: Query? = null
     private var notebooksListener: ValueEventListener? = null
     private var notebookJob: Job? = null
+
+    // Filter & Search State
+    private var activeFilter = NotebookFilterCriteria()
+    private var currentSearchQuery = ""
 
     // V2 Tracker Maps for Dynamic Statistics
     private val notebookBalances = mutableMapOf<String, Double>()
@@ -87,7 +97,10 @@ class CashbooksFragment : Fragment() {
         if (!currentBusinessId.isNullOrEmpty()) {
             fetchNotebooks()
         } else {
+            allNotebookList.clear()
             notebookList.clear()
+            activeFilter = NotebookFilterCriteria()
+            currentSearchQuery = ""
             notebookAdapter.notifyDataSetChanged()
             
             // Clear stats and listeners
@@ -123,13 +136,8 @@ class CashbooksFragment : Fragment() {
         val repository = com.cashbk.app.data.di.AppContainer.getRepository(currentContext)
         notebookJob = lifecycleScope.launch {
             repository.getNotebooksFlow(id).collectLatest { notebooks ->
-                notebookList.clear()
-                notebookList.addAll(notebooks)
-
-                if (_binding != null) {
-                    binding.tvActiveBooksCount.text = "${notebookList.size} active notebooks"
-                    binding.tvStatTotalBooks.text = notebookList.size.toString()
-                }
+                allNotebookList.clear()
+                allNotebookList.addAll(notebooks)
 
                 // Collect transactions for each notebook to compute balances dynamically
                 notebooks.forEach { notebook ->
@@ -159,7 +167,7 @@ class CashbooksFragment : Fragment() {
                             notebookBalances[notebook.id] = total
                             notebookMonthlyBalances[notebook.id] = monthly
                             updateSummaryStats()
-                            notebookAdapter.notifyDataSetChanged()
+                            applyFiltersAndSort()
                         }
                     }
                 }
@@ -172,16 +180,8 @@ class CashbooksFragment : Fragment() {
                 if (_binding != null) {
                     binding.layoutShimmerNotebooks.stopPulseAnimation()
                     binding.layoutShimmerNotebooks.visibility = View.GONE
-
-                    if (notebookList.isEmpty()) {
-                        binding.layoutEmpty.visibility = View.VISIBLE
-                        binding.notebooksRecyclerView.visibility = View.GONE
-                    } else {
-                        binding.layoutEmpty.visibility = View.GONE
-                        binding.notebooksRecyclerView.visibility = View.VISIBLE
-                    }
                 }
-                notebookAdapter.notifyDataSetChanged()
+                applyFiltersAndSort()
             }
         }
     }
@@ -205,21 +205,160 @@ class CashbooksFragment : Fragment() {
         }
 
         binding.addNotebookFab.setOnClickListener {
-            val sheet = AddNotebookDialogFragment()
-            sheet.arguments = Bundle().apply {
-                val businessId = currentBusinessId
-                putString("businessId", businessId)
-            }
-            sheet.show(parentFragmentManager, "AddNotebook")
+            openAddNotebookDialog()
         }
 
         binding.btnCreateFirstBook.setOnClickListener {
-            val sheet = AddNotebookDialogFragment()
-            sheet.arguments = Bundle().apply {
-                val businessId = currentBusinessId
-                putString("businessId", businessId)
+            openAddNotebookDialog()
+        }
+
+        // Notebook Filter Button Click
+        binding.btnFilter.setOnClickListener {
+            val filterSheet = NotebookFilterBottomSheet.newInstance(activeFilter) { newCriteria ->
+                activeFilter = newCriteria
+                applyFiltersAndSort()
             }
-            sheet.show(parentFragmentManager, "AddNotebook")
+            filterSheet.show(parentFragmentManager, "NotebookFilterBottomSheet")
+        }
+
+        // Toggleable Search Box
+        binding.btnSearch.setOnClickListener {
+            val isVisible = binding.layoutSearchContainer.visibility == View.VISIBLE
+            if (isVisible) {
+                binding.layoutSearchContainer.visibility = View.GONE
+                binding.etSearchNotebooks.setText("")
+                val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                imm?.hideSoftInputFromWindow(binding.etSearchNotebooks.windowToken, 0)
+            } else {
+                binding.layoutSearchContainer.visibility = View.VISIBLE
+                binding.etSearchNotebooks.requestFocus()
+                val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                imm?.showSoftInput(binding.etSearchNotebooks, InputMethodManager.SHOW_IMPLICIT)
+            }
+        }
+
+        binding.etSearchNotebooks.doAfterTextChanged { editable ->
+            currentSearchQuery = editable?.toString()?.trim().orEmpty()
+            binding.btnClearSearch.visibility = if (currentSearchQuery.isNotEmpty()) View.VISIBLE else View.GONE
+            applyFiltersAndSort()
+        }
+
+        binding.btnClearSearch.setOnClickListener {
+            binding.etSearchNotebooks.setText("")
+        }
+    }
+
+    private fun openAddNotebookDialog() {
+        val sheet = AddNotebookDialogFragment()
+        sheet.arguments = Bundle().apply {
+            val businessId = currentBusinessId
+            putString("businessId", businessId)
+        }
+        sheet.show(parentFragmentManager, "AddNotebook")
+    }
+
+    private fun applyFiltersAndSort() {
+        if (_binding == null) return
+
+        var filtered = allNotebookList.toList()
+
+        // 1. Text Search Filter
+        if (currentSearchQuery.isNotEmpty()) {
+            filtered = filtered.filter {
+                it.name.contains(currentSearchQuery, ignoreCase = true)
+            }
+        }
+
+        // 2. Net Balance Filter
+        when (activeFilter.balanceStatus) {
+            NotebookFilterCriteria.BalanceStatus.CREDIT -> {
+                filtered = filtered.filter { (notebookBalances[it.id] ?: 0.0) > 0.0 }
+            }
+            NotebookFilterCriteria.BalanceStatus.DEBIT -> {
+                filtered = filtered.filter { (notebookBalances[it.id] ?: 0.0) < 0.0 }
+            }
+            NotebookFilterCriteria.BalanceStatus.SETTLED -> {
+                filtered = filtered.filter { (notebookBalances[it.id] ?: 0.0) == 0.0 }
+            }
+            NotebookFilterCriteria.BalanceStatus.ALL -> { /* All */ }
+        }
+
+        // 3. Time Period Filter
+        val now = Calendar.getInstance()
+        when (activeFilter.timePeriod) {
+            NotebookFilterCriteria.TimePeriod.THIS_MONTH -> {
+                val curMonth = now.get(Calendar.MONTH)
+                val curYear = now.get(Calendar.YEAR)
+                filtered = filtered.filter {
+                    val cal = Calendar.getInstance().apply { timeInMillis = it.createdAt }
+                    cal.get(Calendar.MONTH) == curMonth && cal.get(Calendar.YEAR) == curYear
+                }
+            }
+            NotebookFilterCriteria.TimePeriod.THIS_YEAR -> {
+                val curYear = now.get(Calendar.YEAR)
+                filtered = filtered.filter {
+                    val cal = Calendar.getInstance().apply { timeInMillis = it.createdAt }
+                    cal.get(Calendar.YEAR) == curYear
+                }
+            }
+            NotebookFilterCriteria.TimePeriod.ALL_TIME -> { /* All */ }
+        }
+
+        // 4. Sort
+        filtered = when (activeFilter.sortBy) {
+            NotebookFilterCriteria.SortBy.DATE_NEWEST -> filtered.sortedByDescending { it.createdAt }
+            NotebookFilterCriteria.SortBy.DATE_OLDEST -> filtered.sortedBy { it.createdAt }
+            NotebookFilterCriteria.SortBy.NAME_ASC -> filtered.sortedBy { it.name.lowercase(Locale.getDefault()) }
+            NotebookFilterCriteria.SortBy.NAME_DESC -> filtered.sortedByDescending { it.name.lowercase(Locale.getDefault()) }
+            NotebookFilterCriteria.SortBy.BALANCE_HIGH -> filtered.sortedByDescending { notebookBalances[it.id] ?: 0.0 }
+            NotebookFilterCriteria.SortBy.BALANCE_LOW -> filtered.sortedBy { notebookBalances[it.id] ?: 0.0 }
+        }
+
+        notebookList.clear()
+        notebookList.addAll(filtered)
+        notebookAdapter.notifyDataSetChanged()
+
+        // Update Active Filter UI Indicator Dot & Icon Tint
+        val isFiltered = !activeFilter.isDefault()
+        binding.filterActiveIndicator.visibility = if (isFiltered) View.VISIBLE else View.GONE
+        binding.ivFilterIcon.imageTintList = ContextCompat.getColorStateList(
+            requireContext(),
+            if (isFiltered) R.color.primary else R.color.text_secondary
+        )
+
+        if (isFiltered || currentSearchQuery.isNotEmpty()) {
+            binding.tvActiveBooksCount.text = "${notebookList.size} of ${allNotebookList.size} notebooks"
+        } else {
+            binding.tvActiveBooksCount.text = "${allNotebookList.size} active notebooks"
+        }
+        binding.tvStatTotalBooks.text = allNotebookList.size.toString()
+
+        // Empty State Logic
+        if (notebookList.isEmpty()) {
+            binding.layoutEmpty.visibility = View.VISIBLE
+            binding.notebooksRecyclerView.visibility = View.GONE
+            if (allNotebookList.isNotEmpty()) {
+                binding.tvEmptyTitle.text = "No matching notebooks"
+                binding.tvEmptySubtitle.text = "Try adjusting or clearing your filters to see results."
+                binding.btnCreateFirstBook.text = "Clear Filters"
+                binding.btnCreateFirstBook.setOnClickListener {
+                    activeFilter = NotebookFilterCriteria()
+                    currentSearchQuery = ""
+                    binding.etSearchNotebooks.setText("")
+                    binding.layoutSearchContainer.visibility = View.GONE
+                    applyFiltersAndSort()
+                }
+            } else {
+                binding.tvEmptyTitle.text = "No books yet!"
+                binding.tvEmptySubtitle.text = "Create your first notebook to start\ntracking income and expenses."
+                binding.btnCreateFirstBook.text = "+ Create Your First Book"
+                binding.btnCreateFirstBook.setOnClickListener {
+                    openAddNotebookDialog()
+                }
+            }
+        } else {
+            binding.layoutEmpty.visibility = View.GONE
+            binding.notebooksRecyclerView.visibility = View.VISIBLE
         }
     }
 

@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_bottom_sheet_glass"
+    android:paddingBottom="@dimen/_20sdp">
+
+    <!-- Drag Handle -->
+    <View
+        android:layout_width="@dimen/_36sdp"
+        android:layout_height="@dimen/_4sdp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:background="@drawable/bg_drag_handle" />
+
+    <!-- Header -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/_16sdp"
+        android:paddingTop="@dimen/_12sdp"
+        android:paddingBottom="@dimen/_8sdp">
+
+        <ImageView
+            android:id="@+id/ic_filter_header"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:src="@drawable/ic_filter_list"
+            app:tint="@color/primary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:text="Filter &amp; Sort"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="@dimen/_15ssp"
+            android:textColor="@color/text_secondary"
+            app:layout_constraintStart_toEndOf="@id/ic_filter_header"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <TextView
+            android:id="@+id/btn_reset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_12sdp"
+            android:text="Reset All"
+            android:fontFamily="@font/roboto_medium"
+            android:textColor="@color/primary"
+            android:textSize="@dimen/_11ssp"
+            android:paddingHorizontal="@dimen/_8sdp"
+            android:paddingVertical="@dimen/_4sdp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:layout_constraintEnd_toStartOf="@id/btn_close"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <ImageView
+            android:id="@+id/btn_close"
+            android:layout_width="@dimen/_22sdp"
+            android:layout_height="@dimen/_22sdp"
+            android:src="@drawable/ic_close"
+            android:padding="@dimen/_3sdp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="@color/on_surface_variant"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/glass_border"
+        android:layout_marginTop="@dimen/_4sdp" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="@dimen/_380sdp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/_16sdp"
+            android:paddingTop="@dimen/_12sdp">
+
+            <!-- SORT BY SECTION -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SORT BY"
+                android:fontFamily="@font/roboto_bold"
+                android:textColor="@color/on_surface_variant"
+                android:textSize="@dimen/_10ssp"
+                android:letterSpacing="0.05" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chip_group_sort"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_8sdp"
+                app:singleSelection="true"
+                app:selectionRequired="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_sort_newest"
+                    style="@style/Widget.App.FilterChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Date: Newest"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textSize="@dimen/_10ssp"
+                    android:textColor="@color/sel_chip_text"
+                    app:chipBackgroundColor="@color/sel_chip_background"
+                    app:chipStrokeColor="@color/sel_chip_stroke"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconTint="@color/white"
+                    app:chipCornerRadius="@dimen/_14sdp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_sort_oldest"
+                    style="@style/Widget.App.FilterChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Date: Oldest"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textSize="@dimen/_10ssp"
+                    android:textColor="@color/sel_chip_text"
+                    app:chipBackgroundColor="@color/sel_chip_background"
+                    app:chipStrokeColor="@color/sel_chip_stroke"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconTint="@color/white"
+                    app:chipCornerRadius="@dimen/_14sdp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_sort_name_az"
+                    style="@style/Widget.App.FilterChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Name: A to Z"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textSize="@dimen/_10ssp"
+                    android:textColor="@color/sel_chip_text"
+                    app:chipBackgroundColor="@color/sel_chip_background"
+                    app:chipStrokeColor="@color/sel_chip_stroke"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconTint="@color/white"
+                    app:chipCornerRadius="@dimen/_14sdp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_sort_name_za"
+                    style="@style/Widget.App.FilterChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Name: Z to A"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textSize="@dimen/_10ssp"
+                    android:textColor="@color/sel_chip_text"
+                    app:chipBackgroundColor="@color/sel_chip_background"
+                    app:chipStrokeColor="@color/sel_chip_stroke"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconTint="@color/white"
+                    app:chipCornerRadius="@dimen/_14sdp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_sort_balance_high"
+                    style="@style/Widget.App.FilterChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Highest Balance"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textSize="@dimen/_10ssp"
+                    android:textColor="@color/sel_chip_text"
+                    app:chipBackgroundColor="@color/sel_chip_background"
+                    app:chipStrokeColor="@color/sel_chip_stroke"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconTint="@color/white"
+                    app:chipCornerRadius="@dimen/_14sdp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_sort_balance_low"
+                    style="@style/Widget.App.FilterChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lowest Balance"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textSize="@dimen/_10ssp"
+                    android:textColor="@color/sel_chip_text"
+                    app:chipBackgroundColor="@color/sel_chip_background"
+                    app:chipStrokeColor="@color/sel_chip_stroke"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconTint="@color/white"
+                    app:chipCornerRadius="@dimen/_14sdp" />
+
+            </com.google.android.material.chip.ChipGroup>
+
+            <!-- BALANCE STATUS SECTION -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_16sdp"
+                android:text="NET BALANCE STATUS"
+                android:fontFamily="@font/roboto_bold"
+                android:textColor="@color/on_surface_variant"
+                android:textSize="@dimen/_10ssp"
+                android:letterSpacing="0.05" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chip_group_balance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_8sdp"
+                app:singleSelection="true"
+                app:selectionRequired="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_balance_all"
+                    style="@style/Widget.App.FilterChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="All Notebooks"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textSize="@dimen/_10ssp"
+                    android:textColor="@color/sel_chip_text"
+                    app:chipBackgroundColor="@color/sel_chip_background"
+                    app:chipStrokeColor="@color/sel_chip_stroke"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconTint="@color/white"
+                    app:chipCornerRadius="@dimen/_14sdp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_balance_credit"
+                    style="@style/Widget.App.FilterChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Positive (+ Credit)"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textSize="@dimen/_10ssp"
+                    android:textColor="@color/sel_chip_text"
+                    app:chipBackgroundColor="@color/sel_chip_background"
+                    app:chipStrokeColor="@color/sel_chip_stroke"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconTint="@color/white"
+                    app:chipCornerRadius="@dimen/_14sdp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_balance_debit"
+                    style="@style/Widget.App.FilterChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Negative (- Debit)"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textSize="@dimen/_10ssp"
+                    android:textColor="@color/sel_chip_text"
+                    app:chipBackgroundColor="@color/sel_chip_background"
+                    app:chipStrokeColor="@color/sel_chip_stroke"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconTint="@color/white"
+                    app:chipCornerRadius="@dimen/_14sdp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_balance_settled"
+                    style="@style/Widget.App.FilterChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Settled (₹0 Balance)"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textSize="@dimen/_10ssp"
+                    android:textColor="@color/sel_chip_text"
+                    app:chipBackgroundColor="@color/sel_chip_background"
+                    app:chipStrokeColor="@color/sel_chip_stroke"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconTint="@color/white"
+                    app:chipCornerRadius="@dimen/_14sdp" />
+
+            </com.google.android.material.chip.ChipGroup>
+
+            <!-- TIME PERIOD SECTION -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_16sdp"
+                android:text="CREATION PERIOD"
+                android:fontFamily="@font/roboto_bold"
+                android:textColor="@color/on_surface_variant"
+                android:textSize="@dimen/_10ssp"
+                android:letterSpacing="0.05" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chip_group_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_8sdp"
+                app:singleSelection="true"
+                app:selectionRequired="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_time_all"
+                    style="@style/Widget.App.FilterChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="All Time"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textSize="@dimen/_10ssp"
+                    android:textColor="@color/sel_chip_text"
+                    app:chipBackgroundColor="@color/sel_chip_background"
+                    app:chipStrokeColor="@color/sel_chip_stroke"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconTint="@color/white"
+                    app:chipCornerRadius="@dimen/_14sdp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_time_month"
+                    style="@style/Widget.App.FilterChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="This Month"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textSize="@dimen/_10ssp"
+                    android:textColor="@color/sel_chip_text"
+                    app:chipBackgroundColor="@color/sel_chip_background"
+                    app:chipStrokeColor="@color/sel_chip_stroke"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconTint="@color/white"
+                    app:chipCornerRadius="@dimen/_14sdp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_time_year"
+                    style="@style/Widget.App.FilterChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="This Year"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textSize="@dimen/_10ssp"
+                    android:textColor="@color/sel_chip_text"
+                    app:chipBackgroundColor="@color/sel_chip_background"
+                    app:chipStrokeColor="@color/sel_chip_stroke"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconTint="@color/white"
+                    app:chipCornerRadius="@dimen/_14sdp" />
+
+            </com.google.android.material.chip.ChipGroup>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_12sdp" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Bottom Apply Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_apply_filter"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_46sdp"
+        android:layout_marginHorizontal="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:text="Apply Filters"
+        android:fontFamily="@font/roboto_bold"
+        android:textSize="@dimen/_13ssp"
+        android:textColor="@color/white"
+        android:textAllCaps="false"
+        android:background="@drawable/bg_gradient_button"
+        app:backgroundTint="@null"
+        app:cornerRadius="@dimen/_12sdp" />
+
+</LinearLayout>
+

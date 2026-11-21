@@ -1,7 +1,7 @@
 # CashBook Business — Project Brain
 
 > Purpose: a fast, accurate orientation guide for developers and AI tools working on this repository.
-> Last project snapshot: 2026-11-18
+> Last project snapshot: 2026-11-21
 
 ## 1. What this project is
 
@@ -76,7 +76,8 @@ CashBookBusiness/
 │   ├── splash/                        # Splash routing
 │   ├── auth/                          # Auth UI, OTP, Firebase custom-token login, PIN/biometric
 │   ├── business/                      # Business selection/detail/settings/cashbooks
-│   ├── notebook/                      # Notebook shell, ledger, settings, filters
+│   ├── notebook/                      # Notebook shell, ledger, settings
+│   │   └── filter/                    # Notebook filter criteria & modal bottom sheet
 │   ├── transaction/                   # Add/edit transaction UI and adapters
 │   ├── party/                         # Party management and business partners
 │   ├── partner/                       # Partner/user models and adapters
@@ -123,7 +124,7 @@ Authentication screens route from `AuthActivity` through login/register and OTP 
 
 `BusinessDetailActivity` is the primary business shell. It contains:
 
-- Cashbooks
+- Cashbooks (`CashbooksFragment`): includes real-time notebook list, live search, and multi-criteria filtering bottom sheet (`NotebookFilterBottomSheet` filtering by sort order, net balance status, and date range with active badge indicator).
 - Profile
 - Events
 - Business settings
@@ -134,7 +135,7 @@ Its business selector loads owned businesses and may include partner businesses.
 
 `NotebookActivity` is opened with a `notebookId`. Its bottom navigation contains:
 
-- Transactions / ledger
+- Transactions / ledger (`NotebookHomeFragment`): features a floating glassmorphic top bar with circular tactile cards for back navigation, PDF export, and options menu, alongside the notebook avatar badge, net balance overview, transaction list, and quick cash in/out actions.
 - Parties
 - Categories
 - Notebook settings
@@ -358,12 +359,14 @@ Statements include ledger descriptions, cash-in/cash-out values, dates, and runn
 ## 11. UI and resources
 
 - XML layouts use Android ViewBinding.
-- Material Components provide bottom sheets, dialogs, chips, spinners, and navigation.
-- `sdp` and `ssp` provide scalable dimensions.
-- Glide provides image loading.
-- Light/dark theme preference is stored in `theme_prefs/app_theme`.
+- Material 3 Components provide bottom sheets, dialogs, filter chips, cards, spinners, and bottom navigation.
+- Glassmorphism design pattern (`Widget.App.GlassCard`, `@drawable/bg_glass_card`, `@drawable/bg_bottom_sheet_glass`) is used across top bars, summary cards, and bottom sheets for a unified premium aesthetic.
+- `sdp` and `ssp` provide scalable dimensions across phone sizes.
+- Glide provides image loading and profile/receipt avatar rendering.
+- Light/dark theme preference is stored in `theme_prefs/app_theme` with smooth circular reveal animations (`ThemeTransitionHelper`) eliminating screen blink, while avoiding artificial progress dialogs during intra-app navigation.
 - App-lock preference is stored in `app_lock_prefs/app_lock_enabled`.
 - Custom utilities include toast, alert, popup-menu, status/navigation bars, and animations.
+- Dynamic color state lists (`sel_chip_text.xml`, `sel_chip_background.xml`, `sel_chip_stroke.xml`) ensure optimal contrast and readability across Light and Dark themes for filter chips and text fields.
 
 Main layout areas live under `app/src/main/res/layout`. Keep resources localized in `values/` and use drawable-night variants for theme-specific assets where appropriate.
 
@@ -433,6 +436,21 @@ When modifying this project:
 10. Do not expose production secrets, Firebase credentials, API keys, tokens, or signing passwords in this file.
 
 ## 15. Update log
+
+### 2026-11-21 — Notebook filtering, glassmorphic top bar redesign & theme polish
+
+- **Notebook Multi-Criteria Filter Feature**:
+  - Implemented `NotebookFilterCriteria` model supporting Sort By (Name A-Z, Most Recent, Highest Balance, Lowest Balance), Net Balance Status (All, Net Positive, Net Negative), and Time Period (All time, Today, This Month, This Year).
+  - Built `NotebookFilterBottomSheet` using Material 3 Modal Bottom Sheet with interactive filter chips (`Widget.App.FilterChip`, `sel_chip_text.xml`, `sel_chip_background.xml`, `sel_chip_stroke.xml`).
+  - Added real-time filtering, active filter badge indicator (`bg_indicator_active.xml`), and expandable search container to `CashbooksFragment`.
+  - Resolved filter chip text contrast in light and dark themes.
+- **Notebook Home Top Bar Redesign**:
+  - Modernized `fragment_notebook_home.xml`'s top bar into a floating glass card with `bg_glass_card`, margins, and elevation matching `activity_business_detail.xml`.
+  - Encased back button (`btn_back`), PDF report button (`btn_pdf`), and menu button (`btn_menu_notebook`) in sleek circular cards with ripple feedback and glass borders.
+  - Added a dedicated notebook avatar badge and refined typography hierarchy for `tvTitle` and `tvSubtitle` using theme-aware colors (`text_secondary`, `on_surface_variant`).
+- **Theme Polish & Transition Fixes**:
+  - Eliminated screen blink during theme changes with circular reveal transitions while preventing unwanted progress bars from triggering during routine fragment navigation.
+  - Fixed low-contrast text and background issues across Profile views and popup menus (`bg_popup_container.xml`, `bg_segmented_container.xml`).
 
 ### 2026-11-18 — Authentication UI improved
 

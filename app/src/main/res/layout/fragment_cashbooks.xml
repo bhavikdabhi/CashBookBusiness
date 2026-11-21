@@ -224,12 +224,26 @@
                         app:strokeColor="@color/glass_border"
                         app:strokeWidth="1dp"
                         android:layout_marginEnd="@dimen/_8sdp">
-                        <ImageView
-                            android:layout_width="@dimen/_18sdp"
-                            android:layout_height="@dimen/_18sdp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_filter_list"
-                            app:tint="@color/text_secondary"/>
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+                            <ImageView
+                                android:id="@+id/iv_filter_icon"
+                                android:layout_width="@dimen/_18sdp"
+                                android:layout_height="@dimen/_18sdp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_filter_list"
+                                app:tint="@color/text_secondary"/>
+                            <View
+                                android:id="@+id/filter_active_indicator"
+                                android:layout_width="@dimen/_7sdp"
+                                android:layout_height="@dimen/_7sdp"
+                                android:layout_gravity="top|end"
+                                android:layout_marginTop="@dimen/_4sdp"
+                                android:layout_marginEnd="@dimen/_4sdp"
+                                android:background="@drawable/bg_indicator_active"
+                                android:visibility="gone"/>
+                        </FrameLayout>
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
@@ -252,6 +266,60 @@
                             app:tint="@color/text_secondary"/>
                     </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
+
+                <!-- Search Box (Toggleable) -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/layout_search_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_38sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:visibility="gone"
+                    app:cardCornerRadius="@dimen/_10sdp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="@color/stitch_surface_container_low"
+                    app:strokeColor="@color/glass_border"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="@dimen/_10sdp">
+
+                        <ImageView
+                            android:layout_width="@dimen/_16sdp"
+                            android:layout_height="@dimen/_16sdp"
+                            android:src="@drawable/ic_search"
+                            app:tint="@color/on_surface_variant" />
+
+                        <EditText
+                            android:id="@+id/et_search_notebooks"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:layout_marginStart="@dimen/_8sdp"
+                            android:background="@null"
+                            android:hint="Search notebooks..."
+                            android:textColor="@color/text_secondary"
+                            android:textColorHint="@color/on_surface_variant"
+                            android:textSize="@dimen/_11ssp"
+                            android:fontFamily="@font/roboto_regular"
+                            android:singleLine="true"
+                            android:imeOptions="actionDone" />
+
+                        <ImageView
+                            android:id="@+id/btn_clear_search"
+                            android:layout_width="@dimen/_18sdp"
+                            android:layout_height="@dimen/_18sdp"
+                            android:src="@drawable/ic_close"
+                            android:padding="@dimen/_2sdp"
+                            android:visibility="gone"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            app:tint="@color/on_surface_variant" />
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
                 <!-- Notebook Shimmer Loader -->
                 <LinearLayout
@@ -291,6 +359,7 @@
                         android:src="@drawable/ic_open_book" />
 
                     <TextView
+                        android:id="@+id/tv_empty_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_12sdp"
@@ -301,6 +370,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/tv_empty_subtitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_6sdp"

@@ -6,32 +6,69 @@
     android:layout_height="match_parent"
     android:background="@color/bg_color">
 
-    <!-- TOP BAR -->
-    <RelativeLayout
+
+    <LinearLayout
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/_12sdp"
+        android:minHeight="@dimen/_64sdp"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:paddingHorizontal="@dimen/_12sdp"
+        android:paddingVertical="@dimen/_12sdp"
+        android:gravity="center_vertical"
         android:background="@drawable/bg_glass_card"
-        android:elevation="@dimen/_6sdp">
+        android:elevation="@dimen/_4sdp">
 
-        <ImageButton
-            android:id="@+id/btn_back"
-            android:layout_width="@dimen/_40sdp"
-            android:layout_height="@dimen/_40sdp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_back"
-            android:padding="@dimen/_8sdp"
-            android:layout_centerVertical="true"
-            app:tint="@color/text_secondary"/>
+        <!-- Back Button -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="@dimen/_32sdp"
+            android:layout_height="@dimen/_32sdp"
+            app:cardCornerRadius="@dimen/_15sdp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/stitch_surface_container_low"
+            app:strokeColor="@color/glass_border"
+            app:strokeWidth="1dp">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_toEndOf="@id/btn_back"
+            <ImageButton
+                android:id="@+id/btn_back"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackground"
+                android:src="@drawable/ic_back"
+                android:padding="@dimen/_9sdp"
+                app:tint="@color/text_secondary"
+                android:contentDescription="Back" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Notebook Avatar Badge -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="@dimen/_35sdp"
+            android:layout_height="@dimen/_35sdp"
             android:layout_marginStart="@dimen/_8sdp"
-            android:layout_centerVertical="true">
+            app:cardCornerRadius="@dimen/_12sdp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/bottom_nav_active_bg"
+            app:strokeColor="@color/bottom_nav_active_border"
+            app:strokeWidth="1dp">
+
+            <ImageView
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_book"
+                app:tint="@color/bottom_nav_active_border" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Title & Subtitle -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_8sdp">
 
             <TextView
                 android:id="@+id/tvTitle"
@@ -39,45 +76,81 @@
                 android:layout_height="wrap_content"
                 android:text="Notebook Name"
                 android:fontFamily="@font/roboto_medium"
-                android:textFontWeight="600"
-                android:textSize="@dimen/_16ssp"
+                android:textFontWeight="700"
                 android:textStyle="bold"
-                android:textColor="@color/text_secondary"/>
+                android:textSize="@dimen/_13ssp"
+                android:textColor="@color/text_secondary"
+                android:singleLine="true"
+                android:ellipsize="end" />
 
             <TextView
                 android:id="@+id/tvSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_2sdp"
                 android:fontFamily="@font/roboto_regular"
-                android:textFontWeight="600"
-                android:text="Members"
+                android:textFontWeight="500"
+                android:text="Manage your daily entries"
                 android:textSize="@dimen/_10ssp"
-                android:textColor="@color/text_entryBy"/>
+                android:textColor="@color/on_surface_variant"
+                android:singleLine="true"
+                android:ellipsize="end" />
         </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/btn_menu_notebook"
-            android:layout_width="@dimen/_32sdp"
-            android:layout_height="@dimen/_32sdp"
-            android:src="@drawable/icon_threedots"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:padding="@dimen/_6sdp"
-            app:tint="@color/text_secondary"/>
+        <!-- Actions Container -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
-        <ImageButton
-            android:id="@+id/btn_pdf"
-            android:layout_width="@dimen/_32sdp"
-            android:layout_height="@dimen/_32sdp"
-            android:src="@drawable/ic_book"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:layout_toStartOf="@id/btn_menu_notebook"
-            android:layout_centerVertical="true"
-            android:padding="@dimen/_6sdp"
-            app:tint="@color/primary_color"/>
+            <!-- PDF Export Button -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="@dimen/_35sdp"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                app:cardCornerRadius="@dimen/_18sdp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/stitch_surface_container_low"
+                app:strokeColor="@color/glass_border"
+                app:strokeWidth="1dp">
 
-    </RelativeLayout>
+                <ImageButton
+                    android:id="@+id/btn_pdf"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground"
+                    android:src="@drawable/ic_menu_report"
+                    android:padding="@dimen/_8sdp"
+                    app:tint="@color/primary"
+                    android:contentDescription="Export PDF" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 3-Dots Menu Button -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="@dimen/_35sdp"
+                android:layout_height="@dimen/_35sdp"
+                app:cardCornerRadius="@dimen/_18sdp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/stitch_surface_container_low"
+                app:strokeColor="@color/glass_border"
+                app:strokeWidth="1dp">
+
+                <ImageButton
+                    android:id="@+id/btn_menu_notebook"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground"
+                    android:src="@drawable/icon_threedots"
+                    android:padding="@dimen/_7sdp"
+                    app:tint="@color/text_secondary"
+                    android:contentDescription="Notebook Options" />
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
 
     <!-- CONTENT -->
     <androidx.core.widget.NestedScrollView
