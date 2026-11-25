@@ -1,39 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_screen_gradient"
-    tools:context=".notebook.NotebookActivity">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@android:color/transparent"    >
 
-    <!-- NAVIGATION BAR -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_nav"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_65sdp"
-        android:background="@android:color/transparent"
-        android:backgroundTint="@android:color/transparent"
-        style="@style/Widget.App.BottomNav"
-        app:itemBackground="@drawable/bg_bottom_nav_item_selected_20"
-        app:itemRippleColor="@null"
-        app:elevation="0dp"
-        app:labelVisibilityMode="labeled"
-        app:itemIconSize="@dimen/_20sdp"
-        app:itemMinHeight="@dimen/_58sdp"
-        app:itemPaddingTop="@dimen/_6sdp"
-        app:itemPaddingBottom="@dimen/_8sdp"
-        app:itemIconTint="@color/nav_item_color"
-        app:itemTextColor="@color/nav_item_color"
-        android:layout_alignParentBottom="true"
-        app:menu="@menu/notebook_bottom_nav" />
-
-    <!-- FRAGMENT CONTAINER -->
-    <FrameLayout
-        android:id="@+id/notebook_fragment_container"
+    <LinearLayout
+        android:background="@drawable/bg_screen_gradient"
+        android:id="@+id/main_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_above="@id/bottom_nav" />
+        android:orientation="vertical">
 
-</RelativeLayout>
+        <FrameLayout
+            android:id="@+id/notebook_fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+                 />
+
+    </LinearLayout>
+    <!-- FRAGMENT CONTAINER -->
+
+
+    <!-- FLOATING BOTTOM NAVIGATION BAR -->
+    <FrameLayout
+        android:id="@+id/layout_bottom_nav_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginHorizontal="@dimen/_16sdp"
+        android:layout_marginBottom="@dimen/_14sdp"
+        android:background="@drawable/bg_bottom_nav_pill"
+        android:elevation="@dimen/_4sdp">
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_nav"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_56sdp"
+            android:background="@android:color/transparent"
+            app:backgroundTint="@android:color/transparent"
+            style="@style/Widget.App.BottomNav"
+            app:itemPaddingTop="@dimen/_5sdp"
+            app:itemPaddingBottom="@dimen/_5sdp"
+            app:itemHorizontalTranslationEnabled="false"
+            app:itemIconTint="@color/nav_item_color"
+            app:itemTextColor="@color/nav_item_color"
+            app:labelVisibilityMode="labeled"
+            app:itemBackground="@drawable/bg_bottom_nav_item_selected"
+            app:itemRippleColor="@null"
+            app:elevation="0dp"
+            app:menu="@menu/notebook_bottom_nav" />
+    </FrameLayout>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

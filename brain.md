@@ -448,6 +448,10 @@ When modifying this project:
   - Modernized `fragment_notebook_home.xml`'s top bar into a floating glass card with `bg_glass_card`, margins, and elevation matching `activity_business_detail.xml`.
   - Encased back button (`btn_back`), PDF report button (`btn_pdf`), and menu button (`btn_menu_notebook`) in sleek circular cards with ripple feedback and glass borders.
   - Added a dedicated notebook avatar badge and refined typography hierarchy for `tvTitle` and `tvSubtitle` using theme-aware colors (`text_secondary`, `on_surface_variant`).
+- **Notebook Bottom Navigation Redesign**:
+  - Restyled `activity_notebook.xml`'s navigation into a floating pill container (`bg_bottom_nav_pill`) with `@dimen/_14sdp` horizontal and `@dimen/_10sdp` bottom margins and `@dimen/_6sdp` elevation, matching the visual identity in `activity_business_detail.xml`.
+  - Replaced the opaque solid gradient `bg_bottom_nav_item_selected_20` with the translucent pill `bg_bottom_nav_item_selected`, restoring contrast for the active teal text and icon (`nav_item_color`).
+  - Tuned item padding and heights (`@dimen/_56sdp`) for optimal touch targets and spacing in both Light (crisp white + glass border) and Dark (dark surface + glowing teal stroke) themes.
 - **Theme Polish & Transition Fixes**:
   - Eliminated screen blink during theme changes with circular reveal transitions while preventing unwanted progress bars from triggering during routine fragment navigation.
   - Fixed low-contrast text and background issues across Profile views and popup menus (`bg_popup_container.xml`, `bg_segmented_container.xml`).

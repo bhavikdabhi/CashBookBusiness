@@ -158,7 +158,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/top_bar"
-        android:layout_above="@id/bottom_bar">
+        android:layout_above="@id/bottom_bar_container">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -380,11 +380,12 @@
     </androidx.core.widget.NestedScrollView>
 
 <FrameLayout
+    android:id="@+id/bottom_bar_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
     android:paddingHorizontal="@dimen/_10sdp"
-    android:paddingBottom="@dimen/_10sdp"
+    android:paddingBottom="@dimen/_76sdp"
     android:paddingTop="@dimen/_5sdp"
     android:elevation="@dimen/_8sdp"
     >
