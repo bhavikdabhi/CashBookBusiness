@@ -62,7 +62,12 @@ class ManagePartiesFragment : Fragment() {
         fetchParties()
 
         binding.btnBack.setOnClickListener {
-            parentFragmentManager.popBackStack()
+            if (parentFragmentManager.backStackEntryCount > 0) {
+                parentFragmentManager.popBackStack()
+            } else {
+                (activity as? com.cashbk.app.notebook.NotebookActivity)?.navigateToTab(R.id.nav_transactions)
+                    ?: requireActivity().onBackPressedDispatcher.onBackPressed()
+            }
         }
 
         binding.ivSearchIconToolbar.setOnClickListener {

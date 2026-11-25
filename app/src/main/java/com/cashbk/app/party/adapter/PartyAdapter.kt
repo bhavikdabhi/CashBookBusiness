@@ -63,14 +63,30 @@ class PartyAdapter(
             holder.binding.ivPartyIcon.imageTintList = ColorStateList.valueOf(fallback)
         }
 
-        // Load custom icon
-        val iconName = party.iconResName.ifBlank { "ic_party_person" }
-        val resId = context.resources.getIdentifier(iconName, "drawable", context.packageName)
-        if (resId != 0) {
-            holder.binding.ivPartyIcon.setImageResource(resId)
+        // Load icon from party data (with fallback mapping for legacy iconResName / role values)
+        val iconName = party.iconResName.ifBlank { "" }
+        val directResId = if (iconName.isNotEmpty()) {
+            context.resources.getIdentifier(iconName, "drawable", context.packageName)
+        } else 0
+
+        val resolvedResId = if (directResId != 0) {
+            directResId
         } else {
-            holder.binding.ivPartyIcon.setImageResource(R.drawable.ic_action_group)
+            when (iconName.lowercase()) {
+                "ic_party_shop" -> R.drawable.ic_party_vendor
+                "ic_party_tool" -> R.drawable.ic_party_contractor
+                "ic_party_employee" -> R.drawable.ic_party_employee
+                "ic_party_person" -> R.drawable.ic_party_group
+                else -> when (party.role.uppercase()) {
+                    "VENDOR" -> R.drawable.ic_party_vendor
+                    "CONTRACTOR" -> R.drawable.ic_party_contractor
+                    "EMPLOYEE" -> R.drawable.ic_party_employee
+                    "PARTNER", "COMPANY", "ORGANIZATION" -> R.drawable.ic_party_building
+                    else -> R.drawable.ic_party_group
+                }
+            }
         }
+        holder.binding.ivPartyIcon.setImageResource(resolvedResId)
 
         holder.binding.ivDelete.setOnClickListener {
             onDeleteClick(party)

@@ -115,11 +115,12 @@ class AddPartyFragment : Fragment() {
             role = selectedRole,
             colorHex = defaultColorHex,
             iconResName = when(selectedRole) {
-                "VENDOR" -> "ic_party_shop"
-                "CUSTOMER" -> "ic_party_person"
-                "CONTRACTOR" -> "ic_party_tool"
+                "VENDOR" -> "ic_party_vendor"
+                "CUSTOMER" -> "ic_party_group"
+                "CONTRACTOR" -> "ic_party_contractor"
                 "EMPLOYEE" -> "ic_party_employee"
-                else -> "ic_party_person"
+                "PARTNER" -> "ic_party_building"
+                else -> "ic_party_group"
             }
         )
 
