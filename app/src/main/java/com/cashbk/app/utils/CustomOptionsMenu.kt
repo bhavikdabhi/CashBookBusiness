@@ -62,6 +62,14 @@ class CustomOptionsMenu(private val context: Context, private val anchor: View) 
 
     fun setOnRenameClickListener(listener: () -> Unit): CustomOptionsMenu {
         this.onRename = listener
+        binding.tvMenuRename.text = "Rename"
+        binding.menuRename.visibility = View.VISIBLE
+        return this
+    }
+
+    fun setOnEditClickListener(listener: () -> Unit): CustomOptionsMenu {
+        this.onRename = listener
+        binding.tvMenuRename.text = "Edit"
         binding.menuRename.visibility = View.VISIBLE
         return this
     }

@@ -61,6 +61,7 @@ class AddTransactionFragment : Fragment() {
 
     private var receiptUri: Uri? = null
     private var capturedReceiptName: String = ""
+    private var existingReceiptUrl: String = ""
 
     private val pickReceiptLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let { selectedUri ->
@@ -133,6 +134,7 @@ class AddTransactionFragment : Fragment() {
 
         notebookId = arguments?.getString("notebookId")
         transactionId = arguments?.getString("transactionId")
+        transactionType = arguments?.getString("transactionType") ?: arguments?.getString("type") ?: "in"
 
         if (notebookId.isNullOrEmpty()) {
             showToast("Notebook ID missing")
@@ -173,6 +175,38 @@ class AddTransactionFragment : Fragment() {
             
             binding.saveAddMoreButton.visibility = View.GONE 
             binding.saveButton.text = "Update"
+
+            existingReceiptUrl = arguments?.getString("receiptUrl") ?: ""
+            capturedReceiptName = arguments?.getString("receiptName") ?: ""
+            if (existingReceiptUrl.isNotEmpty()) {
+                val displayName = capturedReceiptName.ifEmpty { "Receipt Attached (Tap to change)" }
+                binding.tvAttachLabel.text = displayName
+                binding.tvAttachLabel.setTextColor(ContextCompat.getColor(requireContext(), R.color.success))
+
+                val displayUrl = if (existingReceiptUrl.contains("drive.google.com")) {
+                    val fileId = if (existingReceiptUrl.contains("/d/")) {
+                        existingReceiptUrl.substringAfter("/d/").substringBefore("/")
+                    } else {
+                        Uri.parse(existingReceiptUrl).getQueryParameter("id")
+                    }
+                    if (!fileId.isNullOrEmpty()) "https://drive.google.com/thumbnail?id=$fileId&sz=w300" else existingReceiptUrl
+                } else {
+                    existingReceiptUrl
+                }
+
+                binding.ivAttachIcon.imageTintList = null
+                binding.ivAttachIcon.layoutParams = binding.ivAttachIcon.layoutParams.apply {
+                    val size = (36 * resources.displayMetrics.density).toInt()
+                    width = size
+                    height = size
+                }
+                com.bumptech.glide.Glide.with(this)
+                    .load(displayUrl)
+                    .placeholder(android.R.drawable.ic_menu_gallery)
+                    .error(android.R.drawable.ic_menu_gallery)
+                    .centerCrop()
+                    .into(binding.ivAttachIcon)
+            }
         }
 
         fetchCategories()
@@ -191,7 +225,7 @@ class AddTransactionFragment : Fragment() {
             updateToggleButtonUI(false)
         }
         
-        updateToggleButtonUI(true)
+        updateToggleButtonUI(transactionType == "in")
 
         updateDate()
         updateTime()
@@ -451,8 +485,8 @@ class AddTransactionFragment : Fragment() {
                     driveSignInLauncher.launch(client.signInIntent)
                 }
         } else {
-            // No receipt, save directly to Firebase
-            executeFirebaseSave(closeAfterSave, "")
+            // No new receipt picked — preserve existing receiptUrl if editing
+            executeFirebaseSave(closeAfterSave, existingReceiptUrl)
         }
     }
 
@@ -580,6 +614,7 @@ class AddTransactionFragment : Fragment() {
             }
         }
         receiptUri = null
+        existingReceiptUrl = ""
         capturedReceiptName = ""
         binding.tvAttachLabel.text = "ATTACH BILL / RECEIPT"
         binding.tvAttachLabel.setTextColor(ContextCompat.getColor(requireContext(), R.color.gray))

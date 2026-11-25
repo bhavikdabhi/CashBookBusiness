@@ -1,7 +1,7 @@
 # CashBook Business — Project Brain
 
 > Purpose: a fast, accurate orientation guide for developers and AI tools working on this repository.
-> Last project snapshot: 2026-11-21
+> Last project snapshot: 2026-11-25
 
 ## 1. What this project is
 
@@ -435,7 +435,60 @@ When modifying this project:
 9. Add tests for data-contract, sync, authentication, and permission changes.
 10. Do not expose production secrets, Firebase credentials, API keys, tokens, or signing passwords in this file.
 
-## 15. Update log
+## 15. Screen preview and navigation index
+
+Use this table as the UI map when updating layouts or implementing navigation. Screen names correspond to Kotlin classes and the preview layout identifies the XML source.
+
+| Preview / Screen | Layout | Main properties and components | Entry route / Navigation |
+|---|---|---|---|
+| Splash | `activity_splash.xml` | App branding, loading/progress UI, startup routing screen | Launcher → SplashActivity → AuthActivity, PinLockActivity, or BusinessDetailActivity |
+| Authentication shell | `activity_auth.xml` | Floating pill bottom bar, theme-aware container, fragment host (`nav_host_fragment`) | AuthActivity; bottom navigation: Login (`nav_login`) / Register (`nav_register`) |
+| Login | `fragment_login.xml` | Email/phone login fields, password field, Google sign-in, forgot-password link, register link | AuthActivity → LoginFragment → BusinessDetailActivity after success; Forgot password → ForgotPasswordActivity |
+| Register | `fragment_register.xml` | Name, email/phone, password fields, registration action, sign-in link | AuthActivity → RegisterFragment → OTP verification flow |
+| OTP Verification | `fragment_otp_verification.xml` | OTP input fields, verify/resend actions, back navigation | Register/login OTP route → OTP verification → BusinessDetailActivity |
+| Forgot Password | `activity_forgot_password.xml` | Email/identifier input, send action, back control | LoginFragment → ForgotPasswordActivity → return to Login |
+| PIN Lock | `activity_pin_lock.xml` | Numeric keypad, delete/biometric controls, switch-user action | Splash/Auth route after app-lock is enabled; unlock → BusinessDetailActivity |
+| Business shell | `activity_business_detail.xml` | Top business selector/theme toggle, fragment container, floating bottom navigation | Splash/Auth/Pin → BusinessDetailActivity. Bottom tabs: Books, Events, Profile, Settings |
+| Books / Cashbooks | `fragment_cashbooks.xml` | Search, notebook list, notebook filter, add-notebook action, net-book cards | Business shell `Books` tab → NotebookActivity by selecting a notebook |
+| Add Business | `fragment_add_business.xml` | Business name and save/cancel controls | Business selector bottom sheet → Add Business dialog/fragment |
+| Business selector | `bottom_fragment_select_business.xml` | Owned/partner business list, add-new-business action | Business top-bar selector → bottom sheet |
+| Events | `fragment_events.xml` | Calendar, event date states, event list/add-event actions | Business shell `Events` tab |
+| Profile | `fragment_profile.xml` | Avatar, edit profile, theme selector, app-lock switch, Google Drive controls, reset password, sign out | Business shell `Profile` tab |
+| Business Settings | `fragment_settings.xml` | Manage members, leave/delete business, logout | Business shell `Settings` tab |
+| Notebook shell | `activity_notebook.xml` | Transparent bottom navigation with labeled tabs and notebook fragment host; 65dp-scaled height | Cashbooks/Notebook selection → NotebookActivity with `notebookId` |
+| Notebook Transactions | `fragment_notebook_home.xml` | Glass top bar, back/PDF/menu controls, notebook avatar, balance summary, filtered transaction list, Cash In/Cash Out actions | Notebook bottom nav `Transactions`; PDF/report, add transaction, member options |
+| Add/Edit Transaction | `fragment_add_transaction.xml` | Cash in/out type switch, amount, party/category, date/time, receipt attachment, save actions | Notebook transaction screen → bottom sheet/fragment; cancel pops back stack |
+| Parties | `fragment_manage_parties.xml` | Party search, party list, add-party FAB/placeholders, delete/edit actions | Notebook bottom nav `Parties` → Add Party screen/bottom sheet |
+| Add Party | `fragment_add_party.xml` or `add_party_bottom_sheet.xml` | Party name/type/details, save/cancel, contacts action | Parties screen/add button or transaction add-party control |
+| Categories | `fragment_manage_categories.xml` | Income/expense category list, add category, search/actions | Notebook bottom nav `Categories` |
+| Add/Edit Category | `fragment_add_category.xml` | Category name/icon/type, save/cancel | Categories screen → Add/Edit Category |
+| Notebook Settings | `fragment_notebook_setting.xml` | Notebook name, manage members/categories, duplicate/delete notebook | Notebook bottom nav `Settings` |
+| Members | `activity_members.xml` | Member list, role assignment/add dialog, remove/delete controls | Business/Notebook settings or notebook menu → MembersActivity |
+| Manage Business Partners | `activity_manage_partners.xml` | Partner list, add/remove partner dialogs | Business settings/manage partners flow |
+| Notebook filter | `bottom_sheet_notebook_filter.xml` | Sort, balance, period filter chips, reset and apply actions | Cashbooks search/filter control → modal bottom sheet |
+| Notebook options | `layout_options_menu.xml` | Rename, report, members, settings, delete actions | Notebook top-menu button or notebook card options |
+| PIN setup | `dialog_pin_setup.xml` | Numeric PIN setup/change/delete controls | Profile app-lock section → bottom sheet/dialog |
+| Edit profile | `dialog_edit_profile.xml` | Name/email/profile details and update action | Profile → Edit Profile |
+| Custom alert | `dialog_custom_alert.xml` | Positive/negative/neutral themed actions | Sign-out, delete, leave, reset, and destructive confirmations |
+| Custom toast | `layout_custom_toast.xml` | Theme-aware status message toast | Used globally through `CustomToast.show()` |
+
+### Navigation property reference
+
+- **Business bottom navigation:** `bottomNavigation` / `bottom_nav_menu.xml`; selected tabs load `CashbooksFragment`, `EventsFragment`, `ProfileFragment`, or `SettingsFragment`.
+- **Notebook bottom navigation:** `bottom_nav` / `notebook_bottom_nav.xml`; selected tabs load `NotebookHomeFragment`, `ManagePartiesFragment`, `ManageCategoriesFragment`, or `SettingsFragment`.
+- **Auth bottom navigation:** `bottom_auth_navigation` / `bottom_auth_menu.xml`; selected tabs load `LoginFragment` or `RegisterFragment`.
+- **Notebook shell navigation properties:** `labelVisibilityMode="labeled"`, transparent background/tint, no elevation, 20dp icon size, 58dp item minimum height, and theme-aware `nav_item_color`.
+- **Screen preview source:** prefer XML layout files for static structure, Kotlin classes for behavior/navigation, and resources under `drawable/`, `drawable-night/`, `menu/`, and `values*/` for visual styling.
+
+## 16. Update log
+
+### 2026-11-25 — Screen preview index and notebook navigation polish
+
+- Added a full screen preview and navigation table for Activities, Fragments, bottom sheets, dialogs, and their layout files.
+- Documented business, notebook, and authentication bottom-navigation property names and destination fragments.
+- Updated `activity_notebook.xml` to use a transparent navigation background/tint and no elevation, preventing corner artifacts in Dark theme.
+- Added explicit notebook bottom-navigation label and item sizing properties for consistent labeled text visibility.
+- Added report icon maintenance note: `ic_menu_report.xml` is the shared PDF/report drawable for notebook and options-menu actions.
 
 ### 2026-11-21 — Notebook filtering, glassmorphic top bar redesign & theme polish
 

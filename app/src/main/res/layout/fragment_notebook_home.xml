@@ -158,7 +158,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/top_bar"
-        android:layout_above="@id/bottom_bar_container">
+        android:layout_alignParentBottom="true"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/_140sdp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -379,51 +381,146 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-<FrameLayout
-    android:id="@+id/bottom_bar_container"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignParentBottom="true"
-    android:paddingHorizontal="@dimen/_10sdp"
-    android:paddingBottom="@dimen/_76sdp"
-    android:paddingTop="@dimen/_5sdp"
-    android:elevation="@dimen/_8sdp"
-    >
-    <!-- BOTTOM BAR -->
-    <LinearLayout
-        android:id="@+id/bottom_bar"
+    <!-- SCRIM FOR EXPANDED FAB MENU -->
+    <View
+        android:id="@+id/fab_scrim"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#40000000"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true"
+        android:elevation="@dimen/_6sdp" />
+
+    <!-- FLOATING + SPEED-DIAL ACTION BUTTON -->
+    <LinearLayout
+        android:id="@+id/fab_menu_container"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@android:color/transparent"
-      >
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:layout_marginBottom="@dimen/_82sdp"
+        android:orientation="vertical"
+        android:gravity="end"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:elevation="@dimen/_10sdp">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_cash_in"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/_48sdp"
-            android:layout_weight="1"
-            android:text="+ CASH IN"
-            android:fontFamily="@font/roboto_bold"
-            android:textFontWeight="600"
-            android:textSize="@dimen/_14ssp"
-            app:backgroundTint="@color/success"
-            app:cornerRadius="@dimen/_12sdp"
-            android:layout_marginEnd="@dimen/_8sdp"/>
+        <!-- Cash Out Option -->
+        <LinearLayout
+            android:id="@+id/fab_cash_out_row"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="@dimen/_12sdp"
+            android:visibility="gone"
+            android:clickable="true"
+            android:focusable="true">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_cash_out"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/_48sdp"
-            android:layout_weight="1"
-            android:text="- CASH OUT"
-            android:fontFamily="@font/roboto_bold"
-            android:textFontWeight="600"
-            android:textSize="@dimen/_14ssp"
-            app:backgroundTint="@color/danger"
-            app:cornerRadius="@dimen/_12sdp"
-            android:layout_marginStart="@dimen/_8sdp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cash Out (-)"
+                android:fontFamily="@font/roboto_bold"
+                android:textSize="@dimen/_12ssp"
+                android:textColor="@color/text_secondary"
+                android:background="@drawable/bg_glass_card"
+                android:paddingHorizontal="@dimen/_12sdp"
+                android:paddingVertical="@dimen/_6sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:elevation="@dimen/_4sdp" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="@dimen/_44sdp"
+                android:layout_height="@dimen/_44sdp"
+                app:cardCornerRadius="@dimen/_22sdp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/danger"
+                app:strokeColor="#4DFFFFFF"
+                app:strokeWidth="1.5dp">
+
+                <ImageView
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_trans_minus"
+                    app:tint="@color/white" />
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+
+        <!-- Cash In Option -->
+        <LinearLayout
+            android:id="@+id/fab_cash_in_row"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="@dimen/_14sdp"
+            android:visibility="gone"
+            android:clickable="true"
+            android:focusable="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cash In (+)"
+                android:fontFamily="@font/roboto_bold"
+                android:textSize="@dimen/_12ssp"
+                android:textColor="@color/text_secondary"
+                android:background="@drawable/bg_glass_card"
+                android:paddingHorizontal="@dimen/_12sdp"
+                android:paddingVertical="@dimen/_6sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:elevation="@dimen/_4sdp" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="@dimen/_44sdp"
+                android:layout_height="@dimen/_44sdp"
+                app:cardCornerRadius="@dimen/_22sdp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/success"
+                app:strokeColor="#4DFFFFFF"
+                app:strokeWidth="1.5dp">
+
+                <ImageView
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_trans_plus"
+                    app:tint="@color/white" />
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+
+        <!-- Main Round + Floating Button -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/fab_add_transaction"
+            android:layout_width="@dimen/_52sdp"
+            android:layout_height="@dimen/_52sdp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            app:cardCornerRadius="@dimen/_26sdp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:strokeWidth="0dp"
+            android:contentDescription="Add Transaction">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_fab_round_gradient">
+
+                <ImageView
+                    android:id="@+id/iv_fab_icon"
+                    android:layout_width="@dimen/_24sdp"
+                    android:layout_height="@dimen/_24sdp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_add"
+                    app:tint="@color/fab_tint" />
+            </FrameLayout>
+        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
-</FrameLayout>
 </RelativeLayout>

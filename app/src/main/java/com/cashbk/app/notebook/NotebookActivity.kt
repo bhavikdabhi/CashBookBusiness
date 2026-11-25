@@ -136,7 +136,7 @@ class NotebookActivity : AppCompatActivity() {
 
     fun showTransactionPopupMenu(anchor: View, transaction: Transaction) {
         val popup = CustomOptionsMenu(this, anchor)
-        popup.setOnRenameClickListener { showEditTransactionDialog(transaction) }
+        popup.setOnEditClickListener { showEditTransactionDialog(transaction) }
         popup.setOnDeleteClickListener { deleteTransaction(transaction) }
         popup.show()
     }
@@ -213,6 +213,8 @@ class NotebookActivity : AppCompatActivity() {
         args.putString("type", transaction.type)
         args.putString("categoryId", transaction.categoryId)
         args.putString("partyId", transaction.partyId)
+        args.putString("receiptUrl", transaction.receiptUrl)
+        args.putString("receiptName", transaction.receiptName)
         
         fragment.arguments = args
         supportFragmentManager.beginTransaction()

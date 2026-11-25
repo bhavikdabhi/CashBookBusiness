@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.OvershootInterpolator
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -58,6 +59,7 @@ class NotebookHomeFragment : Fragment() {
     private var filterPartyId: String? = null
     private var filterType: String? = null
     private var filterEntryBy: String? = null
+    private var isFabMenuOpen = false
 
     private lateinit var filterAdapter: FilterAdapter
     private val filterItemList = mutableListOf(
@@ -104,8 +106,7 @@ class NotebookHomeFragment : Fragment() {
             PdfGenerator.generatePdf(requireActivity(), notebookName, displayedTransactionList, currentNetBalance)
         }
 
-        binding.btnCashIn.setOnClickListener { showAddTransactionDialog("in") }
-        binding.btnCashOut.setOnClickListener { showAddTransactionDialog("out") }
+        setupFabMenu()
         setupFilterRecyclerView()
         
         binding.btnViewReports.setOnClickListener {
@@ -612,19 +613,144 @@ class NotebookHomeFragment : Fragment() {
         return NumberFormat.getNumberInstance(Locale("en", "IN")).format(amount)
     }
 
+    private fun setupFabMenu() {
+        isFabMenuOpen = false
+        // Smooth entrance animation for the round + floating button
+        binding.fabAddTransaction.apply {
+            scaleX = 0.6f
+            scaleY = 0.6f
+            alpha = 0f
+            animate()
+                .scaleX(1f)
+                .scaleY(1f)
+                .alpha(if (currentUserRole == "reader") 0.5f else 1f)
+                .setDuration(350)
+                .setInterpolator(OvershootInterpolator(1.6f))
+                .start()
+        }
+
+        binding.fabAddTransaction.setOnClickListener {
+            if (currentUserRole == "reader") {
+                showToast("You have view-only access")
+                return@setOnClickListener
+            }
+            toggleFabMenu()
+        }
+
+        binding.fabScrim.setOnClickListener { closeFabMenu() }
+
+        binding.fabCashInRow.setOnClickListener {
+            closeFabMenu()
+            showAddTransactionDialog("in")
+        }
+
+        binding.fabCashOutRow.setOnClickListener {
+            closeFabMenu()
+            showAddTransactionDialog("out")
+        }
+    }
+
+    private fun toggleFabMenu() {
+        if (isFabMenuOpen) closeFabMenu() else openFabMenu()
+    }
+
+    private fun openFabMenu() {
+        if (_binding == null || isFabMenuOpen) return
+        isFabMenuOpen = true
+
+        binding.fabScrim.apply {
+            alpha = 0f
+            visibility = View.VISIBLE
+            animate().alpha(1f).setDuration(220).start()
+        }
+
+        binding.ivFabIcon.animate()
+            .rotation(45f)
+            .setDuration(260)
+            .setInterpolator(OvershootInterpolator(1.4f))
+            .start()
+
+        binding.fabAddTransaction.animate()
+            .scaleX(0.92f).scaleY(0.92f).setDuration(100)
+            .withEndAction {
+                if (_binding != null) {
+                    binding.fabAddTransaction.animate().scaleX(1f).scaleY(1f).setDuration(140).start()
+                }
+            }.start()
+
+        animateFabRowIn(binding.fabCashInRow, 0L)
+        animateFabRowIn(binding.fabCashOutRow, 50L)
+    }
+
+    private fun animateFabRowIn(row: View, delay: Long) {
+        row.apply {
+            visibility = View.VISIBLE
+            alpha = 0f
+            translationY = 48f
+            scaleX = 0.85f
+            scaleY = 0.85f
+            animate()
+                .alpha(1f)
+                .translationY(0f)
+                .scaleX(1f)
+                .scaleY(1f)
+                .setStartDelay(delay)
+                .setDuration(240)
+                .setInterpolator(OvershootInterpolator(1.2f))
+                .start()
+        }
+    }
+
+    private fun closeFabMenu() {
+        if (_binding == null || !isFabMenuOpen) return
+        isFabMenuOpen = false
+
+        binding.fabScrim.animate()
+            .alpha(0f)
+            .setDuration(180)
+            .withEndAction {
+                if (_binding != null && !isFabMenuOpen) {
+                    binding.fabScrim.visibility = View.GONE
+                }
+            }.start()
+
+        binding.ivFabIcon.animate()
+            .rotation(0f)
+            .setDuration(240)
+            .setInterpolator(OvershootInterpolator(1.2f))
+            .start()
+
+        animateFabRowOut(binding.fabCashOutRow)
+        animateFabRowOut(binding.fabCashInRow)
+    }
+
+    private fun animateFabRowOut(row: View) {
+        row.animate()
+            .alpha(0f)
+            .translationY(36f)
+            .scaleX(0.85f)
+            .scaleY(0.85f)
+            .setStartDelay(0L)
+            .setDuration(180)
+            .withEndAction {
+                if (_binding != null && !isFabMenuOpen) {
+                    row.visibility = View.GONE
+                }
+            }.start()
+    }
+
     private fun updateUIForRole() {
         if (_binding == null) return
         if (currentUserRole == "reader") {
-            binding.btnCashIn.alpha = 0.5f
-            binding.btnCashOut.alpha = 0.5f
+            binding.fabAddTransaction.alpha = 0.5f
         } else {
-            binding.btnCashIn.alpha = 1.0f
-            binding.btnCashOut.alpha = 1.0f
+            binding.fabAddTransaction.alpha = 1.0f
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        isFabMenuOpen = false
         _binding = null
     }
 }
