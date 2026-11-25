@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.cashbk.app.databinding.ItemFilterChipBinding
 
-data class FilterItem(val type: String, var displayText: String)
+data class FilterItem(val type: String, var displayText: String, var isSelected: Boolean = false)
 
 class FilterAdapter(
     private var filterItems: List<FilterItem>,
@@ -15,7 +15,11 @@ class FilterAdapter(
     inner class FilterViewHolder(private val binding: ItemFilterChipBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: FilterItem, position: Int) {
             binding.chipItem.text = item.displayText
+            binding.chipItem.isSelected = item.isSelected
             binding.chipItem.setOnClickListener {
+                onFilterClick(item, position)
+            }
+            binding.chipItem.setOnCloseIconClickListener {
                 onFilterClick(item, position)
             }
         }
@@ -31,9 +35,10 @@ class FilterAdapter(
     }
 
     override fun getItemCount(): Int = filterItems.size
-    
-    fun updateItem(position: Int, newText: String) {
+
+    fun updateItem(position: Int, newText: String, isActive: Boolean = false) {
         filterItems[position].displayText = newText
+        filterItems[position].isSelected = isActive
         notifyItemChanged(position)
     }
 }

@@ -31,28 +31,45 @@ class PartyAdapter(
         val party = parties[position]
         val context = holder.itemView.context
 
-        holder.binding.tvPartyName.text = party.name ?: "Unknown"
-        holder.binding.tvPartyRole.text = party.role ?: "VENDOR"
+        holder.binding.tvPartyName.text = party.name.ifBlank { "Unknown" }
+        holder.binding.tvPartyRole.text = party.role.ifBlank { "VENDOR" }.uppercase()
+
+        if (party.priorityTag.isNotBlank()) {
+            holder.binding.tvPriorityTag.visibility = android.view.View.VISIBLE
+            holder.binding.tvPriorityTag.text = party.priorityTag.uppercase()
+        } else {
+            holder.binding.tvPriorityTag.visibility = android.view.View.GONE
+        }
+
+        val contactDisplay = listOf(party.contact, party.email).filter { it.isNotBlank() }.joinToString(" • ")
+        if (contactDisplay.isNotEmpty()) {
+            holder.binding.layoutContact.visibility = android.view.View.VISIBLE
+            holder.binding.tvContact.text = contactDisplay
+        } else {
+            holder.binding.layoutContact.visibility = android.view.View.GONE
+        }
 
         try {
-            val defaultColorHex = String.format("#%06X", 0xFFFFFF and ContextCompat.getColor(context, R.color.color_80deea))
-            val colorStr = party.colorHex ?: defaultColorHex
-            val color = Color.parseColor(colorStr)
-            holder.binding.ivPartyIcon.backgroundTintList = ColorStateList.valueOf(color)
-            holder.binding.tvPartyName.setTextColor(color)
+            val defaultColor = ContextCompat.getColor(context, R.color.primary)
+            val accentColor = if (!party.colorHex.isNullOrBlank()) Color.parseColor(party.colorHex) else defaultColor
+            val softBg = androidx.core.graphics.ColorUtils.setAlphaComponent(accentColor, 36)
+            holder.binding.cardPartyIcon.setCardBackgroundColor(softBg)
+            holder.binding.cardPartyIcon.strokeColor = accentColor
+            holder.binding.ivPartyIcon.imageTintList = ColorStateList.valueOf(accentColor)
         } catch (e: Exception) {
-            holder.binding.ivPartyIcon.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.color_80deea))
+            val fallback = ContextCompat.getColor(context, R.color.primary)
+            holder.binding.cardPartyIcon.setCardBackgroundColor(ContextCompat.getColor(context, R.color.bottom_nav_active_bg))
+            holder.binding.cardPartyIcon.strokeColor = fallback
+            holder.binding.ivPartyIcon.imageTintList = ColorStateList.valueOf(fallback)
         }
 
         // Load custom icon
-        val iconName = party.iconResName ?: "ic_party_person"
+        val iconName = party.iconResName.ifBlank { "ic_party_person" }
         val resId = context.resources.getIdentifier(iconName, "drawable", context.packageName)
         if (resId != 0) {
             holder.binding.ivPartyIcon.setImageResource(resId)
         } else {
-            // Default to person icon
-            val defaultResId = context.resources.getIdentifier("ic_party_person", "drawable", context.packageName)
-            if (defaultResId != 0) holder.binding.ivPartyIcon.setImageResource(defaultResId)
+            holder.binding.ivPartyIcon.setImageResource(R.drawable.ic_action_group)
         }
 
         holder.binding.ivDelete.setOnClickListener {

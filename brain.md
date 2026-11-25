@@ -489,6 +489,7 @@ Use this table as the UI map when updating layouts or implementing navigation. S
 - Updated `activity_notebook.xml` to use a transparent navigation background/tint and no elevation, preventing corner artifacts in Dark theme.
 - Added explicit notebook bottom-navigation label and item sizing properties for consistent labeled text visibility.
 - Added report icon maintenance note: `ic_menu_report.xml` is the shared PDF/report drawable for notebook and options-menu actions.
+- Redesigned `ic_action_edit.xml` with a modern rounded pencil and eraser treatment while preserving the existing resource name used across menus and profile controls.
 
 ### 2026-11-21 — Notebook filtering, glassmorphic top bar redesign & theme polish
 

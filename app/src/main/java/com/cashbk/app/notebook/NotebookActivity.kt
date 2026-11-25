@@ -57,6 +57,7 @@ class NotebookActivity : AppCompatActivity() {
 
             // Setup Navigation
             setupNavigation()
+            setupKeyboardVisibilityListener()
 
             // Fetch Details & Role (Async)
             checkUserRole()
@@ -71,6 +72,22 @@ class NotebookActivity : AppCompatActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
             showToast("Error: ${e.message}", Toast.LENGTH_LONG)
+        }
+    }
+
+    private var isBottomNavAllowed = true
+
+    fun setBottomNavVisible(visible: Boolean) {
+        isBottomNavAllowed = visible
+        binding.layoutBottomNavContainer.visibility = if (visible) View.VISIBLE else View.GONE
+    }
+
+    private fun setupKeyboardVisibilityListener() {
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            val imeVisible = insets.isVisible(androidx.core.view.WindowInsetsCompat.Type.ime())
+            binding.layoutBottomNavContainer.visibility =
+                if (imeVisible || !isBottomNavAllowed) View.GONE else View.VISIBLE
+            androidx.core.view.ViewCompat.onApplyWindowInsets(view, insets)
         }
     }
 
@@ -135,10 +152,44 @@ class NotebookActivity : AppCompatActivity() {
     fun getUserRole(): String = currentUserRole
 
     fun showTransactionPopupMenu(anchor: View, transaction: Transaction) {
-        val popup = CustomOptionsMenu(this, anchor)
-        popup.setOnEditClickListener { showEditTransactionDialog(transaction) }
-        popup.setOnDeleteClickListener { deleteTransaction(transaction) }
-        popup.show()
+        val dialog = com.google.android.material.bottomsheet.BottomSheetDialog(this)
+        val sheetBinding = com.cashbk.app.databinding.BottomSheetTransactionActionsBinding.inflate(layoutInflater)
+        dialog.setContentView(sheetBinding.root)
+
+        dialog.setOnShowListener {
+            val bottomSheet = dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            bottomSheet?.setBackgroundResource(android.R.color.transparent)
+        }
+
+        val titleText = when {
+            transaction.partyName.isNotEmpty() -> transaction.partyName
+            transaction.remark.isNotEmpty() && transaction.remark != "-" -> transaction.remark
+            transaction.categoryName.isNotEmpty() -> transaction.categoryName
+            else -> if (transaction.type == "in") "Cash In" else "Cash Out"
+        }
+        sheetBinding.tvTransactionTitle.text = titleText
+        sheetBinding.tvTransactionSubtitle.text = "${transaction.date} • ${transaction.time}"
+
+        val formattedAmount = java.text.NumberFormat.getNumberInstance(java.util.Locale("en", "IN")).format(transaction.amount)
+        if (transaction.type == "in") {
+            sheetBinding.tvTransactionAmount.text = "+ ₹$formattedAmount"
+            sheetBinding.tvTransactionAmount.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.success))
+        } else {
+            sheetBinding.tvTransactionAmount.text = "- ₹$formattedAmount"
+            sheetBinding.tvTransactionAmount.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.danger))
+        }
+
+        sheetBinding.btnClose.setOnClickListener { dialog.dismiss() }
+        sheetBinding.cardEdit.setOnClickListener {
+            dialog.dismiss()
+            showEditTransactionDialog(transaction)
+        }
+        sheetBinding.cardDelete.setOnClickListener {
+            dialog.dismiss()
+            deleteTransaction(transaction)
+        }
+
+        dialog.show()
     }
 
     private fun deleteTransaction(transaction: Transaction) {

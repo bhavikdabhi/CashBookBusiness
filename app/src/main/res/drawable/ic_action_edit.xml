@@ -4,7 +4,25 @@
     android:viewportWidth="24"
     android:viewportHeight="24"
     android:tint="?attr/colorControlNormal">
-  <path
-      android:fillColor="@android:color/white"
-      android:pathData="M3,17.25V21h3.75L17.81,9.94l-3.75,-3.75L3,17.25zM20.71,7.04c0.39,-0.39 0.39,-1.02 0,-1.41l-2.34,-2.34c-0.39,-0.39 -1.02,-0.39 -1.41,0l-1.83,1.83 3.75,3.75 1.83,-1.83z"/>
+
+    <!-- Rounded pencil body -->
+    <path
+        android:fillColor="@android:color/white"
+        android:fillType="evenOdd"
+        android:pathData="M4.2,16.95L3.5,20.5L7.05,19.8L17.86,8.99L15.01,6.14L4.2,16.95ZM6.11,18.2L5.8,18.89L5.11,18.58L5.42,17.89L6.11,18.2Z" />
+
+    <!-- Top eraser/cap -->
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M16.05,5.15L18.85,7.95C19.63,7.17 20.02,6.78 20.41,6.39C21.19,5.61 21.19,4.35 20.41,3.57C19.63,2.79 18.37,2.79 17.59,3.57L16.05,5.15Z" />
+
+    <!-- Tip accent -->
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M3.5,20.5L7.05,19.8L3.5,20.5Z" />
+
+    <!-- Small document edit sparkle -->
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M20.75,10.25C21.16,10.25 21.5,9.91 21.5,9.5C21.5,9.09 21.16,8.75 20.75,8.75C20.34,8.75 20,9.09 20,9.5C20,9.91 20.34,10.25 20.75,10.25Z" />
 </vector>

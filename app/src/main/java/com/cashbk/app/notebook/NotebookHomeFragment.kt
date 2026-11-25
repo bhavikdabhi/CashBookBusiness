@@ -19,6 +19,7 @@ import com.cashbk.app.databinding.FragmentNotebookHomeBinding
 import com.cashbk.app.transaction._bean.Transaction
 import com.cashbk.app.transaction.AddTransactionFragment
 import com.cashbk.app.utils.PdfGenerator
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.database.*
@@ -373,73 +374,75 @@ class NotebookHomeFragment : Fragment() {
 
     private fun showDateFilterDialog(position: Int) {
         val options = arrayOf("All Time", "Today", "Yesterday", "This Month", "Last Month", "This Year", "Custom")
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Filter by Date")
-            .setItems(options) { _, which ->
-                val calendar = Calendar.getInstance()
-                when (which) {
-                    0 -> { // All Time
-                        filterStartDate = null
-                        filterEndDate = null
-                        filterAdapter.updateItem(position, "Date")
-                        applyFilters()
-                    }
-                    1 -> { // Today
-                        setStartOfDay(calendar)
-                        filterStartDate = calendar.timeInMillis
-                        setEndOfDay(calendar)
-                        filterEndDate = calendar.timeInMillis
-                        filterAdapter.updateItem(position, "Today")
-                        applyFilters()
-                    }
-                    2 -> { // Yesterday
-                        calendar.add(Calendar.DAY_OF_YEAR, -1)
-                        setStartOfDay(calendar)
-                        filterStartDate = calendar.timeInMillis
-                        setEndOfDay(calendar)
-                        filterEndDate = calendar.timeInMillis
-                        filterAdapter.updateItem(position, "Yesterday")
-                        applyFilters()
-                    }
-                    3 -> { // This Month
-                        calendar.set(Calendar.DAY_OF_MONTH, 1)
-                        setStartOfDay(calendar)
-                        filterStartDate = calendar.timeInMillis
-                        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH))
-                        setEndOfDay(calendar)
-                        filterEndDate = calendar.timeInMillis
-                        filterAdapter.updateItem(position, "This Month")
-                        applyFilters()
-                    }
-                    4 -> { // Last Month
-                        calendar.add(Calendar.MONTH, -1)
-                        calendar.set(Calendar.DAY_OF_MONTH, 1)
-                        setStartOfDay(calendar)
-                        filterStartDate = calendar.timeInMillis
-                        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH))
-                        setEndOfDay(calendar)
-                        filterEndDate = calendar.timeInMillis
-                        filterAdapter.updateItem(position, "Last Month")
-                        applyFilters()
-                    }
-                    5 -> { // This Year
-                        calendar.set(Calendar.DAY_OF_YEAR, 1)
-                        setStartOfDay(calendar)
-                        filterStartDate = calendar.timeInMillis
-                        calendar.set(Calendar.MONTH, Calendar.DECEMBER)
-                        calendar.set(Calendar.DAY_OF_MONTH, 31)
-                        setEndOfDay(calendar)
-                        filterEndDate = calendar.timeInMillis
-                        filterAdapter.updateItem(position, "This Year")
-                        applyFilters()
-                    }
-                    6 -> { // Custom
-                        showDateRangePicker(position)
-                    }
+        val currentText = filterItemList[position].displayText
+        val selectedIndex = when {
+            filterStartDate == null -> 0
+            currentText in options -> options.indexOf(currentText)
+            else -> 6
+        }
+        showFilterOptionsBottomSheet("Filter by Date", options, selectedIndex) { which ->
+            val calendar = Calendar.getInstance()
+            when (which) {
+                0 -> { // All Time
+                    filterStartDate = null
+                    filterEndDate = null
+                    filterAdapter.updateItem(position, "Date", false)
+                    applyFilters()
+                }
+                1 -> { // Today
+                    setStartOfDay(calendar)
+                    filterStartDate = calendar.timeInMillis
+                    setEndOfDay(calendar)
+                    filterEndDate = calendar.timeInMillis
+                    filterAdapter.updateItem(position, "Today", true)
+                    applyFilters()
+                }
+                2 -> { // Yesterday
+                    calendar.add(Calendar.DAY_OF_YEAR, -1)
+                    setStartOfDay(calendar)
+                    filterStartDate = calendar.timeInMillis
+                    setEndOfDay(calendar)
+                    filterEndDate = calendar.timeInMillis
+                    filterAdapter.updateItem(position, "Yesterday", true)
+                    applyFilters()
+                }
+                3 -> { // This Month
+                    calendar.set(Calendar.DAY_OF_MONTH, 1)
+                    setStartOfDay(calendar)
+                    filterStartDate = calendar.timeInMillis
+                    calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH))
+                    setEndOfDay(calendar)
+                    filterEndDate = calendar.timeInMillis
+                    filterAdapter.updateItem(position, "This Month", true)
+                    applyFilters()
+                }
+                4 -> { // Last Month
+                    calendar.add(Calendar.MONTH, -1)
+                    calendar.set(Calendar.DAY_OF_MONTH, 1)
+                    setStartOfDay(calendar)
+                    filterStartDate = calendar.timeInMillis
+                    calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH))
+                    setEndOfDay(calendar)
+                    filterEndDate = calendar.timeInMillis
+                    filterAdapter.updateItem(position, "Last Month", true)
+                    applyFilters()
+                }
+                5 -> { // This Year
+                    calendar.set(Calendar.DAY_OF_YEAR, 1)
+                    setStartOfDay(calendar)
+                    filterStartDate = calendar.timeInMillis
+                    calendar.set(Calendar.MONTH, Calendar.DECEMBER)
+                    calendar.set(Calendar.DAY_OF_MONTH, 31)
+                    setEndOfDay(calendar)
+                    filterEndDate = calendar.timeInMillis
+                    filterAdapter.updateItem(position, "This Year", true)
+                    applyFilters()
+                }
+                6 -> { // Custom
+                    showDateRangePicker(position)
                 }
             }
-            .setNegativeButton("Cancel", null)
-            .show()
+        }
     }
 
     private fun setStartOfDay(calendar: Calendar) {
@@ -467,7 +470,7 @@ class NotebookHomeFragment : Fragment() {
             filterEndDate = selection.second + 86399999L 
             
             val sdf = SimpleDateFormat("MMM dd", Locale.getDefault())
-            filterAdapter.updateItem(position, "${sdf.format(Date(filterStartDate!!))} - ${sdf.format(Date(filterEndDate!!))}")
+            filterAdapter.updateItem(position, "${sdf.format(Date(filterStartDate!!))} - ${sdf.format(Date(filterEndDate!!))}", true)
             applyFilters()
         }
             
@@ -477,111 +480,162 @@ class NotebookHomeFragment : Fragment() {
     private fun showCategoryFilterDialog(position: Int) {
         val categories = categoryMap.values.toTypedArray()
         val categoryIds = categoryMap.keys.toTypedArray()
-        
+
         if (categories.isEmpty()) {
             showToast("No categories found")
             return
         }
-        
+
         val displayOptions = arrayOf("All Categories") + categories
-        
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Filter by Category")
-            .setItems(displayOptions) { _, which ->
-                if (_binding == null) return@setItems
-                if (which == 0) {
-                    filterCategoryId = null
-                    filterAdapter.updateItem(position, "Category")
-                } else {
-                    filterCategoryId = categoryIds[which - 1]
-                    filterAdapter.updateItem(position, categories[which - 1])
-                }
-                applyFilters()
+        val selectedIndex = if (filterCategoryId == null) 0 else (categoryIds.indexOf(filterCategoryId) + 1).coerceAtLeast(0)
+
+        showFilterOptionsBottomSheet("Filter by Category", displayOptions, selectedIndex) { which ->
+            if (_binding == null) return@showFilterOptionsBottomSheet
+            if (which == 0) {
+                filterCategoryId = null
+                filterAdapter.updateItem(position, "Category", false)
+            } else {
+                filterCategoryId = categoryIds[which - 1]
+                filterAdapter.updateItem(position, categories[which - 1], true)
             }
-            .setNegativeButton("Cancel", null)
-            .show()
+            applyFilters()
+        }
     }
 
     private fun showPartyFilterDialog(position: Int) {
         val parties = partyMap.values.toTypedArray()
         val partyIds = partyMap.keys.toTypedArray()
-        
+
         if (parties.isEmpty()) {
             showToast("No parties found")
             return
         }
-        
+
         val displayOptions = arrayOf("All Parties") + parties
-        
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Filter by Party")
-            .setItems(displayOptions) { _, which ->
-                if (_binding == null) return@setItems
-                if (which == 0) {
-                    filterPartyId = null
-                    filterAdapter.updateItem(position, "Party")
-                } else {
-                    filterPartyId = partyIds[which - 1]
-                    filterAdapter.updateItem(position, parties[which - 1])
-                }
-                applyFilters()
+        val selectedIndex = if (filterPartyId == null) 0 else (partyIds.indexOf(filterPartyId) + 1).coerceAtLeast(0)
+
+        showFilterOptionsBottomSheet("Filter by Party", displayOptions, selectedIndex) { which ->
+            if (_binding == null) return@showFilterOptionsBottomSheet
+            if (which == 0) {
+                filterPartyId = null
+                filterAdapter.updateItem(position, "Party", false)
+            } else {
+                filterPartyId = partyIds[which - 1]
+                filterAdapter.updateItem(position, parties[which - 1], true)
             }
-            .setNegativeButton("Cancel", null)
-            .show()
+            applyFilters()
+        }
     }
 
     private fun showTypeFilterDialog(position: Int) {
         val options = arrayOf("All Types", "Cash In", "Cash Out")
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Filter by Type")
-            .setItems(options) { _, which ->
-                if (_binding == null) return@setItems
-                when (which) {
-                    0 -> {
-                        filterType = null
-                        filterAdapter.updateItem(position, "Type")
-                    }
-                    1 -> {
-                        filterType = "in"
-                        filterAdapter.updateItem(position, "Cash In")
-                    }
-                    2 -> {
-                        filterType = "out"
-                        filterAdapter.updateItem(position, "Cash Out")
-                    }
+        val selectedIndex = when (filterType) {
+            "in" -> 1
+            "out" -> 2
+            else -> 0
+        }
+        showFilterOptionsBottomSheet("Filter by Type", options, selectedIndex) { which ->
+            if (_binding == null) return@showFilterOptionsBottomSheet
+            when (which) {
+                0 -> {
+                    filterType = null
+                    filterAdapter.updateItem(position, "Type", false)
                 }
-                applyFilters()
+                1 -> {
+                    filterType = "in"
+                    filterAdapter.updateItem(position, "Cash In", true)
+                }
+                2 -> {
+                    filterType = "out"
+                    filterAdapter.updateItem(position, "Cash Out", true)
+                }
             }
-            .setNegativeButton("Cancel", null)
-            .show()
+            applyFilters()
+        }
     }
 
     private fun showEntryByFilterDialog(position: Int) {
         val users = userMap.values.toTypedArray()
         val userIds = userMap.keys.toTypedArray()
-        
+
         if (users.isEmpty()) {
             showToast("No members found")
             return
         }
-        
+
         val displayOptions = arrayOf("All Members") + users
-        
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Filter by Entry By")
-            .setItems(displayOptions) { _, which ->
-                if (_binding == null) return@setItems
-                if (which == 0) {
-                    filterEntryBy = null
-                    filterAdapter.updateItem(position, "Entry By")
-                } else {
-                    filterEntryBy = userIds[which - 1]
-                    filterAdapter.updateItem(position, users[which - 1])
-                }
-                applyFilters()
+        val selectedIndex = if (filterEntryBy == null) 0 else (userIds.indexOf(filterEntryBy) + 1).coerceAtLeast(0)
+
+        showFilterOptionsBottomSheet("Filter by Entry By", displayOptions, selectedIndex) { which ->
+            if (_binding == null) return@showFilterOptionsBottomSheet
+            if (which == 0) {
+                filterEntryBy = null
+                filterAdapter.updateItem(position, "Entry By", false)
+            } else {
+                filterEntryBy = userIds[which - 1]
+                filterAdapter.updateItem(position, users[which - 1], true)
             }
-            .setNegativeButton("Cancel", null)
-            .show()
+            applyFilters()
+        }
+    }
+
+    private fun showFilterOptionsBottomSheet(
+        title: String,
+        options: Array<String>,
+        selectedIndex: Int,
+        onSelect: (Int) -> Unit
+    ) {
+        val dialog = BottomSheetDialog(requireContext())
+        val sheetBinding = com.cashbk.app.databinding.BottomSheetTransactionFilterBinding.inflate(layoutInflater)
+        dialog.setContentView(sheetBinding.root)
+
+        // Ensure transparent window background so rounded bg_bottom_sheet_glass renders cleanly
+        dialog.setOnShowListener {
+            val bottomSheet = dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            bottomSheet?.setBackgroundResource(android.R.color.transparent)
+        }
+
+        sheetBinding.tvFilterTitle.text = title
+        sheetBinding.btnClose.setOnClickListener { dialog.dismiss() }
+
+        options.forEachIndexed { index, label ->
+            val optionBinding = com.cashbk.app.databinding.ItemFilterOptionBinding.inflate(
+                layoutInflater,
+                sheetBinding.layoutOptionsContainer,
+                false
+            )
+            val isSelected = index == selectedIndex
+            optionBinding.tvOptionTitle.text = label
+            optionBinding.ivSelected.visibility = if (isSelected) View.VISIBLE else View.GONE
+
+            if (isSelected) {
+                optionBinding.cardOption.setCardBackgroundColor(
+                    ContextCompat.getColor(requireContext(), R.color.bottom_nav_active_bg)
+                )
+                optionBinding.cardOption.strokeColor =
+                    ContextCompat.getColor(requireContext(), R.color.primary)
+                optionBinding.tvOptionTitle.setTextColor(
+                    ContextCompat.getColor(requireContext(), R.color.primary)
+                )
+            } else {
+                optionBinding.cardOption.setCardBackgroundColor(
+                    ContextCompat.getColor(requireContext(), R.color.stitch_surface_container_low)
+                )
+                optionBinding.cardOption.strokeColor =
+                    ContextCompat.getColor(requireContext(), R.color.glass_border)
+                optionBinding.tvOptionTitle.setTextColor(
+                    ContextCompat.getColor(requireContext(), R.color.text_secondary)
+                )
+            }
+
+            optionBinding.cardOption.setOnClickListener {
+                dialog.dismiss()
+                onSelect(index)
+            }
+            sheetBinding.layoutOptionsContainer.addView(optionBinding.root)
+        }
+
+        dialog.show()
     }
 
     private fun showAddTransactionDialog(type: String) {

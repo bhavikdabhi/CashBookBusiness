@@ -127,6 +127,7 @@ class AddTransactionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as? com.cashbk.app.notebook.NotebookActivity)?.setBottomNavVisible(false)
         cleanupTempReceiptFiles()
 
         database = FirebaseDatabase.getInstance()
@@ -317,9 +318,9 @@ class AddTransactionFragment : Fragment() {
                         chip.chipBackgroundColor = ColorStateList.valueOf(
                             ContextCompat.getColor(requireContext(), R.color.auth_surface_high)
                         )
-                        chip.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+                        chip.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary))
                         chip.checkedIconTint = ColorStateList.valueOf(
-                            ContextCompat.getColor(requireContext(), R.color.white)
+                            ContextCompat.getColor(requireContext(), R.color.text_secondary )
                         )
                         // Show border only when selected, transparent when unselected
                         val primaryColor = ContextCompat.getColor(requireContext(), R.color.auth_glow_2)
@@ -669,6 +670,7 @@ class AddTransactionFragment : Fragment() {
 
     override fun onDestroyView() {
         cleanupTempReceiptFiles()
+        (activity as? com.cashbk.app.notebook.NotebookActivity)?.setBottomNavVisible(true)
         super.onDestroyView()
         _binding = null
     }

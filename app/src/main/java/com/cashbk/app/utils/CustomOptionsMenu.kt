@@ -115,7 +115,21 @@ class CustomOptionsMenu(private val context: Context, private val anchor: View) 
     }
 
     fun show() {
-        // Adjust dropdown alignment
-        popupWindow.showAsDropDown(anchor, -150, -30)
+        binding.root.measure(
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        )
+        val popupHeight = binding.root.measuredHeight
+        val location = IntArray(2)
+        anchor.getLocationOnScreen(location)
+        val screenHeight = context.resources.displayMetrics.heightPixels
+        val spaceBelow = screenHeight - (location[1] + anchor.height)
+        val spaceAbove = location[1]
+
+        if (spaceBelow < popupHeight + 48 && spaceAbove > spaceBelow) {
+            popupWindow.showAsDropDown(anchor, -150, -(anchor.height + popupHeight))
+        } else {
+            popupWindow.showAsDropDown(anchor, -150, -30)
+        }
     }
 }
