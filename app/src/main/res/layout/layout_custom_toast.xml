@@ -15,7 +15,7 @@
         android:id="@+id/toast_icon"
         android:layout_width="@dimen/_20sdp"
         android:layout_height="@dimen/_20sdp"
-        android:src="@drawable/ic_cash_volate"
+        android:src="@drawable/ic_verified"
         app:tint="@color/primary"
         android:layout_marginEnd="@dimen/_8sdp" />
 

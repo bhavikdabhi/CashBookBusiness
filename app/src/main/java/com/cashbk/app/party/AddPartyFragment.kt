@@ -1,10 +1,17 @@
 package com.cashbk.app.party
 
+import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.cashbk.app.R
@@ -22,6 +29,26 @@ class AddPartyFragment : Fragment() {
     private var notebookId: String? = null
     private var selectedRole = "CUSTOMER" // Default as per screenshot
 
+    private val contactPickerLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.data?.let { contactUri ->
+                readContactFromUri(contactUri)
+            }
+        }
+    }
+
+    private val requestContactsPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            launchContactPicker()
+        } else {
+            showToast("Contacts permission is needed to pick a contact")
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,6 +59,7 @@ class AddPartyFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as? com.cashbk.app.notebook.NotebookActivity)?.setBottomNavVisible(false)
 
         notebookId = arguments?.getString("notebookId")
         if (notebookId.isNullOrEmpty()) {
@@ -47,7 +75,54 @@ class AddPartyFragment : Fragment() {
         binding.btnSave.setOnClickListener { saveParty() }
         
         binding.btnSelectContacts.setOnClickListener {
-            showToast("Contact integration coming soon")
+            pickContactWithPermissionCheck()
+        }
+    }
+
+    private fun pickContactWithPermissionCheck() {
+        val hasPermission = ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.READ_CONTACTS
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (hasPermission) {
+            launchContactPicker()
+        } else {
+            requestContactsPermissionLauncher.launch(Manifest.permission.READ_CONTACTS)
+        }
+    }
+
+    private fun launchContactPicker() {
+        val intent = Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
+        contactPickerLauncher.launch(intent)
+    }
+
+    private fun readContactFromUri(contactUri: Uri) {
+        try {
+            val projection = arrayOf(
+                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+                ContactsContract.CommonDataKinds.Phone.NUMBER
+            )
+            requireContext().contentResolver.query(contactUri, projection, null, null, null)?.use { cursor ->
+                if (cursor.moveToFirst()) {
+                    val nameIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+                    val numberIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+
+                    val name = if (nameIdx != -1) cursor.getString(nameIdx)?.trim().orEmpty() else ""
+                    val rawNumber = if (numberIdx != -1) cursor.getString(numberIdx)?.trim().orEmpty() else ""
+                    val cleanedNumber = rawNumber.replace(Regex("[\\s()-]"), "")
+
+                    if (name.isNotEmpty()) {
+                        binding.etName.setText(name)
+                    }
+                    if (cleanedNumber.isNotEmpty()) {
+                        binding.etContact.setText(cleanedNumber)
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            showToast("Unable to read contact: ${e.message}")
         }
     }
 
@@ -140,6 +215,7 @@ class AddPartyFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        (activity as? com.cashbk.app.notebook.NotebookActivity)?.setBottomNavVisible(true)
         _binding = null
     }
 }

@@ -490,6 +490,7 @@ Use this table as the UI map when updating layouts or implementing navigation. S
 - Added explicit notebook bottom-navigation label and item sizing properties for consistent labeled text visibility.
 - Added report icon maintenance note: `ic_menu_report.xml` is the shared PDF/report drawable for notebook and options-menu actions.
 - Redesigned `ic_action_edit.xml` with a modern rounded pencil and eraser treatment while preserving the existing resource name used across menus and profile controls.
+- Documented theme-aware screen gradient usage: prefer semantic color tokens inside `bg_screen_gradient.xml`, or use matching `drawable/` and `drawable-night/` variants with the same resource name.
 
 ### 2026-11-21 — Notebook filtering, glassmorphic top bar redesign & theme polish
 
@@ -531,3 +532,7 @@ Use this table as the UI map when updating layouts or implementing navigation. S
 - Documented the new login and registration XML layouts and their integration in `AuthActivity`.
 - Described the compact floating pill-style bottom bar for auth navigation.
 - Explained the use of theme-aware typography tokens and contrast colors in light and dark themes for auth screens.
+
+- Screen gradients and theme-specific backgrounds should use semantic color resources from `values/colors.xml` and `values-night/colors.xml` inside the drawable. This keeps one layout/drawable reference, such as `@drawable/bg_screen_gradient`, while Android resolves the correct light or dark color automatically.
+- For a dedicated drawable variant, use `res/drawable/bg_screen_gradient.xml` for Light and `res/drawable-night/bg_screen_gradient.xml` for Night. Both should retain the same resource name; Android's `-night` qualifier will be selected automatically.
+- Do not hard-code the screen gradient as separate layout backgrounds. Reference the shared drawable once, for example `android:background="@drawable/bg_screen_gradient"`.

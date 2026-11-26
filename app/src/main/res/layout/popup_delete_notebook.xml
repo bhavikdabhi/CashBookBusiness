@@ -65,7 +65,7 @@
         android:gravity="center"
         android:text="Delete"
         android:textStyle="bold"
-        android:textColor="@color/text_secondary"
+        android:textColor="@color/white"
         app:backgroundTint="@color/primary_color"
         app:cornerRadius="@dimen/_12sdp"
         style="@style/DangerButton"  />
